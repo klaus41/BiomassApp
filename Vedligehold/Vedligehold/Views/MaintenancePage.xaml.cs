@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,7 +14,14 @@ namespace Vedligehold.Views
         public MaintenancePage(MaintenanceTask[] tasks)
         {
             InitializeComponent();
+
             NavigationPage.SetHasNavigationBar(this, false);
+
+            var tapGestureRecognizer = new TapGestureRecognizer();
+            tapGestureRecognizer.Tapped += (s, e) => {
+                Debug.WriteLine("EVENT!! ");
+            };
+
             Grid grid = new Grid
             {
                 VerticalOptions = LayoutOptions.FillAndExpand,
@@ -95,6 +103,8 @@ namespace Vedligehold.Views
 
                 // Build the page.
                 this.Content = grid;
+
+                grid.GestureRecognizers.Add(tapGestureRecognizer);
             }
         }
     }
