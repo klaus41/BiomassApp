@@ -57,7 +57,7 @@ namespace Vedligehold.Views
                         var es = await sv.GetStatsAsync(id);
                         stats = es;
                     }
-                    Navigation.PushAsync(new StatisticsPage(stats));
+                    await Navigation.PushAsync(new StatisticsPage(stats));
                 }
             };
 
@@ -73,7 +73,7 @@ namespace Vedligehold.Views
                     var es = await sv.GetMaintenanceTasksAsync();
                     tasks = es;
                 }
-                Navigation.PushAsync(new MaintenancePage(tasks));
+                await Navigation.PushAsync(new MaintenancePage(tasks));
             };
 
             image.Source = "sbg.jpg";
@@ -127,7 +127,7 @@ namespace Vedligehold.Views
                         var es = await sv.GetStatsAsync(id);
                         stats = es;
                     }
-                    Navigation.PushAsync(new StatisticsPage(stats));
+                    await Navigation.PushAsync(new StatisticsPage(stats));
                 }
             };
 

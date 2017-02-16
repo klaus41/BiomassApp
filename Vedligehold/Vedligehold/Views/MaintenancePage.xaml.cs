@@ -70,11 +70,30 @@ namespace Vedligehold.Views
                     BackgroundColor = color
                 }, 2, Array.IndexOf(tasks, task) + 2);
 
-                grid.Children.Add(new Label
+                var gridButton = new Button
                 {
-                    Text = task.text,
-                    BackgroundColor = color
-                }, 3, Array.IndexOf(tasks, task) + 2);
+                    Text = "Detaljer",
+
+                    BorderWidth = 0,
+                    BorderRadius = 0,
+                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    // Bounds = new Rectangle(50*i,50*k, 50, 50)
+
+                };
+                gridButton.Clicked += delegate
+                {
+                    Navigation.PushAsync(new TaskDetail(task));
+
+                };
+                grid.Children.Add(gridButton, 3, Array.IndexOf(tasks, task) + 2); 
+
+
+
+                //grid.Children.Add(new Label
+                //{
+                //    Text = task.text,
+                //    BackgroundColor = color
+                //}, 3, Array.IndexOf(tasks, task) + 2);
 
 
                 grid.Children.Add(new Label

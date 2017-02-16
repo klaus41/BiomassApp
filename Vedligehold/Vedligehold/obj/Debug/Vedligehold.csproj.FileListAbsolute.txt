@@ -24,5 +24,8 @@ c:\users\klaus\documents\visual studio 2015\Projects\Vedligehold\Vedligehold\Ved
 c:\users\klaus\documents\visual studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold\obj\Debug\Vedligehold.Views.MaintenancePage.xaml.g.cs
 c:\users\klaus\documents\visual studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold\obj\Debug\Vedligehold.dll
 c:\users\klaus\documents\visual studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold\obj\Debug\Vedligehold.pdb
-c:\users\klaus\documents\visual studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold\obj\Debug\Vedligehold.dll.mdb
-c:\users\klaus\documents\visual studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold\bin\Debug\Vedligehold.dll.mdb
+C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold\obj\Debug\Vedligehold.Views.TaskDetail.xaml.g.cs
+C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold\obj\Debug\Vedligehold.dll.mdb
+C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold\bin\Debug\Vedligehold.dll.mdb
+C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold\obj\Debug\Vedligehold.dll.mdb
+C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold\bin\Debug\Vedligehold.dll.mdb

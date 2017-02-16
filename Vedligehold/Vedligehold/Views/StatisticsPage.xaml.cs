@@ -14,7 +14,7 @@ namespace Vedligehold.Views
         {
             InitializeComponent();
             NavigationPage.SetHasNavigationBar(this, false);
-            
+
             Grid grid = new Grid
             {
                 VerticalOptions = LayoutOptions.FillAndExpand,

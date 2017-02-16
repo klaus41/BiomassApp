@@ -9,14 +9,11 @@ using Vedligehold.Models;
 
 namespace Vedligehold.Services
 {
-    public class StatisticService
+    public class StatisticService : ClientGateway
     {
         public async Task<Statistic[]> GetStatsAsync(string id)
         {
-            var client = new HttpClient();
-            client.DefaultRequestHeaders.Add("Accept", "application/json");
-
-            client.BaseAddress = new Uri("http://Bevtoft.biomass.eliteit.dk/");
+            HttpClient client = GetHttpClient();
 
             var response = await client.GetAsync("api/statistik/" + id);
 

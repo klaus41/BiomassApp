@@ -40,6 +40,7 @@
     <Compile Include="Models\MaintenanceTask.cs" />
     <Compile Include="Models\Statistic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\ClientGateway.cs" />
     <Compile Include="Services\ContactService.cs" />
     <Compile Include="Services\MaintenanceService.cs" />
     <Compile Include="Services\StatisticService.cs" />
@@ -51,6 +52,9 @@
     </Compile>
     <Compile Include="Views\StatisticsPage.xaml.cs">
       <DependentUpon>StatisticsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TaskDetail.xaml.cs">
+      <DependentUpon>TaskDetail.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -105,7 +109,12 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Views\TaskDetail.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\sbg.jpg" />
   </ItemGroup>

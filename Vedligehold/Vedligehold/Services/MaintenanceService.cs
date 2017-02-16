@@ -9,14 +9,11 @@ using Vedligehold.Models;
 
 namespace Vedligehold.Services
 {
-    public class MaintenanceService
+    public class MaintenanceService : ClientGateway
     {
         public async Task<MaintenanceTask[]> GetMaintenanceTasksAsync()
         {
-            var client = new HttpClient();
-            client.DefaultRequestHeaders.Add("Accept", "application/json");
-
-            client.BaseAddress = new Uri("http://demo.biomass.eliteit.dk/");
+            HttpClient client = GetHttpClient();
 
             var response = await client.GetAsync("api/maintenancelist/");
 
@@ -26,5 +23,6 @@ namespace Vedligehold.Services
 
             return rootObject;
         }
+
     }
 }

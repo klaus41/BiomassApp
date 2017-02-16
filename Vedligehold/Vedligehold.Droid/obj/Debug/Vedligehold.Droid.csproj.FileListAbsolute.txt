@@ -76,5 +76,5 @@ c:\users\klaus\documents\visual studio 2015\Projects\Vedligehold\Vedligehold\Ved
 c:\users\klaus\documents\visual studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.Droid\obj\Debug\res\drawable-xhdpi\icon.ico
 c:\users\klaus\documents\visual studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.Droid\obj\Debug\res\drawable-hdpi\icon.ico
 c:\users\klaus\documents\visual studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.Droid\obj\Debug\res\drawable-xxhdpi\icon.ico
-c:\users\klaus\documents\visual studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.Droid\obj\Debug\Vedligehold.Droid.dll.mdb
-c:\users\klaus\documents\visual studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.Droid\bin\Debug\Vedligehold.Droid.dll.mdb
+C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.Droid\obj\Debug\Vedligehold.Droid.dll.mdb
+C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.Droid\bin\Debug\Vedligehold.Droid.dll.mdb
