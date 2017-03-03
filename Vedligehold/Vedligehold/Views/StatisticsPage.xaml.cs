@@ -4,17 +4,71 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Vedligehold.Models;
+using Vedligehold.Services;
+using Vedligehold.Views.CustomCells;
 using Xamarin.Forms;
 
 namespace Vedligehold.Views
 {
     public partial class StatisticsPage : ContentPage
     {
+        Color color;
+        ListView lv;
+        Statistic[] statsGlobal;
+
         public StatisticsPage(Statistic[] stats)
         {
+            statsGlobal = stats;
             InitializeComponent();
             NavigationPage.SetHasNavigationBar(this, false);
+            MakeListView(stats);
+            //MakeGrid(stats);        
+        }
+        private void MakeListView(Statistic[] stats)
+        {
+            var temp = new DataTemplate(typeof(CustomStatCell));
+            Application.Current.Properties["gridrowindex"] = 1;
 
+            lv = new ListView();
+
+            Content = new StackLayout
+            {
+                VerticalOptions = LayoutOptions.FillAndExpand,
+                Children =
+                {
+                    lv
+                }
+            };
+
+            lv.HasUnevenRows = true;
+            lv.ItemTemplate = temp;
+
+            lv.ItemsSource = stats;
+            lv.IsPullToRefreshEnabled = true;
+            lv.Refreshing += Lv_Refreshing;
+            //lv.ItemTapped += Lv_ItemTapped;
+
+        }
+        async void Lv_Refreshing(object sender, EventArgs e)
+        {
+            Statistic[] _stats = null;
+
+            while (_stats == null)
+            {
+                var sv = new StatisticService();
+                var es = await sv.GetStatsAsync(statsGlobal[0].SupplNo);
+                _stats = es;
+            }
+            MakeListView(_stats);
+
+            if (lv.IsRefreshing)
+            {
+                lv.EndRefresh();
+            }
+        }
+
+        private void MakeGrid(Statistic[] stats)
+        {
             Grid grid = new Grid
             {
                 VerticalOptions = LayoutOptions.FillAndExpand,
@@ -26,8 +80,7 @@ namespace Vedligehold.Views
             };
 
 
-            Color color;
-
+           
             foreach (var stat in stats)
             {
                 if (Array.IndexOf(stats, stat) % 2 == 0)
@@ -105,7 +158,6 @@ namespace Vedligehold.Views
 
             // Build the page.
             this.Content = grid;
-
 
 
         }

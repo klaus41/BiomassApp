@@ -1,0 +1,2 @@
+C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.WinPhone\Vedligehold.WinPhone.csproj;neutral
+C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold\Vedligehold.csproj;neutral

@@ -11,18 +11,7 @@ namespace Vedligehold
     {
         public App()
         {
-            //tabbedpage
-            //MainPage = new CarouselPage
-            //{
-            //    Children =
-            //    {
-            //        new HomePage(),
-            //        new Page1("Hello!"),
-            //        new ListView(),
-
-            //    }
-            //};
-            MainPage = new NavigationPage(new HomePage()) { BarBackgroundColor = Color.Green };
+            MainPage = new NavigationPage(new LoginPage()) { BarBackgroundColor = Color.Green };
         }
 
         protected override void OnStart()

@@ -11,17 +11,45 @@ namespace Vedligehold.Services
 {
     public class MaintenanceService : ClientGateway
     {
+        string endPoint = "api/maintenancelist/";
         public async Task<MaintenanceTask[]> GetMaintenanceTasksAsync()
         {
             HttpClient client = GetHttpClient();
 
-            var response = await client.GetAsync("api/maintenancelist/");
+            var response = await client.GetAsync(endPoint);
 
             var statsJson = response.Content.ReadAsStringAsync().Result;
 
             var rootObject = JsonConvert.DeserializeObject<MaintenanceTask[]>(statsJson);
 
             return rootObject;
+        }
+
+        public async Task<MaintenanceTask> UpdateTask (MaintenanceTask task)
+        {
+            endPoint = endPoint + "update/" + task.no;
+            HttpClient client = GetHttpClient();
+
+            var data = JsonConvert.SerializeObject(task);
+
+            var content = new StringContent(data, Encoding.UTF8, "application/json");
+            
+            var response = await client.PutAsync(endPoint, content);
+
+            return JsonConvert.DeserializeObject<MaintenanceTask>(response.Content.ReadAsStringAsync().Result);
+        }
+
+        public async Task<MaintenanceTask> CreateTask(MaintenanceTask task)
+        {
+            HttpClient client = GetHttpClient();
+
+            var data = JsonConvert.SerializeObject(task);
+
+            var content = new StringContent(data, Encoding.UTF8, "application/json");
+
+            var response = await client.PostAsync(endPoint + "create", content);
+
+            return JsonConvert.DeserializeObject<MaintenanceTask>(response.Content.ReadAsStringAsync().Result);
         }
 
     }

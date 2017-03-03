@@ -24,7 +24,11 @@ namespace Vedligehold.Views
             NavigationPage.SetHasNavigationBar(this, false);
             //Title = "Biomasse App";
 
-
+            LogOutButton.Clicked += (s, e) =>
+            {
+                Application.Current.MainPage.Navigation.PopAsync();
+                //Navigation.PushAsync(new LoginPage());
+            };
             StatButton.Clicked += async (s, e) =>
             {
                 stats = null;
@@ -32,6 +36,8 @@ namespace Vedligehold.Views
 
                 while (contacts == null)
                 {
+                    ProgressBar();
+
                     var sv = new ContactService();
                     var es = await sv.GetContactsAsync();
                     contacts = es;
@@ -53,30 +59,35 @@ namespace Vedligehold.Views
 
                     while (stats == null)
                     {
+                        ProgressBar();
                         var sv = new StatisticService();
                         var es = await sv.GetStatsAsync(id);
                         stats = es;
                     }
+
                     await Navigation.PushAsync(new StatisticsPage(stats));
                 }
             };
-
-
-
             MaintButton.Clicked += async (s, e) =>
             {
                 tasks = null;
-
+                
                 while (tasks == null)
                 {
+                    ProgressBar();
                     var sv = new MaintenanceService();
                     var es = await sv.GetMaintenanceTasksAsync();
                     tasks = es;
                 }
+                
+
                 await Navigation.PushAsync(new MaintenancePage(tasks));
+              
             };
 
             image.Source = "sbg.jpg";
+            image.Opacity = 0.7;
+         
         }
         private async void WithPicker()
         {
@@ -145,5 +156,25 @@ namespace Vedligehold.Views
                 }
             };
         }
+
+        private async void ProgressBar()
+        {
+            MainProgressBar.IsVisible = true;
+            MainProgressBar.Progress = 0;
+            MainProgressBar.HeightRequest = 20;
+            MainProgressBar.WidthRequest = 300;
+            //MainProgressBar.BackgroundColor = Color.Green;
+
+            await MainProgressBar.ProgressTo(1, 900, Easing.Linear);
+
+            MainProgressBar.IsVisible = false;
+        }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            MainProgressBar.IsVisible = false;
+        }
+
     }
 }

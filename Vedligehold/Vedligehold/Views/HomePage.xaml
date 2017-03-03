@@ -30,14 +30,25 @@
          Text="Se vedligeholdsopgaver"
          BackgroundColor="Green"
          TextColor="White"></Button>
-
-
+    <Button x:Name="LogOutButton"
+             Text="Log ud"
+             BackgroundColor="Green"
+             TextColor="White"></Button>
+    
     <Image x:Name="image"></Image>
+    <Label x:Name="lbl"></Label>
+
+
+  <ProgressBar x:Name="MainProgressBar"
+               Progress="0"
+               VerticalOptions="Center"
+               HorizontalOptions="Center">
+  </ProgressBar>
 
     <ListView x:Name="StatList"
                HasUnevenRows="True">
     </ListView>
-      </StackLayout>
+  </StackLayout>
 
 
 

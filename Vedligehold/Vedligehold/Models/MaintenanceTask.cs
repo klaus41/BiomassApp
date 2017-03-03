@@ -15,7 +15,7 @@ namespace Vedligehold.Models
         public string text { get; set; }
         public bool weekly { get; set; }
         public bool daily { get; set; }
-        public string etag { get; set; }
+        private string etag { get; }
         public bool done { get; set; }
 
     }
