@@ -16,165 +16,137 @@ namespace Vedligehold.Views
         Statistic[] stats;
         MaintenanceTask[] tasks;
         string[] contactNumbers;
+        bool loading;
+        StackLayout layout;
+        ActivityIndicator ai;
+        Button logOutButton;
+        Button statButton;
+        Button taskButton;
+        Color buttonColor;
 
         public HomePage()
         {
+            buttonColor = Color.FromRgb(135, 206, 250);
             BackgroundColor = Color.White;
-            InitializeComponent();
             NavigationPage.SetHasNavigationBar(this, false);
-            //Title = "Biomasse App";
+            layout = new StackLayout { Padding = 10, };
 
-            LogOutButton.Clicked += (s, e) =>
+            logOutButton = new Button { Text = "Log ud", BackgroundColor = buttonColor, TextColor = Color.White };
+            statButton = new Button { Text = "Leverandørstatistikker", BackgroundColor = buttonColor, TextColor = Color.White };
+            taskButton = new Button { Text = "Vedligeholdsopgaver", BackgroundColor = buttonColor, TextColor = Color.White };
+
+            logOutButton.Clicked += (s, e) =>
             {
                 Application.Current.MainPage.Navigation.PopAsync();
                 //Navigation.PushAsync(new LoginPage());
             };
-            StatButton.Clicked += async (s, e) =>
+            statButton.Clicked += async (s, e) =>
             {
-                stats = null;
-                contacts = null;
-
-                while (contacts == null)
+                loading = true;
+                while (loading)
                 {
-                    ProgressBar();
+                    ShowActivityIndicator();
+                    stats = null;
+                    contacts = null;
 
-                    var sv = new ContactService();
-                    var es = await sv.GetContactsAsync();
-                    contacts = es;
-                }
-                contactNumbers = new string[contacts.Count()];
-             
-                for (int i = 0; i < contacts.Count(); i++)
-                {
-                    contactNumbers[i] = contacts[i].no + " - " + contacts[i].company_Name;
-                }
-
-                var action = await DisplayActionSheet("Vælg leverandørnummer", "Cancel", null, contactNumbers);
-
-                Debug.WriteLine("ACTION!!!!" + action);
-                if (action != "Cancel")
-                {
-                    int l = action.IndexOf(" ");
-                    string id = action.Substring(0, l);
-
-                    while (stats == null)
+                    while (contacts == null)
                     {
-                        ProgressBar();
-                        var sv = new StatisticService();
-                        var es = await sv.GetStatsAsync(id);
-                        stats = es;
+                        ActivityIndicator ai = new ActivityIndicator()
+                        {
+                            IsRunning = true
+                        };
+
+
+                        var sv = new ContactService();
+                        var es = await sv.GetContactsAsync();
+                        contacts = es;
+                    }
+                    contactNumbers = new string[contacts.Count()];
+
+                    for (int i = 0; i < contacts.Count(); i++)
+                    {
+                        contactNumbers[i] = contacts[i].no + " - " + contacts[i].company_Name;
                     }
 
-                    await Navigation.PushAsync(new StatisticsPage(stats));
+                    var action = await DisplayActionSheet("Vælg leverandørnummer", "Cancel", null, contactNumbers);
+
+                    Debug.WriteLine("ACTION!!!!" + action);
+                    if (action != "Cancel")
+                    {
+                        int l = action.IndexOf(" ");
+                        string id = action.Substring(0, l);
+
+                        while (stats == null)
+                        {
+                            var sv = new StatisticService();
+                            var es = await sv.GetStatsAsync(id);
+                            stats = es;
+                        }
+
+                        await Navigation.PushAsync(new StatisticsPage(stats));
+                        RemoveActivityIndicator();
+                    }
                 }
             };
-            MaintButton.Clicked += async (s, e) =>
+            taskButton.Clicked += async (s, e) =>
             {
-                tasks = null;
-                
-                while (tasks == null)
+                loading = true;
+                while (loading)
                 {
-                    ProgressBar();
-                    var sv = new MaintenanceService();
-                    var es = await sv.GetMaintenanceTasksAsync();
-                    tasks = es;
-                }
-                
+                    ShowActivityIndicator();
+                    tasks = null;
 
-                await Navigation.PushAsync(new MaintenancePage(tasks));
-              
-            };
-
-            image.Source = "sbg.jpg";
-            image.Opacity = 0.7;
-         
-        }
-        private async void WithPicker()
-        {
-            tasks = null;
-            contacts = null;
-            while (contacts == null)
-            {
-                var sv = new ContactService();
-                var es = await sv.GetContactsAsync();
-                contacts = es;
-            }
-            Label header = new Label
-            {
-                Text = "Picker",
-                FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label)),
-                HorizontalOptions = LayoutOptions.Center
-            };
-            Picker picker = new Picker
-            {
-                Title = "Leverandører:",
-                VerticalOptions = LayoutOptions.CenterAndExpand
-            };
-
-            foreach (var item in contacts)
-            {
-                picker.Items.Add(item.no);
-            }
-            BoxView boxView = new BoxView
-            {
-                WidthRequest = 150,
-                HeightRequest = 150,
-                HorizontalOptions = LayoutOptions.Center,
-                VerticalOptions = LayoutOptions.CenterAndExpand
-            };
-
-            picker.SelectedIndexChanged += async (sender, args) =>
-            {
-                if (picker.SelectedIndex == -1)
-                {
-
-                }
-                else
-                {
                     while (tasks == null)
                     {
-                        var sv = new StatisticService();
-                        string id = picker.Items[picker.SelectedIndex];
-                        var es = await sv.GetStatsAsync(id);
-                        stats = es;
+                        var sv = new MaintenanceService();
+                        var es = await sv.GetMaintenanceTasksAsync();
+                        tasks = es;
                     }
-                    await Navigation.PushAsync(new StatisticsPage(stats));
+
+
+                    await Navigation.PushAsync(new MaintenancePage(tasks));
+                    RemoveActivityIndicator();
                 }
+                
             };
 
-            // Accomodate iPhone status bar.
-            this.Padding = new Thickness(10, Device.OnPlatform(20, 0, 0), 10, 5);
+            Image image = new Image();
 
-            // Build the page.
-            this.Content = new StackLayout
+            image.Source = "eistor.png";
+            image.Opacity = 0.7;
+            image.VerticalOptions = LayoutOptions.End;
+
+            layout.Children.Add(statButton);
+            layout.Children.Add(taskButton);
+            layout.Children.Add(logOutButton);
+            layout.Children.Add(image);
+
+            Content = new ScrollView { Content = layout };
+
+
+        }
+
+        private void RemoveActivityIndicator()
+        {
+
+            loading = false;
+            layout.Children.Remove(ai);
+            logOutButton.IsEnabled = true;
+            statButton.IsEnabled = true;
+            taskButton.IsEnabled = true;
+        }
+
+        private void ShowActivityIndicator()
+        {
+            ai = new ActivityIndicator()
             {
-                Children =
-                {
-                    header,
-                    picker,
-                    boxView
-                }
+                IsRunning = true
             };
+            layout.Children.Add(ai);
+
+            logOutButton.IsEnabled = false;
+            statButton.IsEnabled = false;
+            taskButton.IsEnabled = false;
         }
-
-        private async void ProgressBar()
-        {
-            MainProgressBar.IsVisible = true;
-            MainProgressBar.Progress = 0;
-            MainProgressBar.HeightRequest = 20;
-            MainProgressBar.WidthRequest = 300;
-            //MainProgressBar.BackgroundColor = Color.Green;
-
-            await MainProgressBar.ProgressTo(1, 900, Easing.Linear);
-
-            MainProgressBar.IsVisible = false;
-        }
-
-        protected override void OnAppearing()
-        {
-            base.OnAppearing();
-            MainProgressBar.IsVisible = false;
-        }
-
     }
 }

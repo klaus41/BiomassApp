@@ -11,7 +11,7 @@ namespace Vedligehold
     {
         public App()
         {
-            MainPage = new NavigationPage(new LoginPage()) { BarBackgroundColor = Color.Green };
+            MainPage = new NavigationPage(new LoginPage());
         }
 
         protected override void OnStart()

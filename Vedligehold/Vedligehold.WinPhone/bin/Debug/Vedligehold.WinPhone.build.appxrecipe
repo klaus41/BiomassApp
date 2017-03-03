@@ -73,6 +73,12 @@
       <PackagePath>Assets\WideLogo.scale-240.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
     </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold\Resources\green.png">
+      <PackagePath>Vedligehold\Resources\green.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold\Resources\red.png">
+      <PackagePath>Vedligehold\Resources\red.png</PackagePath>
+    </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.WinPhone\bin\Debug\Vedligehold.WinPhone.xr.xml">
       <PackagePath>Vedligehold.WinPhone.xr.xml</PackagePath>
     </AppxPackagedFile>

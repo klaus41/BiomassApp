@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Vedligehold.Models;
+using Vedligehold.Views.Converters;
 using Xamarin.Forms;
 
 namespace Vedligehold.Views
@@ -21,11 +22,17 @@ namespace Vedligehold.Views
                 FontSize = 12,
                 FontAttributes = FontAttributes.Bold
             };
-            Label done = new Label();
-            Label image = new Label();
-            Label hidden = new Label();
+            Image colorImg = new Image()
+            {
+               VerticalOptions = LayoutOptions.End
+            };
 
-            //Image image = new Image();
+            Label done = new Label()
+            {
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+
+            };
+            Label image = new Label();
 
             Grid mainGrid = new Grid
             {
@@ -51,6 +58,8 @@ namespace Vedligehold.Views
 
             mainGrid.Children.Add(done, 4, 0);
             Grid.SetRowSpan(done, 2);
+            //mainGrid.Children.Add(colorImg, 4, 0);
+            //Grid.SetRowSpan(done, 2);
 
             mainGrid.BackgroundColor = color;
             View = mainGrid;
@@ -59,8 +68,12 @@ namespace Vedligehold.Views
 
             type.SetBinding<MaintenanceTask>(Label.TextProperty, i => i.type);
             anlægsbeskrivelse.SetBinding<MaintenanceTask>(Label.TextProperty, i => i.anlægsbeskrivelse);
-            done.SetBinding<MaintenanceTask>(Label.TextProperty, i => i.done);
+            //done.SetBinding<MaintenanceTask>(Label.TextProperty, i => i.done);
+            mainGrid.SetBinding(Label.BackgroundColorProperty, new Binding("done", converter: new BoolToColorConverter()));
+            //colorImg.SetBinding(Image.SourceProperty, new Binding("done", converter: new BoolToColorConverter()));
 
+            //mainGrid.Padding = 20;
+            mainGrid.Margin = 10;
             //MakeCustomCell();
             CreateMenu();
         }

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="auto" android:versionName="3.0" package="vedligehold.vedligehold" android:versionCode="3">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="auto" android:versionName="5.0" package="vedligehold.vedligehold" android:versionCode="5">
 	<uses-sdk android:minSdkVersion="15" />
-	<application android:label="com.example.myapp" android:icon="@drawable/icon"></application>
+	<application android:label="vedligehold" android:icon="@drawable/icon"></application>
 </manifest>

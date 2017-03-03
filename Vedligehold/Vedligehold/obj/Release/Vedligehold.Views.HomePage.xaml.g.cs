@@ -17,36 +17,8 @@ namespace Vedligehold.Views {
     public partial class HomePage : global::Xamarin.Forms.ContentPage {
         
         [System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "0.0.0.0")]
-        private global::Xamarin.Forms.Button StatButton;
-        
-        [System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "0.0.0.0")]
-        private global::Xamarin.Forms.Button MaintButton;
-        
-        [System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "0.0.0.0")]
-        private global::Xamarin.Forms.Button LogOutButton;
-        
-        [System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "0.0.0.0")]
-        private global::Xamarin.Forms.Image image;
-        
-        [System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "0.0.0.0")]
-        private global::Xamarin.Forms.Label lbl;
-        
-        [System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "0.0.0.0")]
-        private global::Xamarin.Forms.ProgressBar MainProgressBar;
-        
-        [System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "0.0.0.0")]
-        private global::Xamarin.Forms.ListView StatList;
-        
-        [System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "0.0.0.0")]
         private void InitializeComponent() {
             this.LoadFromXaml(typeof(HomePage));
-            StatButton = this.FindByName<global::Xamarin.Forms.Button>("StatButton");
-            MaintButton = this.FindByName<global::Xamarin.Forms.Button>("MaintButton");
-            LogOutButton = this.FindByName<global::Xamarin.Forms.Button>("LogOutButton");
-            image = this.FindByName<global::Xamarin.Forms.Image>("image");
-            lbl = this.FindByName<global::Xamarin.Forms.Label>("lbl");
-            MainProgressBar = this.FindByName<global::Xamarin.Forms.ProgressBar>("MainProgressBar");
-            StatList = this.FindByName<global::Xamarin.Forms.ListView>("StatList");
         }
     }
 }

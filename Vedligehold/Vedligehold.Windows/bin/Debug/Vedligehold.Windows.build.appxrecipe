@@ -62,6 +62,12 @@
       <PackagePath>Assets\StoreLogo.scale-100.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
     </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold\Resources\green.png">
+      <PackagePath>Vedligehold\Resources\green.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold\Resources\red.png">
+      <PackagePath>Vedligehold\Resources\red.png</PackagePath>
+    </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.Windows\bin\Debug\Vedligehold.Windows.xr.xml">
       <PackagePath>Vedligehold.Windows.xr.xml</PackagePath>
     </AppxPackagedFile>

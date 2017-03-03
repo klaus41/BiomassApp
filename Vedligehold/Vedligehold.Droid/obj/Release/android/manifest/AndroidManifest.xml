@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="auto" android:versionName="3.0" package="vedligehold.vedligehold" android:versionCode="3">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="auto" android:versionName="5.0" package="vedligehold.vedligehold" android:versionCode="5">
   <!--suppress UsesMinSdkAttributes-->
   <uses-sdk android:minSdkVersion="15" />
   <uses-permission android:name="android.permission.INTERNET" />
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-  <application android:label="com.example.myapp" android:icon="@drawable/icon" android:name="android.app.Application" android:allowBackup="true">
+  <application android:label="vedligehold" android:icon="@drawable/icon" android:name="android.app.Application" android:allowBackup="true">
     <activity android:configChanges="orientation|screenSize" android:icon="@drawable/icon" android:label="Vedligehold" android:theme="@style/MainTheme" android:name="md52411c688ff3bbd743f878fa2009db6d9.MainActivity">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />

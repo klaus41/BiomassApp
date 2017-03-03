@@ -130,6 +130,8 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\green.png" />
+    <Content Include="Resources\red.png" />
     <Content Include="Resources\sbg.jpg" />
   </ItemGroup>
   <ItemGroup>

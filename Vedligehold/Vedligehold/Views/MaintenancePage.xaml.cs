@@ -14,8 +14,6 @@ namespace Vedligehold.Views
 {
     public partial class MaintenancePage : ContentPage
     {
-        Color color;
-        Grid grid;
         ListView lv;
         MaintenanceTask[] tasksGlobal;
 
@@ -35,13 +33,16 @@ namespace Vedligehold.Views
             var temp = new DataTemplate(typeof(CustomTaskCell));
             Application.Current.Properties["gridrowindex"] = 1;
 
-            lv = new ListView();
-            Button b = new Button();
-            b.Text = "Opret standard opgave";
-            //b.BackgroundColor = Color.Green;
-            //b.TextColor = Color.White;
+            lv = new ListView()
+            {
+                HasUnevenRows = true,
+                ItemTemplate = temp,
+                ItemsSource = tasks,
+                IsPullToRefreshEnabled = true
+            };
 
-
+            Button b = new Button() { Text = "Opret standardopgave", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
+            
             b.Clicked += async (s, e) =>
             {
                 MaintenanceTask task = new MaintenanceTask
@@ -68,12 +69,7 @@ namespace Vedligehold.Views
                     lv
                 }
             };
-
-            lv.HasUnevenRows = true;
-            lv.ItemTemplate = temp;
-
-            lv.ItemsSource = tasks;
-            lv.IsPullToRefreshEnabled = true;
+            
             lv.Refreshing += Lv_Refreshing;
             lv.ItemTapped += Lv_ItemTapped;
 
@@ -109,119 +105,6 @@ namespace Vedligehold.Views
                 lv.EndRefresh();
             }
         }
-        private void MakeGrid(MaintenanceTask[] tasks)
-        {
-            grid = new Grid
-            {
-                VerticalOptions = LayoutOptions.FillAndExpand,
-                RowDefinitions = new RowDefinitionCollection(),
-                ColumnDefinitions = new ColumnDefinitionCollection(),
-                ColumnSpacing = 0,
-                RowSpacing = 1
-            };
-            foreach (var task in tasks)
-            {
-                if (Array.IndexOf(tasks, task) % 2 == 0)
-                {
-                    color = Color.FromRgb(211, 211, 211);
-                    //color = Color.FromRgb(173, 255, 47);
-                }
-                else
-                {
-                    color = Color.Default;
-                    //color = Color.Green;
-                }
-
-                grid.Children.Add(new Label
-                {
-                    Text = "Vedligeholdelsesliste",
-                    //FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label)),
-                    HorizontalOptions = LayoutOptions.Center
-                }, 0, 4, 0, 1);
-
-                grid.Children.Add(new Label
-                {
-                    Text = task.no.ToString(),
-                    BackgroundColor = color
-                }, 0, Array.IndexOf(tasks, task) + 2);
-
-                grid.Children.Add(new Label
-                {
-                    Text = task.type,
-                    BackgroundColor = color
-                }, 1, Array.IndexOf(tasks, task) + 2);
-
-                grid.Children.Add(new Label
-                {
-                    Text = task.anlæg,
-                    BackgroundColor = color
-                }, 2, Array.IndexOf(tasks, task) + 2);
-
-                var gridButton = new Button
-                {
-                    Text = "Detaljer",
-
-                    BorderWidth = 0,
-                    BorderRadius = 0,
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
-                    // Bounds = new Rectangle(50*i,50*k, 50, 50)
-
-                };
-                gridButton.Clicked += delegate
-                {
-                    Navigation.PushAsync(new TaskDetail(task));
-
-                };
-                grid.Children.Add(gridButton, 3, Array.IndexOf(tasks, task) + 2);
-
-
-
-                //grid.Children.Add(new Label
-                //{
-                //    Text = task.text,
-                //    BackgroundColor = color
-                //}, 3, Array.IndexOf(tasks, task) + 2);
-
-
-                grid.Children.Add(new Label
-                {
-                    Text = "Nummer"
-                }, 0, 1);
-
-                grid.Children.Add(new Label
-                {
-                    Text = "Type"
-                }, 1, 1);
-
-                grid.Children.Add(new Label
-                {
-                    Text = "Anlæg"
-                }, 2, 1);
-
-                grid.Children.Add(new Label
-                {
-                    Text = "Tekst",
-                }, 3, 1);
-            }
-
-            // Accomodate iPhone status bar.
-            this.Padding = new Thickness(10, Device.OnPlatform(20, 0, 0), 10, 5);
-
-            // Build the page.
-            this.Content = grid;
-            TapGesture();
-        }
-        private void TapGesture()
-        {
-
-            var tapGestureRecognizer = new TapGestureRecognizer();
-            tapGestureRecognizer.Tapped += (s, e) =>
-            {
-                Debug.WriteLine("CLICK");
-            };
-            grid.GestureRecognizers.Add(tapGestureRecognizer);
-        }
-
         protected async override void OnAppearing()
         {
             base.OnAppearing();

@@ -10,13 +10,18 @@ namespace Vedligehold.Views
 {
     public partial class LoginPage : ContentPage
     {
+        bool usernameText = false;
+        bool passwordText;
+        Button button;
+        Entry username;
+        Entry password;
         public LoginPage()
         {
             NavigationPage.SetHasNavigationBar(this, false);
 
             var layout = new StackLayout { Padding = 10, };
-            Image image = new Image() { Source = "sbg.jpg", Opacity = 0.7, HorizontalOptions = LayoutOptions.StartAndExpand };
-            layout.Children.Add(image);
+            BackgroundColor = Color.White;
+            Image image = new Image() { Source = "eistor.png", Opacity = 0.7, HorizontalOptions = LayoutOptions.StartAndExpand };
 
             var label = new Label
             {
@@ -25,41 +30,46 @@ namespace Vedligehold.Views
                 HorizontalTextAlignment = TextAlignment.Center
             };
 
-            layout.Children.Add(label);
+            //layout.Children.Add(label);
 
-            var username = new Entry { Placeholder = "Brugernavn" };
+            username = new Entry { Placeholder = "Brugernavn" };
             layout.Children.Add(username);
 
-            var password = new Entry { Placeholder = "Password", IsPassword = true };
+            password = new Entry { Placeholder = "Password", IsPassword = true };
             layout.Children.Add(password);
 
-            var button = new Button { Text = "Log ind", BackgroundColor = Color.Green, TextColor = Color.White };
+            button = new Button { Text = "Log ind", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White, IsEnabled = false };
             layout.Children.Add(button);
+            layout.Children.Add(image);
+
+            password.TextChanged += Password_TextChanged;
+            username.TextChanged += Username_TextChanged;
 
             button.Clicked += async (s, e) =>
             {
                 bool succes = false;
                 bool loading = true;
-                
-                    var progressBar = new ProgressBar
+                while (loading)
+                {
+                    ActivityIndicator ai = new ActivityIndicator()
                     {
-                        Progress = 0,
+                        IsRunning = true
                     };
-
-                    // animate the progression to 80%, in 250ms
-                    await progressBar.ProgressTo(1, 900, Easing.Linear);
+                    layout.Children.Add(ai);
+                    button.IsEnabled = false;
 
                     var sv = new ContactService();
                     var es = await sv.GetContactsAsync();
                     foreach (var contact in es)
                     {
-                        if ((username.Text == contact.no && password.Text == contact.password) || (username.Text == "1234" && password.Text == "1234"))
+                        if ((username.Text == contact.no && password.Text == contact.password) || (username.Text == "ei" && password.Text == "Bohrs6Vej") || (username.Text == "aaa" && password.Text == "aaa"))
                         {
                             succes = true;
                         }
                     }
                     if (!succes)
                     {
+                        layout.Children.Remove(ai);
                         await DisplayAlert("Advarsel", "Forkert brugernavn eller password", "OK");
                     }
                     else
@@ -68,12 +78,56 @@ namespace Vedligehold.Views
                         await Navigation.PushAsync(new HomePage());
                         password.Text = null;
                     }
-                
+                    loading = false;
+                    button.IsEnabled = true;
+
+                    layout.Children.Remove(ai);
+                }
             };
 
             Content = new ScrollView { Content = layout };
 
+        }
 
+        private void Username_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            usernameText = true;
+            if (username.Text == null)
+            {
+                usernameText = false;
+            }
+            if (usernameText && passwordText)
+            {
+                button.IsEnabled = true;
+            }
+            else
+            {
+                button.IsEnabled = false;
+            }
+        }
+
+        private void Password_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            passwordText = true;
+            if (password.Text == null)
+            {
+                passwordText = false;
+            }
+            if (usernameText && passwordText)
+            {
+                button.IsEnabled = true;
+            }
+            else
+            {
+                button.IsEnabled = false;
+            }
+        }
+
+        protected override void OnAppearing()
+        {
+            //bool usernameText = false;
+            bool passwordText = false;
+            button.IsEnabled = false;
         }
     }
 }

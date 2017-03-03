@@ -20,9 +20,7 @@ namespace Vedligehold.Views
         MaintenanceTask taskGlobal;
         ListView lv;
         List<TaskDetailModel> detailList;
-        MaintenanceTask[] tasks;
-
-
+        
         public TaskDetail(MaintenanceTask task)
         {
             InitializeComponent();
@@ -30,7 +28,7 @@ namespace Vedligehold.Views
             Labl.Text = task.anlæg + task.no.ToString();
             taskGlobal = task;
 
-            Button btn = new Button();
+            Button btn = new Button() { BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
 
             btn.Clicked += async (s, e) =>
             {
