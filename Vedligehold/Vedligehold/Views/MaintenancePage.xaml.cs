@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UIKit;
+using Vedligehold.Database;
 using Vedligehold.Models;
 using Vedligehold.Services;
 using Xamarin.Forms;
@@ -15,20 +16,19 @@ namespace Vedligehold.Views
     public partial class MaintenancePage : ContentPage
     {
         ListView lv;
-        MaintenanceTask[] tasksGlobal;
-
-        public MaintenancePage(MaintenanceTask[] tasks)
+        MaintenanceDatabase db = App.Database;
+        List<MaintenanceTask> tasks;
+        public MaintenancePage()
         {
-            tasksGlobal = tasks;
             InitializeComponent();
             NavigationPage.SetHasNavigationBar(this, false);
 
-            MakeListView(tasks);
+            MakeListView();
             //MakeGrid(tasks);
 
         }
 
-        private void MakeListView(MaintenanceTask[] tasks)
+        private void MakeListView()
         {
             var temp = new DataTemplate(typeof(CustomTaskCell));
             Application.Current.Properties["gridrowindex"] = 1;
@@ -37,12 +37,11 @@ namespace Vedligehold.Views
             {
                 HasUnevenRows = true,
                 ItemTemplate = temp,
-                ItemsSource = tasks,
                 IsPullToRefreshEnabled = true
             };
 
             Button b = new Button() { Text = "Opret standardopgave", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
-            
+
             b.Clicked += async (s, e) =>
             {
                 MaintenanceTask task = new MaintenanceTask
@@ -56,10 +55,12 @@ namespace Vedligehold.Views
                     daily = false,
                     done = false
                 };
-                var sv = new MaintenanceService();
-                var es = await sv.CreateTask(task);
-                OnAppearing();
+                //var sv = new MaintenanceService();
+                //var es = await sv.CreateTask(task);
+                await db.SaveTaskAsync(task);
+                UpdateItemSource();
             };
+
             Content = new StackLayout
             {
                 VerticalOptions = LayoutOptions.FillAndExpand,
@@ -69,7 +70,7 @@ namespace Vedligehold.Views
                     lv
                 }
             };
-            
+
             lv.Refreshing += Lv_Refreshing;
             lv.ItemTapped += Lv_ItemTapped;
 
@@ -82,36 +83,34 @@ namespace Vedligehold.Views
             var action = ((ListView)sender).SelectedItem;
             MaintenanceTask tsk = (MaintenanceTask)action;
 
-            _task = tasksGlobal.Where(x => x.no == tsk.no).First();
+            _task = tasks.Where(x => x.no == tsk.no).First();
 
             Navigation.PushAsync(new TaskDetail(_task));
 
         }
 
-        async void Lv_Refreshing(object sender, EventArgs e)
+        void Lv_Refreshing(object sender, EventArgs e)
         {
-            MaintenanceTask[] _tasks = null;
-
-            while (_tasks == null)
-            {
-                var sv = new MaintenanceService();
-                var es = await sv.GetMaintenanceTasksAsync();
-                _tasks = es;
-            }
-            MakeListView(_tasks);
-
+            UpdateItemSource();
             if (lv.IsRefreshing)
             {
                 lv.EndRefresh();
             }
         }
-        protected async override void OnAppearing()
+
+        private async void UpdateItemSource()
+        {
+            tasks = await db.GetTasksAsync();
+            lv.ItemsSource = tasks;
+        }
+
+        protected override void OnAppearing()
         {
             base.OnAppearing();
-            MaintenanceService ms = new MaintenanceService();
-            tasksGlobal = await ms.GetMaintenanceTasksAsync();
-            MakeListView(tasksGlobal);
+            UpdateItemSource();
         }
+
+
     }
 }
 

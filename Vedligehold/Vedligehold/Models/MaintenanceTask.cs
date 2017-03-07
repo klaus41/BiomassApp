@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SQLite;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,6 +10,7 @@ namespace Vedligehold.Models
 {
     public class MaintenanceTask
     {
+        [PrimaryKey]
         public int no { get; set; }
         public string type { get; set; }
         public string anlæg { get; set; }
@@ -16,8 +18,12 @@ namespace Vedligehold.Models
         public string text { get; set; }
         public bool weekly { get; set; }
         public bool daily { get; set; }
-        private string etag { get; }
+        public string etag { get; set; }
         public bool done { get; set; }
+        public double longitude { get; set; }
+        public double latitude { get; set; }
+        //public bool synced { get; set; }
+
 
     }
 

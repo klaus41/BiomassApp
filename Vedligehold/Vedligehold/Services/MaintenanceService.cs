@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -25,16 +26,17 @@ namespace Vedligehold.Services
             return rootObject;
         }
 
-        public async Task<MaintenanceTask> UpdateTask (MaintenanceTask task)
+        public async Task<MaintenanceTask> UpdateTask(MaintenanceTask task)
         {
-            endPoint = endPoint + "update/" + task.no;
+            string newendPoint = null; 
+            newendPoint = endPoint + "update/" + task.no;
             HttpClient client = GetHttpClient();
 
             var data = JsonConvert.SerializeObject(task);
 
             var content = new StringContent(data, Encoding.UTF8, "application/json");
-            
-            var response = await client.PutAsync(endPoint, content);
+
+            var response = await client.PutAsync(newendPoint, content);
 
             return JsonConvert.DeserializeObject<MaintenanceTask>(response.Content.ReadAsStringAsync().Result);
         }

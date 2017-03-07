@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Plugin.Geolocator;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -14,7 +15,6 @@ namespace Vedligehold.Views
     {
         Contact[] contacts;
         Statistic[] stats;
-        MaintenanceTask[] tasks;
         string[] contactNumbers;
         bool loading;
         StackLayout layout;
@@ -22,10 +22,12 @@ namespace Vedligehold.Views
         Button logOutButton;
         Button statButton;
         Button taskButton;
+        Button settingsButton;
         Color buttonColor;
 
         public HomePage()
         {
+            //PopulateDb();
             buttonColor = Color.FromRgb(135, 206, 250);
             BackgroundColor = Color.White;
             NavigationPage.SetHasNavigationBar(this, false);
@@ -34,6 +36,7 @@ namespace Vedligehold.Views
             logOutButton = new Button { Text = "Log ud", BackgroundColor = buttonColor, TextColor = Color.White };
             statButton = new Button { Text = "Leverandørstatistikker", BackgroundColor = buttonColor, TextColor = Color.White };
             taskButton = new Button { Text = "Vedligeholdsopgaver", BackgroundColor = buttonColor, TextColor = Color.White };
+            settingsButton = new Button { Text = "Indstillinger", BackgroundColor = buttonColor, TextColor = Color.White };
 
             logOutButton.Clicked += (s, e) =>
             {
@@ -84,8 +87,8 @@ namespace Vedligehold.Views
                         }
 
                         await Navigation.PushAsync(new StatisticsPage(stats));
-                        RemoveActivityIndicator();
                     }
+                    RemoveActivityIndicator();
                 }
             };
             taskButton.Clicked += async (s, e) =>
@@ -94,20 +97,13 @@ namespace Vedligehold.Views
                 while (loading)
                 {
                     ShowActivityIndicator();
-                    tasks = null;
-
-                    while (tasks == null)
-                    {
-                        var sv = new MaintenanceService();
-                        var es = await sv.GetMaintenanceTasksAsync();
-                        tasks = es;
-                    }
-
-
-                    await Navigation.PushAsync(new MaintenancePage(tasks));
+                    await Navigation.PushAsync(new MaintenancePage());
                     RemoveActivityIndicator();
                 }
-                
+            };
+            settingsButton.Clicked += (s, e) =>
+            {
+                Navigation.PushAsync(new SettingsPage());
             };
 
             Image image = new Image();
@@ -118,12 +114,11 @@ namespace Vedligehold.Views
 
             layout.Children.Add(statButton);
             layout.Children.Add(taskButton);
+            layout.Children.Add(settingsButton);
             layout.Children.Add(logOutButton);
             layout.Children.Add(image);
 
             Content = new ScrollView { Content = layout };
-
-
         }
 
         private void RemoveActivityIndicator()

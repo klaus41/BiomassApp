@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Plugin.Geolocator;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace Vedligehold.Views
         MaintenanceTask taskGlobal;
         ListView lv;
         List<TaskDetailModel> detailList;
-        
+
         public TaskDetail(MaintenanceTask task)
         {
             InitializeComponent();
@@ -29,29 +30,41 @@ namespace Vedligehold.Views
             taskGlobal = task;
 
             Button btn = new Button() { BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
+            Button mapButton = new Button() { Text = "Vis på kort", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
+
+            mapButton.Clicked += MapButton_Clicked;
 
             btn.Clicked += async (s, e) =>
             {
                 if (!task.done)
                 {
                     task.done = true;
-                }
-                else
-                {
-                    task.done = false;
-                }
-                var ms = new MaintenanceService();
-                var response = await ms.UpdateTask(task);
+                    try
+                    {
+                        var locator = CrossGeolocator.Current;
+                        locator.DesiredAccuracy = 50;
+                        var position = await locator.GetPositionAsync(timeoutMilliseconds: 10000);
 
+                        task.latitude = position.Latitude;
+                        task.longitude = position.Longitude;
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("Unable to get location, may need to increase timeout: " + ex);
+                    }
+                }
+
+                await App.Database.UpdateTaskAsync(task);
                 await Application.Current.MainPage.Navigation.PopAsync();
-                //await Navigation.PushAsync(new MaintenancePage(tasks));
             };
 
             //MakeGrid(task);
             MakeListView();
             if (task.done)
             {
-                btn.Text = "Sæt til ikke færdig";
+                btn.IsEnabled = false;
+                //btn.Text = "Sæt til ikke færdig";
             }
             else
             {
@@ -64,10 +77,26 @@ namespace Vedligehold.Views
                 Children =
                 {
                     btn,
+                    mapButton,
                     lv
                 }
             };
         }
+
+        private void MapButton_Clicked(object sender, EventArgs e)
+        {
+            if (taskGlobal.longitude != 0 && taskGlobal.latitude != 0)
+            {
+                string s = "https://www.google.dk/maps/place/" + taskGlobal.latitude + "," + taskGlobal.longitude + "/" + taskGlobal.latitude + "," + taskGlobal.longitude + "z/";
+                Uri uri = new Uri(s);
+                Device.OpenUri(uri);
+            }
+            else
+            {
+                DisplayAlert("Ingen koordinater", "Der er ingen koordinater på opgaven. Bekræft at opgaven er afsluttet, og prøv igen.", "OK");
+            }
+        }
+
         private void MakeListView()
         {
             var temp = new DataTemplate(typeof(CustomTaskDetailCell));
@@ -129,6 +158,8 @@ namespace Vedligehold.Views
             detailList.Add(new TaskDetailModel() { type = "Ugentlig", value = weekly });
             detailList.Add(new TaskDetailModel() { type = "Daglig", value = daily });
             detailList.Add(new TaskDetailModel() { type = "Færdig", value = done });
+            detailList.Add(new TaskDetailModel() { type = "Længdegrad", value = taskGlobal.latitude.ToString() });
+            detailList.Add(new TaskDetailModel() { type = "Breddegrad", value = taskGlobal.longitude.ToString() });
 
         }
 
