@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="auto" android:versionName="6.0" package="vedligehold.vedligehold" android:versionCode="6">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="auto" android:versionName="9.0" package="vedligehold.vedligehold" android:versionCode="9">
   <!--suppress UsesMinSdkAttributes-->
   <uses-sdk android:minSdkVersion="15" />
   <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Plugin.Geolocator;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -20,12 +21,80 @@ namespace Vedligehold.Views
         List<MaintenanceTask> tasks;
         public MaintenancePage()
         {
-            InitializeComponent();
+            Title = "Opgaver";
+            //MakeToolBar();
             NavigationPage.SetHasNavigationBar(this, false);
-
             MakeListView();
-            //MakeGrid(tasks);
+        }
+        public void ShowOnMap(MaintenanceTask _task)
+        {
+            if (_task.longitude != 0 && _task.latitude != 0)
+            {
+                string s = "https://www.google.dk/maps/place/" + _task.latitude + "," + _task.longitude + "/" + _task.latitude + "," + _task.longitude + "z/";
+                Uri uri = new Uri(s);
+                Device.OpenUri(uri);
+            }
+            else
+            {
+                DisplayAlert("Ingen koordinater", "Der er ingen koordinater på opgaven. Bekræft at opgaven er afsluttet, og prøv igen.", "OK");
+            }
+        }
+        public async void SetDone(MaintenanceTask _task)
+        {
+            int i = 0;
+            while (i == 0)
+            {
+                if (!_task.done)
+                {
+                    _task.done = true;
+                    try
+                    {
+                        var locator = CrossGeolocator.Current;
+                        locator.DesiredAccuracy = 50;
+                        var position = await locator.GetPositionAsync(timeoutMilliseconds: 10000);
 
+                        _task.latitude = position.Latitude;
+                        _task.longitude = position.Longitude;
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("Unable to get location, may need to increase timeout: " + ex);
+                    }
+                    i = await App.Database.UpdateTaskAsync(_task);
+                }
+                else
+                {
+                    i = 1;
+                    await DisplayAlert("OBS!", "Opgaven er allerede markeret som færdig", "OK");
+                }
+            }
+            UpdateItemSource();
+        }
+
+        public async void ShowPDF(MaintenanceTask _task)
+        {
+            try
+            {
+                var service = new PDFService();
+                string data = await service.GetPDF(_task.anlæg);
+                if (!data.Contains("NoFile"))
+                {
+                    int i = data.Length - 2;
+                    string newdata = data.Substring(1, i);
+
+                    Device.OpenUri(new Uri("http://demo.biomass.eliteit.dk" + newdata));
+                }
+                else
+                {
+                    await DisplayAlert("Fejl!", "Der eksisterer ingen PDF på anlæg " + _task.anlæg + ", " + _task.anlægsbeskrivelse, "OK");
+                }
+
+            }
+            catch
+            {
+                await DisplayAlert("Fejl!", "Har ingen forbindelse til NAV", "OK");
+            }
         }
 
         private void MakeListView()
@@ -55,8 +124,6 @@ namespace Vedligehold.Views
                     daily = false,
                     done = false
                 };
-                //var sv = new MaintenanceService();
-                //var es = await sv.CreateTask(task);
                 await db.SaveTaskAsync(task);
                 UpdateItemSource();
             };
@@ -89,8 +156,14 @@ namespace Vedligehold.Views
 
         }
 
-        void Lv_Refreshing(object sender, EventArgs e)
+        async void Lv_Refreshing(object sender, EventArgs e)
         {
+            bool response = false;
+            while (!response)
+            {
+                MaintenanceTaskSynchronizer mst = new MaintenanceTaskSynchronizer();
+                response = await mst.SyncDatabaseWithNAV();
+            }
             UpdateItemSource();
             if (lv.IsRefreshing)
             {
@@ -104,13 +177,54 @@ namespace Vedligehold.Views
             lv.ItemsSource = tasks;
         }
 
+        private void MakeToolBar()
+        {
+            ToolbarItems.Add(new ToolbarItem("Hjem", "filter.png", async () =>
+            {
+                if (this.GetType() != typeof(HomePage))
+                {
+                    await Navigation.PushAsync(new HomePage());
+                }
+            }));
+            ToolbarItems.Add(new ToolbarItem("Statistik", "filter.png", async () =>
+            {
+                string data = null;
+                try
+                {
+                    PDFService pds = new PDFService();
+                    data = await pds.GetPDF("A00005");
+                    HomePage hp = new HomePage();
+                    hp.StatButtonMethod();
+                }
+                catch
+                {
+                    await DisplayAlert("Forbindelse", "Enheden har ingen forbindelse til NAV", "OK");
+                }
+            }));
+
+            ToolbarItems.Add(new ToolbarItem("Opgaver", "filter.png", async () =>
+            {
+                if (this.GetType() != typeof(MaintenancePage))
+                {
+                    await Navigation.PushAsync(new MaintenancePage());
+                }
+            }));
+
+            ToolbarItems.Add(new ToolbarItem("Indstillinger", "filter.png", async () =>
+            {
+                if (this.GetType() != typeof(SettingsPage))
+                {
+                    await Navigation.PushAsync(new SettingsPage());
+                }
+            }));
+
+        }
+
         protected override void OnAppearing()
         {
             base.OnAppearing();
             UpdateItemSource();
         }
-
-
     }
 }
 

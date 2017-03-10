@@ -15,9 +15,6 @@ namespace Vedligehold.Views
 {
     public partial class TaskDetail : ContentPage
     {
-        int i;
-        Color color;
-        Grid grid;
         MaintenanceTask taskGlobal;
         ListView lv;
         List<TaskDetailModel> detailList;
@@ -25,15 +22,16 @@ namespace Vedligehold.Views
         public TaskDetail(MaintenanceTask task)
         {
             InitializeComponent();
+            //Title = "Detaljer";
             NavigationPage.SetHasNavigationBar(this, false);
-            Labl.Text = task.anlæg + task.no.ToString();
             taskGlobal = task;
 
             Button btn = new Button() { BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
             Button mapButton = new Button() { Text = "Vis på kort", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
+            Button pdfButton = new Button() { Text = "Vis PDF", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
 
             mapButton.Clicked += MapButton_Clicked;
-
+            pdfButton.Clicked += PdfButton_Clicked;
             btn.Clicked += async (s, e) =>
             {
                 if (!task.done)
@@ -64,13 +62,21 @@ namespace Vedligehold.Views
             if (task.done)
             {
                 btn.IsEnabled = false;
-                //btn.Text = "Sæt til ikke færdig";
+                btn.Text = "Opgaven er markeret som færdig";
+                btn.BackgroundColor = Color.FromRgb(205, 201, 201);
+
             }
             else
             {
                 btn.Text = "Sæt til færdig";
             }
 
+            if (task.longitude == 0 || task.latitude == 0)
+            {
+                mapButton.IsEnabled = false;
+                mapButton.Text = "Opgaven har ingen koordinater endnu";
+                mapButton.BackgroundColor = Color.FromRgb(205, 201, 201);
+            }
 
             this.Content = new StackLayout
             {
@@ -78,9 +84,35 @@ namespace Vedligehold.Views
                 {
                     btn,
                     mapButton,
+                    pdfButton,
                     lv
                 }
             };
+        }
+
+        private async void PdfButton_Clicked(object sender, EventArgs e)
+        {
+            try
+            {
+                var service = new PDFService();
+                string data = await service.GetPDF(taskGlobal.anlæg);
+                if (!data.Contains("NoFile"))
+                {
+                    int i = data.Length - 2;
+                    string newdata = data.Substring(1, i);
+
+                    Device.OpenUri(new Uri("http://demo.biomass.eliteit.dk" + newdata));
+                }
+                else
+                {
+                    await DisplayAlert("Fejl!", "Der eksisterer ingen PFD på anlæg " + taskGlobal.anlæg + ", " + taskGlobal.anlægsbeskrivelse, "OK");
+                }
+               
+            }
+            catch
+            {
+                await DisplayAlert("Fejl!", "Kunne ikke hente PDF", "OK");
+            }
         }
 
         private void MapButton_Clicked(object sender, EventArgs e)
@@ -161,62 +193,6 @@ namespace Vedligehold.Views
             detailList.Add(new TaskDetailModel() { type = "Længdegrad", value = taskGlobal.latitude.ToString() });
             detailList.Add(new TaskDetailModel() { type = "Breddegrad", value = taskGlobal.longitude.ToString() });
 
-        }
-
-        private void MakeGrid(MaintenanceTask task)
-        {
-            i = 0;
-
-            grid = new Grid
-            {
-                VerticalOptions = LayoutOptions.FillAndExpand,
-                RowDefinitions = new RowDefinitionCollection(),
-                ColumnDefinitions = new ColumnDefinitionCollection(),
-                ColumnSpacing = 0,
-                RowSpacing = 1,
-
-            };
-            AddChildren();
-
-            //TypeInfo ti = task.GetType().GetTypeInfo();
-            //foreach (var prop in ti.DeclaredProperties)
-            foreach (var item in grid.Children)
-            {
-                if (i % 2 == 0)
-                {
-
-                    color = Color.FromRgb(211, 211, 211);
-                    //color = Color.FromRgb(173, 255, 47);
-                }
-                else
-                {
-                    color = Color.Default;
-                    //color = Color.Green;
-                }
-                item.BackgroundColor = color;
-                Debug.WriteLine(item.X + item.Y);
-
-                i++;
-            }
-            // Accomodate iPhone status bar.
-            this.Padding = new Thickness(0, Device.OnPlatform(20, 0, 0), 0, 5);
-
-            // Build the page.
-            this.Content = grid;
-
-
-        }
-
-        private void AddChildren()
-        {
-            grid.Children.Add(new Label { Text = "Nummer" }, 0, 0);
-            grid.Children.Add(new Label { Text = taskGlobal.no.ToString(), }, 1, 0);
-
-            grid.Children.Add(new Label { Text = "Anlæg", }, 0, 1);
-            grid.Children.Add(new Label { Text = taskGlobal.anlæg, }, 1, 1);
-
-            grid.Children.Add(new Label { Text = "Done", }, 0, 2);
-            grid.Children.Add(new Label { Text = taskGlobal.done.ToString(), }, 1, 2);
         }
     }
 }

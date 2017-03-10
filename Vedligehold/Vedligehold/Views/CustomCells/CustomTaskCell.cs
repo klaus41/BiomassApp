@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,7 +25,7 @@ namespace Vedligehold.Views
             };
             Image colorImg = new Image()
             {
-               VerticalOptions = LayoutOptions.End
+                VerticalOptions = LayoutOptions.End
             };
 
             Label done = new Label()
@@ -131,23 +132,41 @@ namespace Vedligehold.Views
 
         private void CreateMenu()
         {
-            var moreAction = new MenuItem { Text = "More" };
-            moreAction.SetBinding(MenuItem.CommandParameterProperty, new Binding("."));
-            moreAction.Clicked += (sender, e) =>
+            var pdfAction = new MenuItem { Text = "Vis dokument" };
+            pdfAction.SetBinding(MenuItem.CommandParameterProperty, new Binding("."));
+            pdfAction.Clicked += (sender, e) =>
             {
                 var mi = ((MenuItem)sender);
-                System.Diagnostics.Debug.WriteLine("More Context Action clicked: " + mi.CommandParameter);
+                MaintenanceTask _task = (MaintenanceTask)mi.CommandParameter;
+                MaintenancePage mp = new MaintenancePage();
+                Debug.WriteLine("!!!!!!!!!!!!!!!!!!!" + _task.anlæg);
+                mp.ShowPDF(_task);
             };
 
-            var deleteAction = new MenuItem { Text = "Delete", IsDestructive = true }; // Red background
-            deleteAction.SetBinding(MenuItem.CommandParameterProperty, new Binding("."));
-            deleteAction.Clicked += (sender, e) =>
+            var doneAction = new MenuItem { Text = "Færdig" };
+            doneAction.SetBinding(MenuItem.CommandParameterProperty, new Binding("."));
+            doneAction.Clicked += (sender, e) =>
             {
                 var mi = ((MenuItem)sender);
-                System.Diagnostics.Debug.WriteLine("Delete Context Action clicked: " + mi.CommandParameter);
+                MaintenanceTask _task = (MaintenanceTask)mi.CommandParameter;
+                
+                    MaintenancePage mp = new MaintenancePage();
+                    mp.SetDone(_task);
+                
             };
-            this.ContextActions.Add(moreAction);
-            ContextActions.Add(deleteAction);
+            var mapAction = new MenuItem { Text = "Kort" };
+            mapAction.SetBinding(MenuItem.CommandParameterProperty, new Binding("."));
+            mapAction.Clicked += (sender, e) =>
+            {
+                var mi = ((MenuItem)sender);
+                MaintenanceTask _task = (MaintenanceTask)mi.CommandParameter;
+                MaintenancePage mp = new MaintenancePage();
+                mp.ShowOnMap(_task);
+            };
+            
+            ContextActions.Add(pdfAction);
+            ContextActions.Add(mapAction);
+            ContextActions.Add(doneAction);
         }
 
         void OnMore(object sender, EventArgs e)

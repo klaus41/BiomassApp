@@ -48,11 +48,13 @@
     <Compile Include="Services\ClientGateway.cs" />
     <Compile Include="Services\ContactService.cs" />
     <Compile Include="Services\MaintenanceService.cs" />
+    <Compile Include="Services\PDFService.cs" />
     <Compile Include="Services\StatisticService.cs" />
     <Compile Include="Views\Converters\BoolToColorConverter.cs" />
     <Compile Include="Views\CustomCells\CustomStatCell.cs" />
     <Compile Include="Views\CustomCells\CustomTaskCell.cs" />
     <Compile Include="Views\CustomCells\CustomTaskDetailCell.cs" />
+    <Compile Include="Views\CustomWebView.cs" />
     <Compile Include="Views\HomePage.xaml.cs">
       <DependentUpon>HomePage.xaml</DependentUpon>
     </Compile>
@@ -65,6 +67,9 @@
     <Compile Include="Services\Synchronizers\MaintenanceTaskSynchronizer.cs" />
     <Compile Include="Views\SettingsPage.xaml.cs">
       <DependentUpon>SettingsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ShowPDFPage.xaml.cs">
+      <DependentUpon>ShowPDFPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\StatisticsPage.xaml.cs">
       <DependentUpon>StatisticsPage.xaml</DependentUpon>
@@ -174,6 +179,12 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Views\SettingsPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Views\ShowPDFPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
       <SubType>Designer</SubType>
     </EmbeddedResource>

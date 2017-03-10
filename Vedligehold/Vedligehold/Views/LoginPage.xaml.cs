@@ -75,7 +75,16 @@ namespace Vedligehold.Views
                     else
                     {
                         await Application.Current.MainPage.Navigation.PopAsync();
-                        await Navigation.PushAsync(new HomePage());
+                        //await Navigation.PushAsync(new HomePage());
+                        await Navigation.PushAsync(new TabbedPage
+                        {
+                            Children =
+                            {
+                                new HomePage(),
+                                new MaintenancePage(),
+                                new SettingsPage()
+                            },
+                        });
                         password.Text = null;
                     }
                     loading = false;

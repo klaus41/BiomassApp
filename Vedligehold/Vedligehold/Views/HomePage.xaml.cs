@@ -17,20 +17,25 @@ namespace Vedligehold.Views
         Statistic[] stats;
         string[] contactNumbers;
         bool loading;
+        bool syncing;
         StackLayout layout;
         ActivityIndicator ai;
         Button logOutButton;
         Button statButton;
         Button taskButton;
         Button settingsButton;
+
         Color buttonColor;
 
         public HomePage()
         {
-            //PopulateDb();
             buttonColor = Color.FromRgb(135, 206, 250);
             BackgroundColor = Color.White;
+            Title = "Hjem";
+
             NavigationPage.SetHasNavigationBar(this, false);
+            //MakeToolBar();
+         
             layout = new StackLayout { Padding = 10, };
 
             logOutButton = new Button { Text = "Log ud", BackgroundColor = buttonColor, TextColor = Color.White };
@@ -45,58 +50,26 @@ namespace Vedligehold.Views
             };
             statButton.Clicked += async (s, e) =>
             {
-                loading = true;
-                while (loading)
+                string data = null;
+                try
                 {
-                    ShowActivityIndicator();
-                    stats = null;
-                    contacts = null;
-
-                    while (contacts == null)
-                    {
-                        ActivityIndicator ai = new ActivityIndicator()
-                        {
-                            IsRunning = true
-                        };
-
-
-                        var sv = new ContactService();
-                        var es = await sv.GetContactsAsync();
-                        contacts = es;
-                    }
-                    contactNumbers = new string[contacts.Count()];
-
-                    for (int i = 0; i < contacts.Count(); i++)
-                    {
-                        contactNumbers[i] = contacts[i].no + " - " + contacts[i].company_Name;
-                    }
-
-                    var action = await DisplayActionSheet("Vælg leverandørnummer", "Cancel", null, contactNumbers);
-
-                    Debug.WriteLine("ACTION!!!!" + action);
-                    if (action != "Cancel")
-                    {
-                        int l = action.IndexOf(" ");
-                        string id = action.Substring(0, l);
-
-                        while (stats == null)
-                        {
-                            var sv = new StatisticService();
-                            var es = await sv.GetStatsAsync(id);
-                            stats = es;
-                        }
-
-                        await Navigation.PushAsync(new StatisticsPage(stats));
-                    }
-                    RemoveActivityIndicator();
+                        PDFService pds = new PDFService();
+                        data = await pds.GetPDF("A00005");
+                        StatButtonMethod();
+                }
+                catch
+                {
+                    await DisplayAlert("Forbindelse", "Enheden har ingen forbindelse til NAV", "OK");
                 }
             };
             taskButton.Clicked += async (s, e) =>
             {
+                syncing = true;
                 loading = true;
                 while (loading)
                 {
                     ShowActivityIndicator();
+
                     await Navigation.PushAsync(new MaintenancePage());
                     RemoveActivityIndicator();
                 }
@@ -105,6 +78,7 @@ namespace Vedligehold.Views
             {
                 Navigation.PushAsync(new SettingsPage());
             };
+
 
             Image image = new Image();
 
@@ -121,6 +95,104 @@ namespace Vedligehold.Views
             Content = new ScrollView { Content = layout };
         }
 
+        private void MakeToolBar()
+        {
+            ToolbarItems.Add(new ToolbarItem("Hjem", "filter.png", async () =>
+            {
+                if (this.GetType() != typeof(HomePage))
+                {
+                    await Navigation.PushAsync(new HomePage());
+
+                }
+            }));
+            ToolbarItems.Add(new ToolbarItem("Statistik", "filter.png", async () =>
+            {
+                string data = null;
+                try
+                {
+                    PDFService pds = new PDFService();
+                    data = await pds.GetPDF("A00005");
+                    StatButtonMethod();
+                }
+                catch
+                {
+                    await DisplayAlert("Forbindelse", "Enheden har ingen forbindelse til NAV", "OK");
+                }
+            }));
+
+            ToolbarItems.Add(new ToolbarItem("Opgaver", "filter.png", async () =>
+            {
+                if (this.GetType() != typeof(MaintenancePage))
+                {
+                    await Navigation.PushAsync(new MaintenancePage());
+
+                }
+            }));
+
+            ToolbarItems.Add(new ToolbarItem("Indstillinger", "filter.png", async () =>
+            {
+                if (this.GetType() != typeof(SettingsPage))
+                {
+                    await Navigation.PushAsync(new SettingsPage());
+                }
+            }));
+
+        }
+
+        public async void StatButtonMethod()
+        {
+            loading = true;
+            while (loading)
+            {
+                ShowActivityIndicator();
+                stats = null;
+                contacts = null;
+
+                while (contacts == null)
+                {
+                    ActivityIndicator ai = new ActivityIndicator()
+                    {
+                        IsRunning = true
+                    };
+                    var sv = new ContactService();
+                    var es = await sv.GetContactsAsync();
+                    contacts = es;
+                }
+
+
+                contactNumbers = new string[contacts.Count()];
+
+                for (int i = 0; i < contacts.Count(); i++)
+                {
+                    contactNumbers[i] = contacts[i].no + " - " + contacts[i].company_Name;
+                }
+
+                var action = await DisplayActionSheet("Vælg leverandørnummer", "Cancel", null, contactNumbers);
+
+                Debug.WriteLine("ACTION!!!!" + action);
+                try
+                {
+                    if (action != "Cancel")
+                    {
+                        int l = action.IndexOf(" ");
+                        string id = action.Substring(0, l);
+
+                        while (stats == null)
+                        {
+                            var sv = new StatisticService();
+                            var es = await sv.GetStatsAsync(id);
+                            stats = es;
+                        }
+
+                        await Navigation.PushAsync(new StatisticsPage(stats));
+                    }
+                }
+
+                catch { }
+                RemoveActivityIndicator();
+            }
+        }
+
         private void RemoveActivityIndicator()
         {
 
@@ -129,6 +201,7 @@ namespace Vedligehold.Views
             logOutButton.IsEnabled = true;
             statButton.IsEnabled = true;
             taskButton.IsEnabled = true;
+            settingsButton.IsEnabled = true;
         }
 
         private void ShowActivityIndicator()
@@ -142,6 +215,17 @@ namespace Vedligehold.Views
             logOutButton.IsEnabled = false;
             statButton.IsEnabled = false;
             taskButton.IsEnabled = false;
+            settingsButton.IsEnabled = false;
+
+        }
+        protected async override void OnAppearing()
+        {
+            bool response = false;
+            while (!response)
+            {
+                MaintenanceTaskSynchronizer mst = new MaintenanceTaskSynchronizer();
+                response = await mst.SyncDatabaseWithNAV();
+            }
         }
     }
 }

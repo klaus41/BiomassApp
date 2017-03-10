@@ -1,3 +1,7 @@
+Vedligehold.Droid.CustomWebViewRenderer, Vedligehold.Droid;md52411c688ff3bbd743f878fa2009db6d9.CustomWebViewRenderer
+Vedligehold.Droid.CustomWebViewRenderer, Vedligehold.Droid, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null;md52411c688ff3bbd743f878fa2009db6d9.CustomWebViewRenderer
+Vedligehold.Droid.CustomWebViewRenderer;md52411c688ff3bbd743f878fa2009db6d9.CustomWebViewRenderer
+vedligehold.droid.CustomWebViewRenderer;md52411c688ff3bbd743f878fa2009db6d9.CustomWebViewRenderer
 Vedligehold.Droid.MainActivity, Vedligehold.Droid;md52411c688ff3bbd743f878fa2009db6d9.MainActivity
 Vedligehold.Droid.MainActivity, Vedligehold.Droid, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null;md52411c688ff3bbd743f878fa2009db6d9.MainActivity
 Vedligehold.Droid.MainActivity;md52411c688ff3bbd743f878fa2009db6d9.MainActivity

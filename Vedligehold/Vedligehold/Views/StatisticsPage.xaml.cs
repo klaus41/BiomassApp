@@ -20,10 +20,55 @@ namespace Vedligehold.Views
         {
             statsGlobal = stats;
             InitializeComponent();
+
+            //MakeToolBar();
             NavigationPage.SetHasNavigationBar(this, false);
             MakeListView(stats);
             //MakeGrid(stats);        
         }
+        private void MakeToolBar()
+        {
+            ToolbarItems.Add(new ToolbarItem("Hjem", "filter.png", async () =>
+            {
+                if (this.GetType() != typeof(HomePage))
+                {
+                    await Navigation.PushAsync(new HomePage());
+                }
+            }));
+            ToolbarItems.Add(new ToolbarItem("Statistik", "filter.png", async () =>
+            {
+                string data = null;
+                try
+                {
+                    PDFService pds = new PDFService();
+                    data = await pds.GetPDF("A00005");
+                    HomePage hp = new HomePage();
+                    hp.StatButtonMethod();
+                }
+                catch
+                {
+                    await DisplayAlert("Forbindelse", "Enheden har ingen forbindelse til NAV", "OK");
+                }
+            }));
+
+            ToolbarItems.Add(new ToolbarItem("Opgaver", "filter.png", async () =>
+            {
+                if (this.GetType() != typeof(MaintenancePage))
+                {
+                    await Navigation.PushAsync(new MaintenancePage());
+                }
+            }));
+
+            ToolbarItems.Add(new ToolbarItem("Indstillinger", "filter.png", async () =>
+            {
+                if (this.GetType() != typeof(SettingsPage))
+                {
+                    await Navigation.PushAsync(new SettingsPage());
+                }
+            }));
+
+        }
+
         private void MakeListView(Statistic[] stats)
         {
             var temp = new DataTemplate(typeof(CustomStatCell));

@@ -14,8 +14,12 @@ namespace Vedligehold
 
         public App()
         {
-            //MainPage = new NavigationPage(new LoginPage());
             MainPage = new NavigationPage(new LoginPage());
+            //{
+            //    BarBackgroundColor = Color.FromRgb(135, 206, 250),
+            //    BarTextColor = Color.White
+
+            //};
         }
         public static MaintenanceDatabase Database
         {

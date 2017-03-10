@@ -1,7 +1,7 @@
-C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.Droid\bin\Debug\vedligehold.vedligehold.apk
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.Droid\bin\Debug\Vedligehold.Droid.dll.config
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.Droid\bin\Debug\Vedligehold.Droid.dll
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.Droid\bin\Debug\Vedligehold.Droid.pdb
+C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.Droid\bin\Debug\vedligehold.vedligehold.apk
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.Droid\bin\Debug\vedligehold.vedligehold-Signed.apk
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.Droid\bin\Debug\FormsViewGroup.dll
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.Droid\bin\Debug\Plugin.CurrentActivity.dll
