@@ -14,12 +14,14 @@ namespace Vedligehold
 
         public App()
         {
-            MainPage = new NavigationPage(new LoginPage());
-            //{
-            //    BarBackgroundColor = Color.FromRgb(135, 206, 250),
-            //    BarTextColor = Color.White
-
-            //};
+            //database.DeleteAllTimeReg();
+            GlobalData gd = GlobalData.GetInstance;
+            gd.TabbedPage.Children.Add(gd.LoginPage);
+            //gd.TabbedPage.Children.Add(new HomePage());
+            //gd.TabbedPage.Children.Add(new MaintenancePage());
+            //gd.TabbedPage.Children.Add(new SettingsPage());
+            //gd.TabbedPage.Children.Add(new TimeRegistrationPage());
+            MainPage = gd.TabbedPage;
         }
         public static MaintenanceDatabase Database
         {

@@ -151,8 +151,8 @@ namespace Vedligehold.Views
             MaintenanceTask tsk = (MaintenanceTask)action;
 
             _task = tasks.Where(x => x.no == tsk.no).First();
-
-            Navigation.PushAsync(new TaskDetail(_task));
+        
+            this.Navigation.PushModalAsync(new TaskDetail(_task));
 
         }
 
@@ -175,6 +175,7 @@ namespace Vedligehold.Views
         {
             tasks = await db.GetTasksAsync();
             lv.ItemsSource = tasks;
+            Title = tasks.Count().ToString() + " opgaver";
         }
 
         private void MakeToolBar()
@@ -183,7 +184,7 @@ namespace Vedligehold.Views
             {
                 if (this.GetType() != typeof(HomePage))
                 {
-                    await Navigation.PushAsync(new HomePage());
+                    await Navigation.PushModalAsync(new HomePage());
                 }
             }));
             ToolbarItems.Add(new ToolbarItem("Statistik", "filter.png", async () =>
@@ -206,7 +207,7 @@ namespace Vedligehold.Views
             {
                 if (this.GetType() != typeof(MaintenancePage))
                 {
-                    await Navigation.PushAsync(new MaintenancePage());
+                    await Navigation.PushModalAsync(new MaintenancePage());
                 }
             }));
 
@@ -214,7 +215,7 @@ namespace Vedligehold.Views
             {
                 if (this.GetType() != typeof(SettingsPage))
                 {
-                    await Navigation.PushAsync(new SettingsPage());
+                    await Navigation.PushModalAsync(new SettingsPage());
                 }
             }));
 

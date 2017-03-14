@@ -21,9 +21,8 @@ namespace Vedligehold.Views
         StackLayout layout;
         ActivityIndicator ai;
         Button logOutButton;
-        Button statButton;
-        Button taskButton;
-        Button settingsButton;
+        Label tasks;
+        List<MaintenanceTask> taskList;
 
         Color buttonColor;
 
@@ -32,112 +31,56 @@ namespace Vedligehold.Views
             buttonColor = Color.FromRgb(135, 206, 250);
             BackgroundColor = Color.White;
             Title = "Hjem";
-
+            GlobalData gd = GlobalData.GetInstance;
+            var db = App.Database;
+            Label user = new Label() { Text = "Du er logget ind som: " + gd.User, FontSize = 20, FontAttributes = FontAttributes.Bold, VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.Center };
+            tasks = new Label() { VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.Center };
+            Grid mainGrid = new Grid
+            {
+                Padding = new Thickness(10),
+                RowDefinitions =
+                {
+                    new RowDefinition { Height = new GridLength(1, GridUnitType.Auto)},
+                    new RowDefinition { Height = GridLength.Auto},
+                    new RowDefinition { Height = GridLength.Auto },
+                    new RowDefinition { Height = GridLength.Auto}
+                },
+                ColumnDefinitions =
+                {
+                    new ColumnDefinition { Width = new GridLength(1,GridUnitType.Star) }
+                }
+            };
             NavigationPage.SetHasNavigationBar(this, false);
             //MakeToolBar();
-         
+
             layout = new StackLayout { Padding = 10, };
 
             logOutButton = new Button { Text = "Log ud", BackgroundColor = buttonColor, TextColor = Color.White };
-            statButton = new Button { Text = "Leverandørstatistikker", BackgroundColor = buttonColor, TextColor = Color.White };
-            taskButton = new Button { Text = "Vedligeholdsopgaver", BackgroundColor = buttonColor, TextColor = Color.White };
-            settingsButton = new Button { Text = "Indstillinger", BackgroundColor = buttonColor, TextColor = Color.White };
-
             logOutButton.Clicked += (s, e) =>
-            {
-                Application.Current.MainPage.Navigation.PopAsync();
-                //Navigation.PushAsync(new LoginPage());
-            };
-            statButton.Clicked += async (s, e) =>
-            {
-                string data = null;
-                try
-                {
-                        PDFService pds = new PDFService();
-                        data = await pds.GetPDF("A00005");
-                        StatButtonMethod();
-                }
-                catch
-                {
-                    await DisplayAlert("Forbindelse", "Enheden har ingen forbindelse til NAV", "OK");
-                }
-            };
-            taskButton.Clicked += async (s, e) =>
-            {
-                syncing = true;
-                loading = true;
-                while (loading)
-                {
-                    ShowActivityIndicator();
-
-                    await Navigation.PushAsync(new MaintenancePage());
-                    RemoveActivityIndicator();
-                }
-            };
-            settingsButton.Clicked += (s, e) =>
-            {
-                Navigation.PushAsync(new SettingsPage());
-            };
-
+             {
+                 Application.Current.MainPage.Navigation.PopAsync();
+                 //Navigation.PushAsync(new LoginPage());
+             };
 
             Image image = new Image();
 
             image.Source = "eistor.png";
             image.Opacity = 0.7;
             image.VerticalOptions = LayoutOptions.End;
+            image.HorizontalOptions = LayoutOptions.End;
 
-            layout.Children.Add(statButton);
-            layout.Children.Add(taskButton);
-            layout.Children.Add(settingsButton);
             layout.Children.Add(logOutButton);
             layout.Children.Add(image);
 
-            Content = new ScrollView { Content = layout };
+            mainGrid.Children.Add(user, 0, 0);
+            mainGrid.Children.Add(tasks, 0, 1);
+            mainGrid.Children.Add(image, 0, 2);
+            mainGrid.Children.Add(logOutButton, 0, 5);
+
+
+            Content = new ScrollView { Content = mainGrid };
         }
 
-        private void MakeToolBar()
-        {
-            ToolbarItems.Add(new ToolbarItem("Hjem", "filter.png", async () =>
-            {
-                if (this.GetType() != typeof(HomePage))
-                {
-                    await Navigation.PushAsync(new HomePage());
-
-                }
-            }));
-            ToolbarItems.Add(new ToolbarItem("Statistik", "filter.png", async () =>
-            {
-                string data = null;
-                try
-                {
-                    PDFService pds = new PDFService();
-                    data = await pds.GetPDF("A00005");
-                    StatButtonMethod();
-                }
-                catch
-                {
-                    await DisplayAlert("Forbindelse", "Enheden har ingen forbindelse til NAV", "OK");
-                }
-            }));
-
-            ToolbarItems.Add(new ToolbarItem("Opgaver", "filter.png", async () =>
-            {
-                if (this.GetType() != typeof(MaintenancePage))
-                {
-                    await Navigation.PushAsync(new MaintenancePage());
-
-                }
-            }));
-
-            ToolbarItems.Add(new ToolbarItem("Indstillinger", "filter.png", async () =>
-            {
-                if (this.GetType() != typeof(SettingsPage))
-                {
-                    await Navigation.PushAsync(new SettingsPage());
-                }
-            }));
-
-        }
 
         public async void StatButtonMethod()
         {
@@ -184,7 +127,7 @@ namespace Vedligehold.Views
                             stats = es;
                         }
 
-                        await Navigation.PushAsync(new StatisticsPage(stats));
+                        await Navigation.PushModalAsync(new StatisticsPage(stats));
                     }
                 }
 
@@ -199,9 +142,6 @@ namespace Vedligehold.Views
             loading = false;
             layout.Children.Remove(ai);
             logOutButton.IsEnabled = true;
-            statButton.IsEnabled = true;
-            taskButton.IsEnabled = true;
-            settingsButton.IsEnabled = true;
         }
 
         private void ShowActivityIndicator()
@@ -213,19 +153,24 @@ namespace Vedligehold.Views
             layout.Children.Add(ai);
 
             logOutButton.IsEnabled = false;
-            statButton.IsEnabled = false;
-            taskButton.IsEnabled = false;
-            settingsButton.IsEnabled = false;
 
         }
         protected async override void OnAppearing()
         {
-            bool response = false;
-            while (!response)
+            taskList = null;
+            int notdone = 0;
+            while (taskList == null)
             {
-                MaintenanceTaskSynchronizer mst = new MaintenanceTaskSynchronizer();
-                response = await mst.SyncDatabaseWithNAV();
+                taskList = await App.Database.GetTasksAsync();
             }
+            foreach (var item in taskList)
+            {
+                if (!item.done)
+                {
+                    notdone++;
+                }
+            }
+            tasks.Text = "Du har " + notdone + " ufærdige opgaver, der venter.";
         }
     }
 }

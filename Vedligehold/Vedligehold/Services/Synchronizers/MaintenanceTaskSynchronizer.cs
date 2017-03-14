@@ -90,6 +90,7 @@ namespace Vedligehold.Views
         public async void DeleteDB()
         {
             await App.Database.DeleteAll();
+            await App.Database.DeleteAllTimeReg();
         }
 
         private async void CheckForNewTasks()

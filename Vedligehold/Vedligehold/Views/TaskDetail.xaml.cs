@@ -54,7 +54,7 @@ namespace Vedligehold.Views
                 }
 
                 await App.Database.UpdateTaskAsync(task);
-                await Application.Current.MainPage.Navigation.PopAsync();
+                await Application.Current.MainPage.Navigation.PopModalAsync();
             };
 
             //MakeGrid(task);

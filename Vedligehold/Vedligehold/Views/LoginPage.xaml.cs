@@ -22,7 +22,7 @@ namespace Vedligehold.Views
             var layout = new StackLayout { Padding = 10, };
             BackgroundColor = Color.White;
             Image image = new Image() { Source = "eistor.png", Opacity = 0.7, HorizontalOptions = LayoutOptions.StartAndExpand };
-
+            Title = "Log ind";
             var label = new Label
             {
                 Text = "Log ind",
@@ -58,11 +58,11 @@ namespace Vedligehold.Views
                     layout.Children.Add(ai);
                     button.IsEnabled = false;
 
-                    var sv = new ContactService();
-                    var es = await sv.GetContactsAsync();
-                    foreach (var contact in es)
+                    var sv = new SalesPersonService();
+                    var es = await sv.GetSalesPersonsAsync();
+                    foreach (var person in es)
                     {
-                        if ((username.Text == contact.no && password.Text == contact.password) || (username.Text == "ei" && password.Text == "Bohrs6Vej") || (username.Text == "aaa" && password.Text == "aaa"))
+                        if ((username.Text == person.Code && password.Text == person.Password) && person.Intern || (username.Text == "ei" && password.Text == "Bohrs6Vej") || (username.Text == "aaa" && password.Text == "aaa"))
                         {
                             succes = true;
                         }
@@ -74,17 +74,29 @@ namespace Vedligehold.Views
                     }
                     else
                     {
-                        await Application.Current.MainPage.Navigation.PopAsync();
+                        GlobalData gd = GlobalData.GetInstance;
+                        gd.User = username.Text;
+
+                        gd.TabbedPage.Children.Add(new HomePage());
+                        gd.TabbedPage.Children.Add(new TimeRegistrationPage());
+                        gd.TabbedPage.Children.Add(new MaintenancePage());
+                        gd.TabbedPage.Children.Add(new SettingsPage());
+
+                        gd.TabbedPage.Children.Remove(gd.LoginPage);
                         //await Navigation.PushAsync(new HomePage());
-                        await Navigation.PushAsync(new TabbedPage
-                        {
-                            Children =
-                            {
-                                new HomePage(),
-                                new MaintenancePage(),
-                                new SettingsPage()
-                            },
-                        });
+                        //await Navigation.PushAsync(new TabbedPage
+                        //{
+                        //    Children =
+                        //    {
+                        //        new HomePage(),
+                        //        new MaintenancePage(),
+                        //        new SettingsPage(),
+                        //        new TimeRegistrationPage()
+                        //    },
+                            
+                        //});
+                        //this.Navigation.RemovePage(this.Navigation.NavigationStack[0]);
+
                         password.Text = null;
                     }
                     loading = false;

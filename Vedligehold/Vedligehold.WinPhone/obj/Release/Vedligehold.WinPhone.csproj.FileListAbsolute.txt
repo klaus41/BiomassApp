@@ -48,14 +48,6 @@ C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Ved
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.WinPhone\obj\Release\Vedligehold.WinPhone.pdb
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.WinPhone\obj\Release\System.Runtime.InteropServices.RuntimeInformation\en-US\FxResources.System.Runtime.InteropServices.RuntimeInformation.SR.resw
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.WinPhone\obj\Release\Vedligehold.WinPhone.csproj.GenerateResource.Cache
-C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.WinPhone\obj\Release\System.Runtime.InteropServices.RuntimeInformation\layout.resfiles
-C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.WinPhone\obj\Release\System.Runtime.InteropServices.RuntimeInformation\layout.resfiles.intermediate
-C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.WinPhone\obj\Release\System.Runtime.InteropServices.RuntimeInformation\Resources.resfiles
-C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.WinPhone\obj\Release\System.Runtime.InteropServices.RuntimeInformation\Resources.resfiles.intermediate
-C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.WinPhone\obj\Release\System.Runtime.InteropServices.RuntimeInformation\pri.resfiles
-C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.WinPhone\obj\Release\System.Runtime.InteropServices.RuntimeInformation\pri.resfiles.intermediate
-C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.WinPhone\obj\Release\System.Runtime.InteropServices.RuntimeInformation\priconfig.xml
-C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.WinPhone\obj\Release\System.Runtime.InteropServices.RuntimeInformation\priconfig.xml.intermediate
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.WinPhone\obj\Release\System.Runtime.InteropServices.RuntimeInformation.pri
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.WinPhone\obj\Release\System.Runtime.InteropServices.RuntimeInformation\qualifiers.txt
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.WinPhone\obj\Release\priconfig.xml

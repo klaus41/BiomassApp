@@ -15,7 +15,7 @@ namespace Vedligehold.Views
         Color color = Color.Default;
         public CustomTaskCell()
         {
-            SetColor();
+            //SetColor();
 
             Label type = new Label();
             Label anlægsbeskrivelse = new Label()

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Vedligehold.Services;
+using Vedligehold.Services.Synchronizers;
 using Xamarin.Forms;
 
 namespace Vedligehold.Views
@@ -19,6 +20,7 @@ namespace Vedligehold.Views
         Button dropCreateButton;
         Button deleteDbButton;
         Button checkConnectionButton;
+        
         public SettingsPage()
         {
             buttonColor = Color.FromRgb(135, 206, 250);
@@ -74,7 +76,9 @@ namespace Vedligehold.Views
                     try
                     {
                         MaintenanceTaskSynchronizer sync = new MaintenanceTaskSynchronizer();
+                        TimeRegistrationSynchronizer timesync = new TimeRegistrationSynchronizer();
                         var data = await sync.DeleteAndPopulateDb();
+                        timesync.DeleteAndPopulateDb();
                         RemoveActivityIndicator();
                         await DisplayAlert("Synkronisering", "Du har nu erstattet " + data[0].ToString() + " lokale opgaver med " + data[1] + " opgaver fra Navision", "OK");
                     }
@@ -93,7 +97,9 @@ namespace Vedligehold.Views
                 try
                 {
                     MaintenanceTaskSynchronizer sync = new MaintenanceTaskSynchronizer();
+                    TimeRegistrationSynchronizer timesync = new TimeRegistrationSynchronizer();
                     await sync.SyncDatabaseWithNAV();
+                    await timesync.SyncDatabaseWithNAV();
                     RemoveActivityIndicator();
                     await DisplayAlert("Synkronisering", "Enheden er nu synkroniseret med NAV", "OK");
                 }
@@ -143,7 +149,7 @@ namespace Vedligehold.Views
             {
                 if (this.GetType() != typeof(HomePage))
                 {
-                    await Navigation.PushAsync(new HomePage());
+                    await Navigation.PushModalAsync(new HomePage());
                 }
             }));
             ToolbarItems.Add(new ToolbarItem("Statistik", "filter.png", async () =>
@@ -166,7 +172,7 @@ namespace Vedligehold.Views
             {
                 if (this.GetType() != typeof(MaintenancePage))
                 {
-                    await Navigation.PushAsync(new MaintenancePage());
+                    await Navigation.PushModalAsync(new MaintenancePage());
                 }
             }));
 
@@ -174,7 +180,7 @@ namespace Vedligehold.Views
             {
                 if (this.GetType() != typeof(SettingsPage))
                 {
-                    await Navigation.PushAsync(new SettingsPage());
+                    await Navigation.PushModalAsync(new SettingsPage());
                 }
             }));
 

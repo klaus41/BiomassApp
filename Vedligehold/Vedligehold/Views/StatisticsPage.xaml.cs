@@ -32,7 +32,7 @@ namespace Vedligehold.Views
             {
                 if (this.GetType() != typeof(HomePage))
                 {
-                    await Navigation.PushAsync(new HomePage());
+                    await Navigation.PushModalAsync(new HomePage());
                 }
             }));
             ToolbarItems.Add(new ToolbarItem("Statistik", "filter.png", async () =>
@@ -55,7 +55,7 @@ namespace Vedligehold.Views
             {
                 if (this.GetType() != typeof(MaintenancePage))
                 {
-                    await Navigation.PushAsync(new MaintenancePage());
+                    await Navigation.PushModalAsync(new MaintenancePage());
                 }
             }));
 
@@ -63,7 +63,7 @@ namespace Vedligehold.Views
             {
                 if (this.GetType() != typeof(SettingsPage))
                 {
-                    await Navigation.PushAsync(new SettingsPage());
+                    await Navigation.PushModalAsync(new SettingsPage());
                 }
             }));
 
