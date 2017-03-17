@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Plugin.Geolocator;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,16 +18,20 @@ namespace Vedligehold.Views
         ListView lv;
         MaintenanceDatabase db = App.Database;
         List<TimeRegistrationModel> timeRegList;
+        Button checkIn;
+        Button checkOut;
+        Label checkInLabel;
+        Label checkOutLabel;
+        GlobalData gd = GlobalData.GetInstance;
+        bool _in;
+        bool _out;
         public TimeRegistrationPage()
         {
+            _in = true;
+            _out = false;
             NavigationPage.SetHasNavigationBar(this, false);
             Title = "Tidsregistrering";
 
-            MakeListView();
-        }
-
-        private void MakeListView()
-        {
             var temp = new DataTemplate(typeof(CustomTimeRegCell));
 
             lv = new ListView()
@@ -35,77 +41,154 @@ namespace Vedligehold.Views
                 IsPullToRefreshEnabled = true
             };
 
-            Button b = new Button() { Text = "Opret tidsregistrering", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
-
-            b.Clicked += async (s, e) =>
-            {
-                int no = 0;
-                if (timeRegList.Count != 0)
-                {
-                    no = timeRegList.LastOrDefault().No + 1;
-                }
-                TimeRegistrationModel timeReg = new TimeRegistrationModel
-                { 
-                    No = no,
-                    Type = "Check in"
-                };
-                await db.SaveTimeRegAsync(timeReg);
-                UpdateItemSource();
-            };
-
-            Content = new StackLayout
-            {
-                VerticalOptions = LayoutOptions.FillAndExpand,
-                Children =
-                {
-                    b,
-                    lv
-                }
-            };
 
             lv.Refreshing += Lv_Refreshing;
-            lv.ItemTapped += Lv_ItemTapped;
+            lv.ItemTapped += Lv_ItemTapped; ;
+            checkIn = new Button() { Text = "Mød ind", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White, IsEnabled = false };
+            checkOut = new Button() { Text = "Meld ud", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White, IsEnabled = false };
+            checkInLabel = new Label();
+            checkOutLabel = new Label();
+
+            checkOut.Clicked += CheckOut_Clicked;
+            checkIn.Clicked += CheckIn_Clicked;
+            StackLayout layout = new StackLayout { Padding = 10 };
+            layout.Children.Add(checkIn);
+            layout.Children.Add(checkOut);
+            layout.Children.Add(lv);
+            Content = new ScrollView { Content = layout };
+
+            MakeListView();
+        }
+        private void MakeListView()
+        {
+
+
         }
 
-        void Lv_ItemTapped(object sender, ItemTappedEventArgs e)
+        private void Lv_ItemTapped(object sender, ItemTappedEventArgs e)
         {
-            TimeRegistrationModel _reg;
-            //Navigation.PushAsync(new TaskDetail());
-
-            var action = ((ListView)sender).SelectedItem;
-            TimeRegistrationModel reg = (TimeRegistrationModel)action;
-
-            _reg = timeRegList.Where(x => x.No == reg.No).First();
-
-            Navigation.PushModalAsync(new TimeRegistrationDetailPage(_reg));
-
+            throw new NotImplementedException();
         }
 
-        async void Lv_Refreshing(object sender, EventArgs e)
+        private void Lv_Refreshing(object sender, EventArgs e)
         {
-            bool response = false;
-            while (!response)
+            throw new NotImplementedException();
+        }
+
+        private async void CheckOut_Clicked(object sender, EventArgs e)
+        {
+            checkOut.IsEnabled = false;
+            TimeRegistrationModel timeReg = new TimeRegistrationModel
             {
-                TimeRegistrationSynchronizer trs = new TimeRegistrationSynchronizer();
-                response = await trs.SyncDatabaseWithNAV();
-            }
-            UpdateItemSource();
-            if (lv.IsRefreshing)
+                No = timeRegList.Last().No + 1,
+                Type = "Check out",
+                Time = DateTime.Now,
+                User = gd.User
+            };
+            try
             {
-                lv.EndRefresh();
+                var locator = CrossGeolocator.Current;
+                locator.DesiredAccuracy = 50;
+                var position = await locator.GetPositionAsync(timeoutMilliseconds: 10000);
+
+                timeReg.Latitude = position.Latitude;
+                timeReg.Longitude = position.Longitude;
             }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Unable to get location, may need to increase timeout: " + ex);
+            }
+            gd.TimeRegisteredOut = timeReg;
+            await db.SaveTimeRegAsync(timeReg);
         }
 
-        private async void UpdateItemSource()
+        private async void CheckIn_Clicked(object sender, EventArgs e)
         {
-            timeRegList = await db.GetTimeRegsAsync();
-            lv.ItemsSource = timeRegList;
+            checkIn.IsEnabled = false;
+            TimeRegistrationModel timeReg = new TimeRegistrationModel
+            {
+                No = timeRegList.Last().No + 1,
+                Type = "Check in",
+                Time = DateTime.Now,
+                User = gd.User
+            };
+            try
+            {
+                var locator = CrossGeolocator.Current;
+                locator.DesiredAccuracy = 50;
+                var position = await locator.GetPositionAsync(timeoutMilliseconds: 10000);
+
+                timeReg.Latitude = position.Latitude;
+                timeReg.Longitude = position.Longitude;
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Unable to get location, may need to increase timeout: " + ex);
+            }
+            gd.TimeRegisteredIn = timeReg;
+            await db.SaveTimeRegAsync(timeReg);
         }
 
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            UpdateItemSource();
+            GetData();
+        }
+
+
+        public async void GetData()
+        {
+            List<TimeRegistrationModel> tempList = new List<TimeRegistrationModel>();
+            tempList = timeRegList;
+            while (tempList == timeRegList)
+            {
+                timeRegList = await db.GetTimeRegsAsync();
+            }
+            foreach (var item in timeRegList)
+            {
+                if (item.Time > DateTime.Today && item.User == gd.User)
+                {
+                    if (item.Type == "Check in")
+                    {
+                        _in = false;
+                        //checkIn.IsEnabled = false;
+                        checkIn.Text = "Allerede mødt";
+                        gd.TimeRegisteredIn = item;
+                    }
+                    if (item.Type == " Check out")
+                    {
+                        _out = false;
+                        //checkOut.IsEnabled = false;
+                        checkOut.Text = "Allerede meldt ud";
+                        gd.TimeRegisteredOut = item;
+                    }
+                }
+            }
+
+            //if (gd.SearchUserName != null && gd.SearchDateTime > new DateTime(1900, 1, 1))
+            //{
+            //    lv.ItemsSource = timeRegList.Where(x => x.Time.Date == gd.SearchDateTime.Date && x.User == gd.SearchUserName);
+            //}
+            //else if (gd.SearchUserName == null && gd.SearchDateTime > new DateTime(1900, 1, 1))
+            //{
+            //    lv.ItemsSource = timeRegList.Where(x => x.Time.Date == gd.SearchDateTime.Date);
+
+            //}
+            //else if (gd.SearchUserName != null && gd.SearchDateTime < new DateTime(1900, 1, 1))
+            //{
+            //    lv.ItemsSource = timeRegList.Where(x => x.User == gd.SearchUserName);
+            //}
+            if (gd.SearchUserName != null)
+            {
+                lv.ItemsSource = timeRegList.Where(x => x.User == gd.SearchUserName);
+            }
+            else
+            {
+                lv.ItemsSource = timeRegList;
+            }
+            checkIn.IsEnabled = _in;
+            checkOut.IsEnabled = _out;
         }
     }
 }

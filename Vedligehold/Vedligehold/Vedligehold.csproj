@@ -55,6 +55,7 @@
     <Compile Include="Services\PDFService.cs" />
     <Compile Include="Services\SalesPersonService.cs" />
     <Compile Include="Services\StatisticService.cs" />
+    <Compile Include="Services\Synchronizers\AbstractSynchronizer.cs" />
     <Compile Include="Services\Synchronizers\TimeRegistrationSynchronizer.cs" />
     <Compile Include="Services\TimeRegistrationService.cs" />
     <Compile Include="Views\Converters\BoolToColorConverter.cs" />
@@ -76,6 +77,9 @@
       <DependentUpon>MaintenancePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Services\Synchronizers\MaintenanceTaskSynchronizer.cs" />
+    <Compile Include="Views\SearchSettingsPage.xaml.cs">
+      <DependentUpon>SearchSettingsPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\SettingsPage.xaml.cs">
       <DependentUpon>SettingsPage.xaml</DependentUpon>
     </Compile>
@@ -214,6 +218,12 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Views\TimeRegistrationPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Views\SearchSettingsPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
       <SubType>Designer</SubType>
     </EmbeddedResource>

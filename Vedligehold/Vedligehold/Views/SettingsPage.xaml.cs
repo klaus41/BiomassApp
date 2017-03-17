@@ -20,7 +20,8 @@ namespace Vedligehold.Views
         Button dropCreateButton;
         Button deleteDbButton;
         Button checkConnectionButton;
-        
+        Button searchSettingsButton;
+
         public SettingsPage()
         {
             buttonColor = Color.FromRgb(135, 206, 250);
@@ -35,22 +36,30 @@ namespace Vedligehold.Views
             syncButton = new Button { Text = "Synkroniser", BackgroundColor = buttonColor, TextColor = Color.White };
             deleteDbButton = new Button { Text = "Slet data fra lokal database", BackgroundColor = buttonColor, TextColor = Color.White };
             checkConnectionButton = new Button { Text = "Tjek forbindelse til NAV", BackgroundColor = buttonColor, TextColor = Color.White };
+            searchSettingsButton = new Button { Text = "Administrer søgefilter", BackgroundColor = buttonColor, TextColor = Color.White };
 
-            checkConnectionButton.Clicked += async (s, e) =>
+            searchSettingsButton.Clicked += (s, e) =>
             {
                 ShowActivityIndicator();
-                MaintenanceTaskSynchronizer sync = new MaintenanceTaskSynchronizer();
-                bool connected = await sync.HasConnectionToNAV();
+                Navigation.PushModalAsync(new SearchSettingsPage());
                 RemoveActivityIndicator();
-                if (connected)
-                {
-                    await DisplayAlert("Forbindelse", "Enheden har forbindelse til NAV", "OK");
-                }
-                else
-                {
-                    await DisplayAlert("Forbindelse", "Enheden har ikke forbindelse til NAV. Tjek om telefonen er tilsluttet WiFi eller on data er slået fra", "OK");
-                }
             };
+
+            checkConnectionButton.Clicked += async (s, e) =>
+                        {
+                            ShowActivityIndicator();
+                            MaintenanceTaskSynchronizer sync = new MaintenanceTaskSynchronizer();
+                            bool connected = await sync.HasConnectionToNAV();
+                            RemoveActivityIndicator();
+                            if (connected)
+                            {
+                                await DisplayAlert("Forbindelse", "Enheden har forbindelse til NAV", "OK");
+                            }
+                            else
+                            {
+                                await DisplayAlert("Forbindelse", "Enheden har ikke forbindelse til NAV. Tjek om telefonen er tilsluttet WiFi eller on data er slået fra", "OK");
+                            }
+                        };
 
             deleteDbButton.Clicked += async (s, e) =>
             {
@@ -62,12 +71,12 @@ namespace Vedligehold.Views
                     sync.DeleteDB();
                     RemoveActivityIndicator();
                     await DisplayAlert("Nulstilling", "Den lokale database er nu nulstillet", "OK");
-                    
+
                 }
             };
 
             dropCreateButton.Clicked += async (s, e) =>
-            { 
+            {
                 var action = await DisplayAlert("Advarsel", "Er du sikker på, du vil slette den lokale database og erstatte den med data fra NAV?", "Ja", "Cancel");
                 if (action)
                 {
@@ -115,6 +124,7 @@ namespace Vedligehold.Views
             layout.Children.Add(syncButton);
             layout.Children.Add(deleteDbButton);
             layout.Children.Add(checkConnectionButton);
+            layout.Children.Add(searchSettingsButton);
 
             Content = new ScrollView { Content = layout };
 
@@ -128,6 +138,7 @@ namespace Vedligehold.Views
             dropCreateButton.IsEnabled = true;
             deleteDbButton.IsEnabled = true;
             checkConnectionButton.IsEnabled = true;
+            searchSettingsButton.IsEnabled = true;
         }
 
         private void ShowActivityIndicator()
@@ -142,49 +153,7 @@ namespace Vedligehold.Views
             dropCreateButton.IsEnabled = false;
             deleteDbButton.IsEnabled = false;
             checkConnectionButton.IsEnabled = false;
+            searchSettingsButton.IsEnabled = false;
         }
-        private void MakeToolBar()
-        {
-            ToolbarItems.Add(new ToolbarItem("Hjem", "filter.png", async () =>
-            {
-                if (this.GetType() != typeof(HomePage))
-                {
-                    await Navigation.PushModalAsync(new HomePage());
-                }
-            }));
-            ToolbarItems.Add(new ToolbarItem("Statistik", "filter.png", async () =>
-            {
-                string data = null;
-                try
-                {
-                    PDFService pds = new PDFService();
-                    data = await pds.GetPDF("A00005");
-                    HomePage hp = new HomePage();
-                    hp.StatButtonMethod();
-                }
-                catch
-                {
-                    await DisplayAlert("Forbindelse", "Enheden har ingen forbindelse til NAV", "OK");
-                }
-            }));
-
-            ToolbarItems.Add(new ToolbarItem("Opgaver", "filter.png", async () =>
-            {
-                if (this.GetType() != typeof(MaintenancePage))
-                {
-                    await Navigation.PushModalAsync(new MaintenancePage());
-                }
-            }));
-
-            ToolbarItems.Add(new ToolbarItem("Indstillinger", "filter.png", async () =>
-            {
-                if (this.GetType() != typeof(SettingsPage))
-                {
-                    await Navigation.PushModalAsync(new SettingsPage());
-                }
-            }));
-
-        }
-
     }
 }

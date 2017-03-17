@@ -26,5 +26,22 @@ namespace Vedligehold.Services
 
             return rootObject;
         }
+
+        public async Task<SalesPerson> GetSalesPersonAsync(string id)
+        {
+            HttpClient client = new HttpClient();
+
+            client.DefaultRequestHeaders.Add("Accept", "application/json");
+
+            client.BaseAddress = new Uri("http://demo.biomass.eliteit.dk/");
+
+            var response = await client.GetAsync("api/salesperson/" + id);
+
+            var statsJson = response.Content.ReadAsStringAsync().Result;
+
+            var rootObject = JsonConvert.DeserializeObject<SalesPerson>(statsJson);
+
+            return rootObject;
+        }
     }
 }

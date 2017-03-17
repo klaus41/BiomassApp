@@ -22,8 +22,12 @@ namespace Vedligehold.Views
         ActivityIndicator ai;
         Button logOutButton;
         Label tasks;
+        Label searchCriteria;
+        Label user;
+        Label timeRegisteredIn;
+        Label timeRegisteredOut;
         List<MaintenanceTask> taskList;
-
+        GlobalData gd = GlobalData.GetInstance;
         Color buttonColor;
 
         public HomePage()
@@ -31,54 +35,48 @@ namespace Vedligehold.Views
             buttonColor = Color.FromRgb(135, 206, 250);
             BackgroundColor = Color.White;
             Title = "Hjem";
-            GlobalData gd = GlobalData.GetInstance;
-            var db = App.Database;
-            Label user = new Label() { Text = "Du er logget ind som: " + gd.User, FontSize = 20, FontAttributes = FontAttributes.Bold, VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.Center };
+            user = new Label() { Text = "Du er logget ind som: " + gd.User, FontSize = 20, FontAttributes = FontAttributes.Bold, VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.Center };
+            searchCriteria = new Label() { Text = "Dine opgaver er filtreret efter bruger " + gd.SearchUserName + " på dato " + gd.SearchDateTime.ToString("dd/MM/yyyy"), HorizontalTextAlignment = TextAlignment.Center, VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.Center };
             tasks = new Label() { VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.Center };
-            Grid mainGrid = new Grid
-            {
-                Padding = new Thickness(10),
-                RowDefinitions =
-                {
-                    new RowDefinition { Height = new GridLength(1, GridUnitType.Auto)},
-                    new RowDefinition { Height = GridLength.Auto},
-                    new RowDefinition { Height = GridLength.Auto },
-                    new RowDefinition { Height = GridLength.Auto}
-                },
-                ColumnDefinitions =
-                {
-                    new ColumnDefinition { Width = new GridLength(1,GridUnitType.Star) }
-                }
-            };
+            timeRegisteredIn = new Label() { Text = "Du er ikke mødt ind endnu", VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.Center, FontSize = 20, FontAttributes = FontAttributes.Bold };
+            timeRegisteredOut = new Label() { Text = "Du er ikke meldt ud endnu", VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.Center, FontSize = 20, FontAttributes = FontAttributes.Bold };
+
             NavigationPage.SetHasNavigationBar(this, false);
             //MakeToolBar();
 
             layout = new StackLayout { Padding = 10, };
 
-            logOutButton = new Button { Text = "Log ud", BackgroundColor = buttonColor, TextColor = Color.White };
+            logOutButton = new Button { Text = "Log ud", BackgroundColor = buttonColor, TextColor = Color.White, VerticalOptions = LayoutOptions.EndAndExpand };
             logOutButton.Clicked += (s, e) =>
-             {
-                 Application.Current.MainPage.Navigation.PopAsync();
-                 //Navigation.PushAsync(new LoginPage());
-             };
+            {
+                List<Page> pl = new List<Page>();
+                foreach (var item in gd.TabbedPage.Children)
+                {
+                    pl.Add(item);
+                }
+                foreach (var item in pl)
+                {
+                    gd.TabbedPage.Children.Remove(item);
+                }
+                gd.TabbedPage.Children.Add(gd.LoginPage);
+
+            };
 
             Image image = new Image();
 
             image.Source = "eistor.png";
             image.Opacity = 0.7;
-            image.VerticalOptions = LayoutOptions.End;
-            image.HorizontalOptions = LayoutOptions.End;
+            image.VerticalOptions = LayoutOptions.EndAndExpand;
 
-            layout.Children.Add(logOutButton);
+            layout.Children.Add(user);
+            layout.Children.Add(tasks);
+            layout.Children.Add(searchCriteria);
             layout.Children.Add(image);
+            layout.Children.Add(timeRegisteredIn);
+            layout.Children.Add(timeRegisteredOut);
+            layout.Children.Add(logOutButton);
 
-            mainGrid.Children.Add(user, 0, 0);
-            mainGrid.Children.Add(tasks, 0, 1);
-            mainGrid.Children.Add(image, 0, 2);
-            mainGrid.Children.Add(logOutButton, 0, 5);
-
-
-            Content = new ScrollView { Content = mainGrid };
+            Content = new ScrollView { Content = layout };
         }
 
 
@@ -157,6 +155,9 @@ namespace Vedligehold.Views
         }
         protected async override void OnAppearing()
         {
+            TimeRegistrationPage timepage = new TimeRegistrationPage();
+            timepage.GetData();
+
             taskList = null;
             int notdone = 0;
             while (taskList == null)
@@ -171,6 +172,29 @@ namespace Vedligehold.Views
                 }
             }
             tasks.Text = "Du har " + notdone + " ufærdige opgaver, der venter.";
+            if (gd.SearchUserName == null)
+            {
+                searchCriteria.Text = "Dine opgaver er filtreret på dato " + gd.SearchDateTime.ToString("dd/MM/yyyy");
+            }
+            if (gd.SearchUserName == null && gd.SearchDateTime < new DateTime(1900, 1, 1))
+            {
+                searchCriteria.Text = "Du har ingen filtre på dine søgninger";
+            }
+            else
+            {
+                searchCriteria.Text = "Dine opgaver er filtreret efter bruger " + gd.SearchUserName + " på dato " + gd.SearchDateTime.ToString("dd/MM/yyyy");
+            }
+            user.Text = "Du er logget ind som: " + gd.User;
+            if (gd.TimeRegisteredIn != null)
+            {
+                timeRegisteredIn.Text = "Du er mødt ind: " + gd.TimeRegisteredIn.Time.ToString("HH:mm");
+            }
+            if (gd.TimeRegisteredOut != null)
+            {
+                timeRegisteredOut.Text = "Du er meldt ud: " + gd.TimeRegisteredOut.Time.ToString("HH:mm");
+            }
         }
+
+
     }
 }

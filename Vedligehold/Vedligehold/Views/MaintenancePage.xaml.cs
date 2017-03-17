@@ -19,6 +19,7 @@ namespace Vedligehold.Views
         ListView lv;
         MaintenanceDatabase db = App.Database;
         List<MaintenanceTask> tasks;
+        GlobalData gd = GlobalData.GetInstance;
         public MaintenancePage()
         {
             Title = "Opgaver";
@@ -128,13 +129,16 @@ namespace Vedligehold.Views
                 UpdateItemSource();
             };
 
-            Content = new StackLayout
+            Content = new ScrollView
             {
-                VerticalOptions = LayoutOptions.FillAndExpand,
-                Children =
+                Content = new StackLayout
                 {
-                    b,
-                    lv
+                    VerticalOptions = LayoutOptions.FillAndExpand,
+                    Children =
+                    {
+                        b,
+                        lv
+                    }
                 }
             };
 
@@ -151,7 +155,7 @@ namespace Vedligehold.Views
             MaintenanceTask tsk = (MaintenanceTask)action;
 
             _task = tasks.Where(x => x.no == tsk.no).First();
-        
+
             this.Navigation.PushModalAsync(new TaskDetail(_task));
 
         }
@@ -173,52 +177,25 @@ namespace Vedligehold.Views
 
         private async void UpdateItemSource()
         {
+            
             tasks = await db.GetTasksAsync();
-            lv.ItemsSource = tasks;
-            Title = tasks.Count().ToString() + " opgaver";
-        }
-
-        private void MakeToolBar()
-        {
-            ToolbarItems.Add(new ToolbarItem("Hjem", "filter.png", async () =>
+            if (gd.SearchUserName != null && gd.SearchDateTime > new DateTime(1900, 1, 1))
             {
-                if (this.GetType() != typeof(HomePage))
-                {
-                    await Navigation.PushModalAsync(new HomePage());
-                }
-            }));
-            ToolbarItems.Add(new ToolbarItem("Statistik", "filter.png", async () =>
+                lv.ItemsSource = tasks.Where(x => x.planned_Date.Date == gd.SearchDateTime.Date && x.responsible == gd.SearchUserName);
+            }
+            else if (gd.SearchUserName == null && gd.SearchDateTime > new DateTime(1900, 1, 1))
             {
-                string data = null;
-                try
-                {
-                    PDFService pds = new PDFService();
-                    data = await pds.GetPDF("A00005");
-                    HomePage hp = new HomePage();
-                    hp.StatButtonMethod();
-                }
-                catch
-                {
-                    await DisplayAlert("Forbindelse", "Enheden har ingen forbindelse til NAV", "OK");
-                }
-            }));
+                lv.ItemsSource = tasks.Where(x => x.planned_Date.Date == gd.SearchDateTime.Date);
 
-            ToolbarItems.Add(new ToolbarItem("Opgaver", "filter.png", async () =>
+            }
+            else if (gd.SearchUserName != null && gd.SearchDateTime < new DateTime(1900, 1, 1))
             {
-                if (this.GetType() != typeof(MaintenancePage))
-                {
-                    await Navigation.PushModalAsync(new MaintenancePage());
-                }
-            }));
-
-            ToolbarItems.Add(new ToolbarItem("Indstillinger", "filter.png", async () =>
+                lv.ItemsSource = tasks.Where(x => x.responsible == gd.SearchUserName);
+            }
+            else
             {
-                if (this.GetType() != typeof(SettingsPage))
-                {
-                    await Navigation.PushModalAsync(new SettingsPage());
-                }
-            }));
-
+                lv.ItemsSource = tasks;
+            }
         }
 
         protected override void OnAppearing()

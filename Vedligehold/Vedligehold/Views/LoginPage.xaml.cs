@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
+using System.Text.RegularExpressions;
+using Vedligehold.Models;
 using Vedligehold.Services;
 using Xamarin.Forms;
 
@@ -15,6 +15,8 @@ namespace Vedligehold.Views
         Button button;
         Entry username;
         Entry password;
+        GlobalData gd = GlobalData.GetInstance;
+
         public LoginPage()
         {
             NavigationPage.SetHasNavigationBar(this, false);
@@ -59,13 +61,16 @@ namespace Vedligehold.Views
                     button.IsEnabled = false;
 
                     var sv = new SalesPersonService();
-                    var es = await sv.GetSalesPersonsAsync();
-                    foreach (var person in es)
+                    try
                     {
-                        if ((username.Text == person.Code && password.Text == person.Password) && person.Intern || (username.Text == "ei" && password.Text == "Bohrs6Vej") || (username.Text == "aaa" && password.Text == "aaa"))
-                        {
-                            succes = true;
-                        }
+                        SalesPerson person = await sv.GetSalesPersonAsync(username.Text);
+                        succes = true;
+                        gd.User = person.Code;
+                        gd.SearchUserName = person.Code;
+                    }
+                    catch
+                    {
+                      
                     }
                     if (!succes)
                     {
@@ -74,8 +79,7 @@ namespace Vedligehold.Views
                     }
                     else
                     {
-                        GlobalData gd = GlobalData.GetInstance;
-                        gd.User = username.Text;
+                        gd.SearchDateTime = DateTime.Today;
 
                         gd.TabbedPage.Children.Add(new HomePage());
                         gd.TabbedPage.Children.Add(new TimeRegistrationPage());
@@ -93,7 +97,7 @@ namespace Vedligehold.Views
                         //        new SettingsPage(),
                         //        new TimeRegistrationPage()
                         //    },
-                            
+
                         //});
                         //this.Navigation.RemovePage(this.Navigation.NavigationStack[0]);
 

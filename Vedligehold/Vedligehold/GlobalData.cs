@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Vedligehold.Models;
 using Vedligehold.Views;
 using Xamarin.Forms;
 
@@ -14,6 +15,10 @@ namespace Vedligehold
         private TabbedPage tabbedPage;
         private LoginPage loginPage;
         private string user;
+        private DateTime searchDateTime;
+        private string searchUserName;
+        private TimeRegistrationModel timeRegisteredIn;
+        private TimeRegistrationModel timeRegisteredOut;
 
         private GlobalData() { }
 
@@ -28,7 +33,6 @@ namespace Vedligehold
                 return globaldata;
             }
         }
-
         public TabbedPage TabbedPage
         {
             get
@@ -40,7 +44,6 @@ namespace Vedligehold
                 return tabbedPage;
             }
         }
-
         public LoginPage LoginPage
         {
             get
@@ -52,7 +55,6 @@ namespace Vedligehold
                 return loginPage;
             }
         }
-
         public string User
         {
             get
@@ -64,5 +66,50 @@ namespace Vedligehold
                 user = value;
             }
         }
+        public DateTime SearchDateTime
+        {
+            get
+            {
+                return searchDateTime;
+            }
+            set
+            {
+                searchDateTime = value;
+            }
+        }
+        public string SearchUserName
+        {
+            get
+            {
+                return searchUserName;
+            }
+            set
+            {
+                searchUserName = value;
+            }
+        }
+        public TimeRegistrationModel TimeRegisteredIn
+        {
+            get
+            {
+                return timeRegisteredIn;
+            }
+            set
+            {
+                timeRegisteredIn = value;
+            }
+        }
+        public TimeRegistrationModel TimeRegisteredOut
+        {
+            get
+            {
+                return timeRegisteredOut;
+            }
+            set
+            {
+                timeRegisteredOut = value;
+            }
+        }
+
     }
 }

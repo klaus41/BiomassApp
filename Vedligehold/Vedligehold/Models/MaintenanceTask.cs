@@ -22,6 +22,8 @@ namespace Vedligehold.Models
         public bool done { get; set; }
         public double longitude { get; set; }
         public double latitude { get; set; }
+        public DateTime planned_Date { get; set; }
+        public string responsible { get; set; }
         //public bool synced { get; set; }
 
 

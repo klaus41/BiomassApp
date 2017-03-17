@@ -17,7 +17,7 @@ namespace Vedligehold.Views.Converters
             if (value is DateTime)
             {
                 dt = (DateTime)value;
-                time = dt.ToString("dd/MM/yyyy"); 
+                time = dt.ToString("dd/MM"); 
             }
 
             return time;

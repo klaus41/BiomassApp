@@ -53,6 +53,9 @@ namespace Vedligehold.Views.CustomCells
             mainGrid.Children.Add(start, 1, 0);
             mainGrid.Children.Add(end, 1, 1);
             mainGrid.Children.Add(date, 3, 0);
+            Grid.SetColumnSpan(date, 3);
+            Grid.SetColumnSpan(time, 4);
+
             mainGrid.Children.Add(time, 3, 1);
             View = mainGrid;
 
