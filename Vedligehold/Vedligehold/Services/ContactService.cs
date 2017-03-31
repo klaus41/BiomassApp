@@ -10,14 +10,11 @@ using Vedligehold.Services;
 
 namespace Vedligehold.Services
 {
-    public class ContactService
+    public class ContactService : ClientGateway
     {
         public async Task<Contact[]> GetContactsAsync()
         {
-            var client = new HttpClient();
-            client.DefaultRequestHeaders.Add("Accept", "application/json");
-
-            client.BaseAddress = new Uri("http://demo.biomass.eliteit.dk/");
+            HttpClient client = GetHttpClient();
 
             var response = await client.GetAsync("api/contacts/");
 

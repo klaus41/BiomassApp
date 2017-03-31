@@ -10,6 +10,7 @@ using UIKit;
 using Vedligehold.Database;
 using Vedligehold.Models;
 using Vedligehold.Services;
+using Vedligehold.Services.Synchronizers;
 using Xamarin.Forms;
 
 namespace Vedligehold.Views
@@ -20,6 +21,9 @@ namespace Vedligehold.Views
         MaintenanceDatabase db = App.Database;
         List<MaintenanceTask> tasks;
         GlobalData gd = GlobalData.GetInstance;
+        IEnumerable<MaintenanceTask> itemssourceList;
+        Button showDoneButton;
+        bool showDone = false;
         public MaintenancePage()
         {
             Title = "Opgaver";
@@ -45,9 +49,9 @@ namespace Vedligehold.Views
             int i = 0;
             while (i == 0)
             {
-                if (!_task.done)
+                if (_task.status == "Released")
                 {
-                    _task.done = true;
+                    _task.status = "Completed";
                     try
                     {
                         var locator = CrossGeolocator.Current;
@@ -111,6 +115,8 @@ namespace Vedligehold.Views
             };
 
             Button b = new Button() { Text = "Opret standardopgave", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
+            showDoneButton = new Button() { Text = "Vis færdige opgaver", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
+            showDoneButton.Clicked += ShowDoneButton_Clicked;
 
             b.Clicked += async (s, e) =>
             {
@@ -123,7 +129,7 @@ namespace Vedligehold.Views
                     text = "Test",
                     weekly = true,
                     daily = false,
-                    done = false
+                    //done = false
                 };
                 await db.SaveTaskAsync(task);
                 UpdateItemSource();
@@ -136,7 +142,7 @@ namespace Vedligehold.Views
                     VerticalOptions = LayoutOptions.FillAndExpand,
                     Children =
                     {
-                        b,
+                        showDoneButton,
                         lv
                     }
                 }
@@ -146,17 +152,28 @@ namespace Vedligehold.Views
             lv.ItemTapped += Lv_ItemTapped;
 
         }
+
+        private void ShowDoneButton_Clicked(object sender, EventArgs e)
+        {
+            if (showDone)
+            {
+                showDone = false;
+                showDoneButton.Text = "Vis udførte opgaver";
+            }
+            else
+            {
+                showDone = true;
+                showDoneButton.Text = "Skjul udførte opgaver";
+            }
+            UpdateItemSource();
+        }
+
         void Lv_ItemTapped(object sender, ItemTappedEventArgs e)
         {
-            MaintenanceTask _task;
-            //Navigation.PushAsync(new TaskDetail());
-
             var action = ((ListView)sender).SelectedItem;
             MaintenanceTask tsk = (MaintenanceTask)action;
 
-            _task = tasks.Where(x => x.no == tsk.no).First();
-
-            this.Navigation.PushModalAsync(new TaskDetail(_task));
+            this.Navigation.PushModalAsync(new MaintenanceDetail(tsk));
 
         }
 
@@ -166,6 +183,8 @@ namespace Vedligehold.Views
             while (!response)
             {
                 MaintenanceTaskSynchronizer mst = new MaintenanceTaskSynchronizer();
+                MaintenanceActivitySynchronizer mas = new MaintenanceActivitySynchronizer();
+                await mas.SyncDatabaseWithNAV();
                 response = await mst.SyncDatabaseWithNAV();
             }
             UpdateItemSource();
@@ -177,24 +196,31 @@ namespace Vedligehold.Views
 
         private async void UpdateItemSource()
         {
-            
             tasks = await db.GetTasksAsync();
-            if (gd.SearchUserName != null && gd.SearchDateTime > new DateTime(1900, 1, 1))
+            DateTime nullDate = new DateTime(1900, 1, 1);
+            if (gd.SearchUserName != null && gd.SearchDateTime > nullDate && gd.SearchDateTimeLast > nullDate)
             {
-                lv.ItemsSource = tasks.Where(x => x.planned_Date.Date == gd.SearchDateTime.Date && x.responsible == gd.SearchUserName);
+                itemssourceList = tasks.Where(x => x.planned_Date.Date >= gd.SearchDateTime.Date && x.planned_Date <= gd.SearchDateTimeLast && x.responsible == gd.SearchUserName);
             }
-            else if (gd.SearchUserName == null && gd.SearchDateTime > new DateTime(1900, 1, 1))
+            else if (gd.SearchUserName == null && gd.SearchDateTime > nullDate && gd.SearchDateTimeLast > nullDate)
             {
-                lv.ItemsSource = tasks.Where(x => x.planned_Date.Date == gd.SearchDateTime.Date);
-
+                itemssourceList = tasks.Where(x => x.planned_Date.Date >= gd.SearchDateTime.Date && x.planned_Date <= gd.SearchDateTimeLast);
             }
             else if (gd.SearchUserName != null && gd.SearchDateTime < new DateTime(1900, 1, 1))
             {
-                lv.ItemsSource = tasks.Where(x => x.responsible == gd.SearchUserName);
+                itemssourceList = tasks.Where(x => x.responsible == gd.SearchUserName);
             }
             else
             {
-                lv.ItemsSource = tasks;
+                itemssourceList = tasks;
+            }
+            if (showDone)
+            {
+                lv.ItemsSource = itemssourceList.Where(x => x.status == "Released" || x.status == "Completed");
+            }
+            else if (!showDone)
+            {
+                lv.ItemsSource = itemssourceList.Where(x => x.status == "Released");
             }
         }
 

@@ -64,13 +64,16 @@ namespace Vedligehold.Views
                     try
                     {
                         SalesPerson person = await sv.GetSalesPersonAsync(username.Text);
-                        succes = true;
-                        gd.User = person.Code;
+                        if (password.Text == person.Password)
+                        {
+                            succes = true;
+                        }
+                        gd.User = person;
                         gd.SearchUserName = person.Code;
                     }
                     catch
                     {
-                      
+
                     }
                     if (!succes)
                     {
@@ -79,7 +82,9 @@ namespace Vedligehold.Views
                     }
                     else
                     {
-                        gd.SearchDateTime = DateTime.Today;
+                        gd.SearchDateTime = DateTime.Today.AddDays(-7);
+                        gd.SearchDateTimeLast = DateTime.Today.AddDays(7);
+                        gd.IsLoggedIn = true;
 
                         gd.TabbedPage.Children.Add(new HomePage());
                         gd.TabbedPage.Children.Add(new TimeRegistrationPage());
@@ -87,20 +92,7 @@ namespace Vedligehold.Views
                         gd.TabbedPage.Children.Add(new SettingsPage());
 
                         gd.TabbedPage.Children.Remove(gd.LoginPage);
-                        //await Navigation.PushAsync(new HomePage());
-                        //await Navigation.PushAsync(new TabbedPage
-                        //{
-                        //    Children =
-                        //    {
-                        //        new HomePage(),
-                        //        new MaintenancePage(),
-                        //        new SettingsPage(),
-                        //        new TimeRegistrationPage()
-                        //    },
-
-                        //});
-                        //this.Navigation.RemovePage(this.Navigation.NavigationStack[0]);
-
+                    
                         password.Text = null;
                     }
                     loading = false;

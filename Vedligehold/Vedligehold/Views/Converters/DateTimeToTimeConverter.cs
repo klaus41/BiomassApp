@@ -19,7 +19,6 @@ namespace Vedligehold.Views.Converters
                 dt = (DateTime)value;
                 time = dt.ToString("HH:mm");
             }
-
             return time;
         }
 

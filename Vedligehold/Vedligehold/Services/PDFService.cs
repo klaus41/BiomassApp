@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Vedligehold.Models;
 
 namespace Vedligehold.Services
 {
@@ -23,6 +25,19 @@ namespace Vedligehold.Services
             
 
             return result;
+        }
+
+        public async Task<PictureModel> PostPicture(PictureModel pic, string id)
+        {
+            HttpClient client = GetHttpClient();
+
+            var data = JsonConvert.SerializeObject(pic);
+
+            var content = new StringContent(data, Encoding.UTF8, "application/json");
+
+            var response = await client.PostAsync("Api/MaintenanceActivity/Picture/" + id, content);
+
+            return JsonConvert.DeserializeObject<PictureModel>(response.Content.ReadAsStringAsync().Result);
         }
     }
 }

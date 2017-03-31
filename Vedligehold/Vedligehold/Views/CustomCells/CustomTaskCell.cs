@@ -30,8 +30,8 @@ namespace Vedligehold.Views
 
             Label done = new Label()
             {
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-
+                HorizontalOptions = LayoutOptions.CenterAndExpand,
+                VerticalOptions = LayoutOptions.CenterAndExpand
             };
             Label image = new Label()
             {
@@ -69,14 +69,14 @@ namespace Vedligehold.Views
             mainGrid.BackgroundColor = color;
             View = mainGrid;
 
-            image.SetBinding<MaintenanceTask>(Label.TextProperty, i => i.responsible);
+            image.SetBinding<MaintenanceTask>(Label.TextProperty, i => i.no);
 
             type.SetBinding<MaintenanceTask>(Label.TextProperty, i => i.type);
             anlægsbeskrivelse.SetBinding(Label.TextProperty, new Binding("planned_Date", converter: new DateTimeToDateConverter()));
 
             //anlægsbeskrivelse.SetBinding<MaintenanceTask>(Label.TextProperty, i => i.planned_Date);
-            //done.SetBinding<MaintenanceTask>(Label.TextProperty, i => i.done);
-            mainGrid.SetBinding(Label.BackgroundColorProperty, new Binding("done", converter: new BoolToColorConverter()));
+            done.SetBinding<MaintenanceTask>(Label.TextProperty, i => i.responsible);
+            mainGrid.SetBinding(Label.BackgroundColorProperty, new Binding("status", converter: new MaintenanceTaskRowColor()));
             //colorImg.SetBinding(Image.SourceProperty, new Binding("done", converter: new BoolToColorConverter()));
 
             //mainGrid.Padding = 20;

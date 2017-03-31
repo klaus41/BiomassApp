@@ -25,11 +25,20 @@
     <AppxPackagedFile Include="C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.Windows\bin\Release\Vedligehold.Windows.exe">
       <PackagePath>Vedligehold.Windows.exe</PackagePath>
     </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\packages\ExifLib.PCL.1.0.1\lib\portable-net45+sl50+win+WindowsPhoneApp81+wp80+Xamarin.iOS10+MonoAndroid10+MonoTouch10\ExifLib.dll">
+      <PackagePath>ExifLib.dll</PackagePath>
+    </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\packages\Xam.Plugin.Geolocator.3.0.4\lib\win8\Plugin.Geolocator.Abstractions.dll">
       <PackagePath>Plugin.Geolocator.Abstractions.dll</PackagePath>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\packages\Xam.Plugin.Geolocator.3.0.4\lib\win8\Plugin.Geolocator.dll">
       <PackagePath>Plugin.Geolocator.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\packages\Xam.Plugin.Media.2.6.2\lib\win8\Plugin.Media.Abstractions.dll">
+      <PackagePath>Plugin.Media.Abstractions.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\packages\Xam.Plugin.Media.2.6.2\lib\win8\Plugin.Media.dll">
+      <PackagePath>Plugin.Media.dll</PackagePath>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold\bin\Release\Vedligehold.dll">
       <PackagePath>Vedligehold.dll</PackagePath>
@@ -48,6 +57,9 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\packages\Xamarin.Forms.2.3.3.180\lib\win81\Xamarin.Forms.Xaml.dll">
       <PackagePath>Xamarin.Forms.Xaml.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\packages\XLabs.Core.2.0.5782\lib\portable-net45+netcore45+wp8+MonoAndroid1+MonoTouch1\XLabs.Core.dll">
+      <PackagePath>XLabs.Core.dll</PackagePath>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold\bin\Release\SQLite-net.dll">
       <PackagePath>SQLite-net.dll</PackagePath>

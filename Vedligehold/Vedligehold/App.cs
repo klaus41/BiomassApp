@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Vedligehold.Database;
+using Vedligehold.Services;
 using Vedligehold.Views;
 using Xamarin.Forms;
 
@@ -14,14 +15,18 @@ namespace Vedligehold
 
         public App()
         {
-            //database.DeleteAllTimeReg();
             GlobalData gd = GlobalData.GetInstance;
-            gd.TabbedPage.Children.Add(gd.LoginPage);
-            //gd.TabbedPage.Children.Add(new HomePage());
-            //gd.TabbedPage.Children.Add(new MaintenancePage());
-            //gd.TabbedPage.Children.Add(new SettingsPage());
-            //gd.TabbedPage.Children.Add(new TimeRegistrationPage());
-            MainPage = gd.TabbedPage;
+            if (gd.IsLoggedIn)
+            {
+                MainPage = gd.TabbedPage;
+            }
+            else
+            {
+                gd.TabbedPage.Children.Add(gd.LoginPage);
+                MainPage = gd.TabbedPage;
+            }
+            ThreadManager tm = new ThreadManager();
+            tm.StartSynchronizationThread();
         }
         public static MaintenanceDatabase Database
         {

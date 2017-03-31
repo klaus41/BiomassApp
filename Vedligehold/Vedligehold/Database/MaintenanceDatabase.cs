@@ -17,6 +17,8 @@ namespace Vedligehold.Database
             database = new SQLiteAsyncConnection(dbPath);
             database.CreateTableAsync<MaintenanceTask>().Wait();
             database.CreateTableAsync<TimeRegistrationModel>().Wait();
+            database.CreateTableAsync<MaintenanceActivity>().Wait();
+
         }
 
         public Task<List<MaintenanceTask>> GetTasksAsync()
@@ -74,6 +76,37 @@ namespace Vedligehold.Database
         public Task<int> DeleteAllTimeReg()
         {
             return database.ExecuteAsync("delete from " + "TimeRegistrationModel");
+        }
+
+        public Task<List<MaintenanceActivity>> GetAcitivitiesAsync()
+        {
+            return database.Table<MaintenanceActivity>().ToListAsync();
+        }
+
+        public Task<MaintenanceActivity> GetAcitivitiyAsync(int id)
+        {
+            return database.Table<MaintenanceActivity>().Where(i => i.Maint_Activity_No == id).FirstOrDefaultAsync();
+        }
+        
+        public Task<int> UpdateActivityAsync(MaintenanceActivity act)
+        {
+            //     return database.ExecuteAsync("Update MaintenanceActivity SET done=true WHERE Maint_Activity_No=" + act.Maint_Activity_No);
+            //database.ExecuteAsync("delete from MaintenanceActivity WHERE Maint_Activity_No =" + act.Maint_Activity_No);
+            //return database.InsertAsync(act);
+            return database.UpdateAsync(act);
+        }
+        public Task<int> SaveActivityASync(MaintenanceActivity task)
+        {
+            return database.InsertAsync(task);
+        }
+
+        public Task<int> DeleteAllActivities()
+        {
+            return database.ExecuteAsync("delete from " + "MaintenanceActivity");
+        }
+        public Task<int> DeleteActivity(MaintenanceActivity act)
+        {
+            return database.DeleteAsync(act);
         }
     }
 }

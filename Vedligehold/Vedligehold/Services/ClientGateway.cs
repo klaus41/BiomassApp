@@ -14,7 +14,8 @@ namespace Vedligehold.Services
         public ClientGateway()
         {
             _client.DefaultRequestHeaders.Add("Accept", "application/json");
-            string baseAddress = "http://demo.biomass.eliteit.dk/";
+            //string baseAddress = "http://demo.biomass.eliteit.dk/";
+            string baseAddress = "http://vedligehold.biomass.eliteit.dk/";
             _client.BaseAddress = new Uri(baseAddress);
         }
 

@@ -14,11 +14,14 @@ namespace Vedligehold
         private static GlobalData globaldata;
         private TabbedPage tabbedPage;
         private LoginPage loginPage;
-        private string user;
+        private bool isLoggedIn = false;
+        private SalesPerson user;
         private DateTime searchDateTime;
+        private DateTime searchDateTimeLast;
         private string searchUserName;
         private TimeRegistrationModel timeRegisteredIn;
         private TimeRegistrationModel timeRegisteredOut;
+
 
         private GlobalData() { }
 
@@ -41,6 +44,7 @@ namespace Vedligehold
                 {
                     tabbedPage = new TabbedPage();
                 }
+                
                 return tabbedPage;
             }
         }
@@ -55,7 +59,7 @@ namespace Vedligehold
                 return loginPage;
             }
         }
-        public string User
+        public SalesPerson User
         {
             get
             {
@@ -75,6 +79,17 @@ namespace Vedligehold
             set
             {
                 searchDateTime = value;
+            }
+        }
+        public DateTime SearchDateTimeLast
+        {
+            get
+            {
+                return searchDateTimeLast;
+            }
+            set
+            {
+                searchDateTimeLast = value;
             }
         }
         public string SearchUserName
@@ -110,6 +125,16 @@ namespace Vedligehold
                 timeRegisteredOut = value;
             }
         }
-
+        public bool IsLoggedIn
+        {
+            get
+            {
+                return isLoggedIn;
+            }
+            set
+            {
+                isLoggedIn = value;
+            }
+        }
     }
 }

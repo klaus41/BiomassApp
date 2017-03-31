@@ -38,11 +38,11 @@
     <Compile Include="App.cs" />
     <Compile Include="Database\IFileHelper.cs" />
     <Compile Include="Database\MaintenanceDatabase.cs" />
-    <Compile Include="Database\TimeRegistrationDatabase.cs" />
-    <Compile Include="Database\ToDoItemDatabase.cs" />
     <Compile Include="GlobalData.cs" />
     <Compile Include="Models\Contact.cs" />
+    <Compile Include="Models\MaintenanceActivity.cs" />
     <Compile Include="Models\MaintenanceTask.cs" />
+    <Compile Include="Models\PictureModel.cs" />
     <Compile Include="Models\SalesPerson.cs" />
     <Compile Include="Models\Statistic.cs" />
     <Compile Include="Models\TaskDetailModel.cs" />
@@ -51,17 +51,24 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\ClientGateway.cs" />
     <Compile Include="Services\ContactService.cs" />
+    <Compile Include="Services\MaintenanceActivityService.cs" />
     <Compile Include="Services\MaintenanceService.cs" />
     <Compile Include="Services\PDFService.cs" />
+    <Compile Include="Services\PictureService.cs" />
     <Compile Include="Services\SalesPersonService.cs" />
     <Compile Include="Services\StatisticService.cs" />
     <Compile Include="Services\Synchronizers\AbstractSynchronizer.cs" />
+    <Compile Include="Services\Synchronizers\MaintenanceActivitySynchronizer.cs" />
     <Compile Include="Services\Synchronizers\TimeRegistrationSynchronizer.cs" />
+    <Compile Include="Services\ThreadManager.cs" />
     <Compile Include="Services\TimeRegistrationService.cs" />
     <Compile Include="Views\Converters\BoolToColorConverter.cs" />
     <Compile Include="Views\Converters\DateTimeToDateConverter.cs" />
     <Compile Include="Views\Converters\DateTimeToTimeConverter.cs" />
     <Compile Include="Views\Converters\EndTimeToColorConverter.cs" />
+    <Compile Include="Views\Converters\MaintenanceTaskRowColor.cs" />
+    <Compile Include="Views\Converters\TimeRegTypeToColorConverter.cs" />
+    <Compile Include="Views\CustomCells\CustomActivityCell.cs" />
     <Compile Include="Views\CustomCells\CustomStatCell.cs" />
     <Compile Include="Views\CustomCells\CustomTaskCell.cs" />
     <Compile Include="Views\CustomCells\CustomTaskDetailCell.cs" />
@@ -73,10 +80,13 @@
     <Compile Include="Views\LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\MaintenanceActivityEdit.cs" />
+    <Compile Include="Views\MaintenanceDetail.cs" />
     <Compile Include="Views\MaintenancePage.xaml.cs">
       <DependentUpon>MaintenancePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Services\Synchronizers\MaintenanceTaskSynchronizer.cs" />
+    <Compile Include="Views\Page1.cs" />
     <Compile Include="Views\SearchSettingsPage.xaml.cs">
       <DependentUpon>SearchSettingsPage.xaml</DependentUpon>
     </Compile>
@@ -100,6 +110,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="ExifLib, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\ExifLib.PCL.1.0.1\lib\portable-net45+sl50+win+WindowsPhoneApp81+wp80+Xamarin.iOS10+MonoAndroid10+MonoTouch10\ExifLib.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Mono.Android">
+      <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\MonoAndroid\v7.1\Mono.Android.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -110,6 +127,14 @@
     </Reference>
     <Reference Include="Plugin.Geolocator.Abstractions, Version=3.0.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Xam.Plugin.Geolocator.3.0.4\lib\portable-net45+wp8+wpa81+win8+MonoAndroid10+MonoTouch10+Xamarin.iOS10+UAP10\Plugin.Geolocator.Abstractions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Plugin.Media, Version=2.6.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Xam.Plugin.Media.2.6.2\lib\portable-net45+wp80+win8+wpa81\Plugin.Media.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Plugin.Media.Abstractions, Version=2.6.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Xam.Plugin.Media.2.6.2\lib\portable-net45+wp80+win8+wpa81\Plugin.Media.Abstractions.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="SQLite-net, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -158,8 +183,13 @@
     <Reference Include="Xamarin.iOS">
       <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\Xamarin.iOS\v1.0\Xamarin.iOS.dll</HintPath>
     </Reference>
+    <Reference Include="XLabs.Core, Version=2.0.5782.12218, Culture=neutral, PublicKeyToken=d65109b36e5040e4, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\XLabs.Core.2.0.5782\lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1\XLabs.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="GettingStarted.Xamarin" />
     <None Include="packages.config" />
   </ItemGroup>

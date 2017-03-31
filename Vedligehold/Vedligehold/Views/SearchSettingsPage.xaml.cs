@@ -13,6 +13,7 @@ namespace Vedligehold.Views
         GlobalData gd = GlobalData.GetInstance;
         Entry userNameEntry;
         DatePicker datePicker;
+        DatePicker datePickerLast;
         Button reset;
         public SearchSettingsPage()
         {
@@ -24,13 +25,20 @@ namespace Vedligehold.Views
             datePicker = new DatePicker()
             {
                 Format = "D",
-                Date = gd.SearchDateTime,
-                MaximumDate = today.AddDays(7)
+                Date = gd.SearchDateTime
             };
+
+            datePickerLast = new DatePicker()
+            {
+                Format = "D",
+                Date = gd.SearchDateTimeLast
+            };
+
             reset = new Button { Text = "Nulstil", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
 
             reset.Clicked += Reset_Clicked;
             datePicker.DateSelected += DatePicker_DateSelected;
+            datePickerLast.DateSelected += DatePickerLast_DateSelected;
             userNameEntry.TextChanged += UserNameEntry_TextChanged;
             Content = new StackLayout
             {
@@ -38,14 +46,21 @@ namespace Vedligehold.Views
                 {
                     userNameEntry,
                     datePicker,
+                    datePickerLast,
                     reset
                 }
             };
         }
 
+        private void DatePickerLast_DateSelected(object sender, DateChangedEventArgs e)
+        {
+            gd.SearchDateTimeLast = datePickerLast.Date;
+        }
+
         private void Reset_Clicked(object sender, EventArgs e)
         {
             gd.SearchDateTime = new DateTime(1800, 1, 1);
+            gd.SearchDateTimeLast = new DateTime(2300, 1, 1);
             gd.SearchUserName = null;
             Navigation.PopModalAsync();
         }
@@ -53,6 +68,7 @@ namespace Vedligehold.Views
         private void DatePicker_DateSelected(object sender, DateChangedEventArgs e)
         {
             gd.SearchDateTime = datePicker.Date;
+            datePickerLast.MinimumDate = datePicker.Date;
         }
 
         private void UserNameEntry_TextChanged(object sender, TextChangedEventArgs e)

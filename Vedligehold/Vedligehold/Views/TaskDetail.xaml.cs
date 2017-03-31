@@ -1,7 +1,9 @@
 ﻿using Plugin.Geolocator;
+using Plugin.Media;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -18,7 +20,8 @@ namespace Vedligehold.Views
         MaintenanceTask taskGlobal;
         ListView lv;
         List<TaskDetailModel> detailList;
-
+        StackLayout sl;
+        PictureModel pm;
         public TaskDetail(MaintenanceTask task)
         {
             InitializeComponent();
@@ -29,14 +32,79 @@ namespace Vedligehold.Views
             Button btn = new Button() { BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
             Button mapButton = new Button() { Text = "Vis på kort", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
             Button pdfButton = new Button() { Text = "Vis PDF", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
+            Button textEditButton = new Button() { Text = "Tilpas tekst", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
+            Button doneEdit = new Button() { Text = "Færdig", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
+            Button cancelEdit = new Button() { Text = "Fortryd", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
+            Editor entryEdit = new Editor() { HeightRequest = 200, TextColor = Color.FromRgb(135, 206, 250) };
+
+            Button takeImageButton = new Button() { Text = "Tag billede", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
+
+            Image image = new Image();
+            takeImageButton.Clicked += async (s, e) =>
+            {
+                await CrossMedia.Current.Initialize();
+
+                if (!CrossMedia.Current.IsCameraAvailable || !CrossMedia.Current.IsTakePhotoSupported)
+                {
+                    DisplayAlert("No Camera", ":( No camera available.", "OK");
+                    return;
+                }
+                var file = await CrossMedia.Current.TakePhotoAsync(new Plugin.Media.Abstractions.StoreCameraMediaOptions
+                {
+                    Directory = "Sample",
+                    Name = "test.jpg"
+                });
+
+                if (file == null)
+                    return;
+
+                Byte[] ba;
+
+                using (var memoryStream = new MemoryStream())
+                {
+                    file.GetStream().CopyTo(memoryStream);
+                    file.Dispose();
+                    ba = memoryStream.ToArray();
+                }
+                pm = new PictureModel();
+                pm.Task_No = task.no;
+                pm.Picture = Convert.ToBase64String(ba);
+                //task.image = ba;
+                //await App.Database.UpdateTaskAsync(task);
+            };
+            
+            var tapGestureRecognizer = new TapGestureRecognizer();
+            tapGestureRecognizer.Tapped += (s, e) =>
+            {
+                Content = sl;
+            };
+            image.GestureRecognizers.Add(tapGestureRecognizer);
+
+
+            StackLayout sl2 = new StackLayout
+            {
+                Children =
+                {
+                  entryEdit,
+                  cancelEdit,
+                  doneEdit
+                }
+            };
+
+            textEditButton.Clicked += (s, e) =>
+            {
+                entryEdit.Text = task.text;
+                Content = sl2;
+            };
+
 
             mapButton.Clicked += MapButton_Clicked;
             pdfButton.Clicked += PdfButton_Clicked;
             btn.Clicked += async (s, e) =>
             {
-                if (!task.done)
+                if (task.status == "Released")
                 {
-                    task.done = true;
+                    task.status = "Completed";
                     try
                     {
                         var locator = CrossGeolocator.Current;
@@ -59,7 +127,7 @@ namespace Vedligehold.Views
 
             //MakeGrid(task);
             MakeListView();
-            if (task.done)
+            if (task.status == "Completed")
             {
                 btn.IsEnabled = false;
                 btn.Text = "Opgaven er markeret som færdig";
@@ -77,18 +145,31 @@ namespace Vedligehold.Views
                 mapButton.Text = "Opgaven har ingen koordinater endnu";
                 mapButton.BackgroundColor = Color.FromRgb(205, 201, 201);
             }
-
-            this.Content = new StackLayout
+            sl = new StackLayout
             {
                 Children =
                 {
                     btn,
                     mapButton,
                     pdfButton,
+                    textEditButton,
+                    takeImageButton,
                     lv
                 }
             };
+            doneEdit.Clicked += async (s, e) =>
+            {
+                task.text = entryEdit.Text;
+                await App.Database.UpdateTaskAsync(task);
+                await Application.Current.MainPage.Navigation.PopModalAsync();
+            };
+            cancelEdit.Clicked += (s, e) =>
+            {
+                Content = sl;
+            };
+            this.Content = sl;
         }
+
 
         private async void PdfButton_Clicked(object sender, EventArgs e)
         {
@@ -107,7 +188,7 @@ namespace Vedligehold.Views
                 {
                     await DisplayAlert("Fejl!", "Der eksisterer ingen PFD på anlæg " + taskGlobal.anlæg + ", " + taskGlobal.anlægsbeskrivelse, "OK");
                 }
-               
+
             }
             catch
             {
@@ -166,14 +247,8 @@ namespace Vedligehold.Views
             {
                 daily = "Nej";
             }
-            if (taskGlobal.done == true)
-            {
-                done = "Ja";
-            }
-            else
-            {
-                done = "Nej";
-            }
+            done = taskGlobal.status;
+
             if (taskGlobal.weekly == true)
             {
                 weekly = "Ja";
@@ -189,9 +264,11 @@ namespace Vedligehold.Views
             detailList.Add(new TaskDetailModel() { type = "Tekst", value = taskGlobal.text });
             detailList.Add(new TaskDetailModel() { type = "Ugentlig", value = weekly });
             detailList.Add(new TaskDetailModel() { type = "Daglig", value = daily });
-            detailList.Add(new TaskDetailModel() { type = "Færdig", value = done });
+            detailList.Add(new TaskDetailModel() { type = "Status", value = done });
             detailList.Add(new TaskDetailModel() { type = "Længdegrad", value = taskGlobal.latitude.ToString() });
             detailList.Add(new TaskDetailModel() { type = "Breddegrad", value = taskGlobal.longitude.ToString() });
+            detailList.Add(new TaskDetailModel() { type = "Planlagt dato", value = taskGlobal.planned_Date.ToString() });
+            detailList.Add(new TaskDetailModel() { type = "Ansvarlig", value = taskGlobal.responsible });
 
         }
     }

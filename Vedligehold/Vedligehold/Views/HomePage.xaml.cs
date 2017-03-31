@@ -21,64 +21,153 @@ namespace Vedligehold.Views
         StackLayout layout;
         ActivityIndicator ai;
         Button logOutButton;
+
         Label tasks;
-        Label searchCriteria;
-        Label user;
+        Label searchCriteriaHeader;
         Label timeRegisteredIn;
         Label timeRegisteredOut;
+        Label userInfo;
+        Label searchTimeFrom;
+        Label searchTimeTo;
+        Label searchUser;
+
+        Image image;
+
         List<MaintenanceTask> taskList;
         GlobalData gd = GlobalData.GetInstance;
         Color buttonColor;
+
+        Grid grid;
+        Grid gridCriteria;
 
         public HomePage()
         {
             buttonColor = Color.FromRgb(135, 206, 250);
             BackgroundColor = Color.White;
             Title = "Hjem";
-            user = new Label() { Text = "Du er logget ind som: " + gd.User, FontSize = 20, FontAttributes = FontAttributes.Bold, VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.Center };
-            searchCriteria = new Label() { Text = "Dine opgaver er filtreret efter bruger " + gd.SearchUserName + " på dato " + gd.SearchDateTime.ToString("dd/MM/yyyy"), HorizontalTextAlignment = TextAlignment.Center, VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.Center };
-            tasks = new Label() { VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.Center };
-            timeRegisteredIn = new Label() { Text = "Du er ikke mødt ind endnu", VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.Center, FontSize = 20, FontAttributes = FontAttributes.Bold };
-            timeRegisteredOut = new Label() { Text = "Du er ikke meldt ud endnu", VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.Center, FontSize = 20, FontAttributes = FontAttributes.Bold };
+
 
             NavigationPage.SetHasNavigationBar(this, false);
             //MakeToolBar();
+            MakeGrid();
+            MakeGridCriteria();
+            HandleImage();
+
+            logOutButton = new Button { Text = "Log ud", BackgroundColor = buttonColor, TextColor = Color.White, VerticalOptions = LayoutOptions.EndAndExpand };
+            logOutButton.Clicked += LogOutButton_Clicked;
 
             layout = new StackLayout { Padding = 10, };
 
-            logOutButton = new Button { Text = "Log ud", BackgroundColor = buttonColor, TextColor = Color.White, VerticalOptions = LayoutOptions.EndAndExpand };
-            logOutButton.Clicked += (s, e) =>
-            {
-                List<Page> pl = new List<Page>();
-                foreach (var item in gd.TabbedPage.Children)
-                {
-                    pl.Add(item);
-                }
-                foreach (var item in pl)
-                {
-                    gd.TabbedPage.Children.Remove(item);
-                }
-                gd.TabbedPage.Children.Add(gd.LoginPage);
+            layout.Children.Add(grid);
+            layout.Children.Add(gridCriteria);
+            layout.Children.Add(image);
+            layout.Children.Add(logOutButton);
 
+            Content = layout;
+        }
+
+        private void HandleImage()
+        {
+            var tapGestureRecognizer = new TapGestureRecognizer();
+            tapGestureRecognizer.Tapped += async (s, e) =>
+            {
+                var answer = await DisplayAlert("Support", "Vil du ringe til EliteIT for support?", "Ja", "Nej");
+                if (answer)
+                {
+                    Device.OpenUri(new Uri("tel:+4588168810"));
+                }
             };
 
-            Image image = new Image();
+            image = new Image();
 
             image.Source = "eistor.png";
             image.Opacity = 0.7;
-            image.VerticalOptions = LayoutOptions.EndAndExpand;
-
-            layout.Children.Add(user);
-            layout.Children.Add(tasks);
-            layout.Children.Add(searchCriteria);
-            layout.Children.Add(image);
-            layout.Children.Add(timeRegisteredIn);
-            layout.Children.Add(timeRegisteredOut);
-            layout.Children.Add(logOutButton);
-
-            Content = new ScrollView { Content = layout };
+            image.VerticalOptions = LayoutOptions.Start;
+            image.Scale = 0.7;
+            image.GestureRecognizers.Add(tapGestureRecognizer);
         }
 
+        private void MakeGridCriteria()
+        {
+            searchCriteriaHeader = new Label() { Text = "Søgekriterier", HorizontalOptions = LayoutOptions.Center, FontAttributes = FontAttributes.Bold, FontSize = 16, TextColor = BackgroundColor };
+            tasks = new Label() { TextColor = BackgroundColor, HorizontalOptions = LayoutOptions.Center };
+            searchTimeFrom = new Label() { Text = "Tid fra", TextColor = BackgroundColor };
+            searchTimeTo = new Label() { Text = "Tid til", TextColor = BackgroundColor };
+            searchUser = new Label() { Text = "Bruger", TextColor = BackgroundColor };
+
+            gridCriteria = new Grid
+            {
+                Padding = new Thickness(10),
+                RowDefinitions =
+                {
+                    new RowDefinition { Height = GridLength.Auto },
+                    new RowDefinition { Height = GridLength.Auto },
+                    new RowDefinition { Height = GridLength.Auto },
+                    new RowDefinition { Height = GridLength.Auto }
+                },
+                ColumnDefinitions =
+                {
+                    new ColumnDefinition { Width = new GridLength(1,GridUnitType.Star) },
+                    new ColumnDefinition { Width = new GridLength(1,GridUnitType.Star) }
+                },
+                VerticalOptions = LayoutOptions.Start,
+                BackgroundColor = buttonColor
+            };
+
+            gridCriteria.Children.Add(searchCriteriaHeader, 0, 0);
+            Grid.SetColumnSpan(searchCriteriaHeader, 2);
+            gridCriteria.Children.Add(searchUser, 0, 1);
+            gridCriteria.Children.Add(tasks, 0, 3);
+            Grid.SetColumnSpan(tasks, 2);
+            gridCriteria.Children.Add(searchTimeFrom, 1, 1);
+            gridCriteria.Children.Add(searchTimeTo, 1, 2);
+
+        }
+        private void MakeGrid()
+        {
+            userInfo = new Label() { Text = "Velkommen " + gd.User.Name, HorizontalOptions = LayoutOptions.Center, FontAttributes = FontAttributes.Bold, FontSize = 16, TextColor = BackgroundColor };
+            timeRegisteredIn = new Label() { Text = "Du er ikke mødt ind endnu", TextColor = BackgroundColor };
+            timeRegisteredOut = new Label() { Text = "Du er ikke meldt ud endnu", TextColor = BackgroundColor };
+
+            grid = new Grid
+            {
+                Padding = new Thickness(10),
+                RowDefinitions =
+                {
+                    new RowDefinition { Height = GridLength.Auto },
+                    new RowDefinition { Height = GridLength.Auto },
+                    new RowDefinition { Height = GridLength.Auto }
+                },
+                ColumnDefinitions =
+                {
+                    new ColumnDefinition { Width = new GridLength(1,GridUnitType.Star) },
+                    new ColumnDefinition { Width = new GridLength(1,GridUnitType.Star) }
+                },
+                VerticalOptions = LayoutOptions.Start,
+                BackgroundColor = buttonColor
+            };
+
+            grid.Children.Add(userInfo, 0, 0);
+            Grid.SetColumnSpan(userInfo, 2);
+            grid.Children.Add(timeRegisteredIn, 0, 1);
+            grid.Children.Add(timeRegisteredOut, 1, 1);
+
+        }
+
+        private void LogOutButton_Clicked(object sender, EventArgs e)
+        {
+            List<Page> pl = new List<Page>();
+            foreach (var item in gd.TabbedPage.Children)
+            {
+                pl.Add(item);
+            }
+            foreach (var item in pl)
+            {
+                gd.TabbedPage.Children.Remove(item);
+            }
+            gd.TabbedPage.Children.Add(gd.LoginPage);
+            gd.IsLoggedIn = false;
+        }
 
         public async void StatButtonMethod()
         {
@@ -166,25 +255,19 @@ namespace Vedligehold.Views
             }
             foreach (var item in taskList)
             {
-                if (!item.done)
+                if (item.status == "Released" && item.responsible == gd.User.Code && item.planned_Date <= gd.SearchDateTimeLast && item.planned_Date >= gd.SearchDateTime)
                 {
                     notdone++;
                 }
             }
-            tasks.Text = "Du har " + notdone + " ufærdige opgaver, der venter.";
-            if (gd.SearchUserName == null)
+            if (notdone == 1)
             {
-                searchCriteria.Text = "Dine opgaver er filtreret på dato " + gd.SearchDateTime.ToString("dd/MM/yyyy");
-            }
-            if (gd.SearchUserName == null && gd.SearchDateTime < new DateTime(1900, 1, 1))
-            {
-                searchCriteria.Text = "Du har ingen filtre på dine søgninger";
+                tasks.Text = "Du har " + notdone + " ufærdig opgave.";
             }
             else
             {
-                searchCriteria.Text = "Dine opgaver er filtreret efter bruger " + gd.SearchUserName + " på dato " + gd.SearchDateTime.ToString("dd/MM/yyyy");
+                tasks.Text = "Du har " + notdone + " ufærdige opgaver.";
             }
-            user.Text = "Du er logget ind som: " + gd.User;
             if (gd.TimeRegisteredIn != null)
             {
                 timeRegisteredIn.Text = "Du er mødt ind: " + gd.TimeRegisteredIn.Time.ToString("HH:mm");
@@ -192,6 +275,31 @@ namespace Vedligehold.Views
             if (gd.TimeRegisteredOut != null)
             {
                 timeRegisteredOut.Text = "Du er meldt ud: " + gd.TimeRegisteredOut.Time.ToString("HH:mm");
+            }
+            if (gd.SearchDateTime > new DateTime(1950, 1, 1))
+            {
+                searchTimeFrom.Text = "Fra d.: " + gd.SearchDateTime.ToString("dd/MM/yyyy");
+            }
+            else
+            {
+                searchTimeFrom.Text = "Fra dato: Ingen dato sat";
+            }
+            if (gd.SearchDateTimeLast < new DateTime(2050, 1, 1))
+            {
+                searchTimeTo.Text = "Til d.: " + gd.SearchDateTimeLast.ToString("dd/MM/yyyy");
+            }
+            else
+            {
+                searchTimeTo.Text = "Til dato: Ingen dato sat";
+            }
+            if (gd.SearchUserName != null)
+            {
+                searchUser.Text = "Brugernavn: " + gd.SearchUserName;
+            }
+            else
+            {
+                searchUser.Text = "Brugernavn: Intet brugernavn";
+
             }
         }
 

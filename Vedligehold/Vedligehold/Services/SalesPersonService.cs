@@ -13,11 +13,8 @@ namespace Vedligehold.Services
     {
         public async Task<SalesPerson[]> GetSalesPersonsAsync()
         {
-            var client = new HttpClient();
-            client.DefaultRequestHeaders.Add("Accept", "application/json");
-
-            client.BaseAddress = new Uri("http://demo.biomass.eliteit.dk/");
-
+            HttpClient client = GetHttpClient();
+         
             var response = await client.GetAsync("api/salesperson/");
 
             var statsJson = response.Content.ReadAsStringAsync().Result;
@@ -29,11 +26,7 @@ namespace Vedligehold.Services
 
         public async Task<SalesPerson> GetSalesPersonAsync(string id)
         {
-            HttpClient client = new HttpClient();
-
-            client.DefaultRequestHeaders.Add("Accept", "application/json");
-
-            client.BaseAddress = new Uri("http://demo.biomass.eliteit.dk/");
+            HttpClient client = GetHttpClient();
 
             var response = await client.GetAsync("api/salesperson/" + id);
 

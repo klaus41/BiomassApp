@@ -22,6 +22,8 @@ namespace Vedligehold.Views
         Button checkConnectionButton;
         Button searchSettingsButton;
 
+        Label version;
+
         public SettingsPage()
         {
             buttonColor = Color.FromRgb(135, 206, 250);
@@ -37,6 +39,8 @@ namespace Vedligehold.Views
             deleteDbButton = new Button { Text = "Slet data fra lokal database", BackgroundColor = buttonColor, TextColor = Color.White };
             checkConnectionButton = new Button { Text = "Tjek forbindelse til NAV", BackgroundColor = buttonColor, TextColor = Color.White };
             searchSettingsButton = new Button { Text = "Administrer søgefilter", BackgroundColor = buttonColor, TextColor = Color.White };
+
+            version = new Label() { Text = "Version 22.0", VerticalOptions = LayoutOptions.EndAndExpand };
 
             searchSettingsButton.Clicked += (s, e) =>
             {
@@ -86,8 +90,10 @@ namespace Vedligehold.Views
                     {
                         MaintenanceTaskSynchronizer sync = new MaintenanceTaskSynchronizer();
                         TimeRegistrationSynchronizer timesync = new TimeRegistrationSynchronizer();
+                        MaintenanceActivitySynchronizer actSync = new MaintenanceActivitySynchronizer();
                         var data = await sync.DeleteAndPopulateDb();
                         timesync.DeleteAndPopulateDb();
+                        actSync.DeleteAndPopulateDb();
                         RemoveActivityIndicator();
                         await DisplayAlert("Synkronisering", "Du har nu erstattet " + data[0].ToString() + " lokale opgaver med " + data[1] + " opgaver fra Navision", "OK");
                     }
@@ -107,8 +113,11 @@ namespace Vedligehold.Views
                 {
                     MaintenanceTaskSynchronizer sync = new MaintenanceTaskSynchronizer();
                     TimeRegistrationSynchronizer timesync = new TimeRegistrationSynchronizer();
+                    MaintenanceActivitySynchronizer actSync = new MaintenanceActivitySynchronizer();
                     await sync.SyncDatabaseWithNAV();
                     await timesync.SyncDatabaseWithNAV();
+                    await actSync.SyncDatabaseWithNAV();
+
                     RemoveActivityIndicator();
                     await DisplayAlert("Synkronisering", "Enheden er nu synkroniseret med NAV", "OK");
                 }
@@ -125,6 +134,7 @@ namespace Vedligehold.Views
             layout.Children.Add(deleteDbButton);
             layout.Children.Add(checkConnectionButton);
             layout.Children.Add(searchSettingsButton);
+            layout.Children.Add(version);
 
             Content = new ScrollView { Content = layout };
 

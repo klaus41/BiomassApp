@@ -19,11 +19,14 @@ namespace Vedligehold.Models
         public bool weekly { get; set; }
         public bool daily { get; set; }
         public string etag { get; set; }
-        public bool done { get; set; }
+        //public bool done { get; set; }
+        public string status { get; set; }
         public double longitude { get; set; }
         public double latitude { get; set; }
         public DateTime planned_Date { get; set; }
         public string responsible { get; set; }
+        public byte[] image { get; set; }
+        public string AppNotes { get; set; }
         //public bool synced { get; set; }
 
 

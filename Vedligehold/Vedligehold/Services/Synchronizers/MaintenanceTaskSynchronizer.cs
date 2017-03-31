@@ -73,11 +73,12 @@ namespace Vedligehold.Views
                         onlineList.Add(item);
                     }
 
-
+                    CheckIfFinishedOrDeleted();
                     PutDoneTasksToNAV();
                     CheckForConflicts();
                     CheckForNewTasks();
-                    PushNewTasks();
+                    //PushNewTasks();
+                    PutTextChangedTasks();
                 }
             }
             catch
@@ -85,6 +86,28 @@ namespace Vedligehold.Views
                 done = true;
             }
             return done;
+        }
+
+        private async void PutTextChangedTasks()
+        {
+            foreach (MaintenanceTask onlineTask in onlineList)
+            {
+                foreach (MaintenanceTask task in taskList)
+                {
+                    if ((task.no == onlineTask.no) && (task.etag == onlineTask.etag))
+                    {
+                        if (task.AppNotes != onlineTask.AppNotes)
+                        {
+                            var mts = new MaintenanceService();
+                            await mts.UpdateTask(task);
+                            numberOfSyncs++;
+                            Debug.WriteLine("NUMBER OF NEW TEXTS SYNC !!!!!!!!!!!!!!!!!! " + numberOfSyncs + task.no);
+                        }
+                    }
+                }
+            }
+            done = true;
+
         }
 
         public async void DeleteDB()
@@ -139,7 +162,7 @@ namespace Vedligehold.Views
                 {
                     if ((task.no == onlineTask.no) && (task.etag == onlineTask.etag))
                     {
-                        if (task.done && !onlineTask.done)
+                        if (task.status == "Completed" && onlineTask.status == "Released")
                         {
                             var mts = new MaintenanceService();
                             await mts.UpdateTask(task);
@@ -168,7 +191,24 @@ namespace Vedligehold.Views
                     await mts.CreateTask(task);
                 }
             }
-            done = true;
+        }
+        private async void CheckIfFinishedOrDeleted()
+        {
+            foreach (MaintenanceTask task in taskList)
+            {
+                int matches = 0;
+                foreach (MaintenanceTask onlineTask in onlineList)
+                {
+                    if (task.no == onlineTask.no)
+                    {
+                        matches++;
+                    }
+                }
+                if (matches == 0)
+                {
+                    await App.Database.DeleteTaskAsync(task);
+                }
+            }
         }
     }
 }
