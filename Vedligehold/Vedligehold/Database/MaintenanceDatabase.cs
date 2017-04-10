@@ -18,7 +18,7 @@ namespace Vedligehold.Database
             database.CreateTableAsync<MaintenanceTask>().Wait();
             database.CreateTableAsync<TimeRegistrationModel>().Wait();
             database.CreateTableAsync<MaintenanceActivity>().Wait();
-
+            database.CreateTableAsync<ConnectionSettings>().Wait();
         }
 
         public Task<List<MaintenanceTask>> GetTasksAsync()
@@ -90,7 +90,7 @@ namespace Vedligehold.Database
         
         public Task<int> UpdateActivityAsync(MaintenanceActivity act)
         {
-            //     return database.ExecuteAsync("Update MaintenanceActivity SET done=true WHERE Maint_Activity_No=" + act.Maint_Activity_No);
+            // return database.ExecuteAsync("Update MaintenanceActivity SET done=true WHERE Maint_Activity_No=" + act.Maint_Activity_No);
             //database.ExecuteAsync("delete from MaintenanceActivity WHERE Maint_Activity_No =" + act.Maint_Activity_No);
             //return database.InsertAsync(act);
             return database.UpdateAsync(act);
@@ -107,6 +107,19 @@ namespace Vedligehold.Database
         public Task<int> DeleteActivity(MaintenanceActivity act)
         {
             return database.DeleteAsync(act);
+        }
+        public Task<ConnectionSettings> GetConnectionSetting(int id)
+        {
+            return database.Table<ConnectionSettings>().Where(i => i.ID == id).FirstOrDefaultAsync();
+        }
+
+        public Task<int> UpdateConnectionSetting(ConnectionSettings act)
+        {
+            return database.UpdateAsync(act);
+        }
+        public Task<int> SaveConnectionSetting(ConnectionSettings task)
+        {
+            return database.InsertAsync(task);
         }
     }
 }

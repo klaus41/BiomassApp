@@ -14,7 +14,6 @@ namespace Vedligehold.Views
         ActivityIndicator ai;
         StackLayout layout;
         Color buttonColor;
-        bool loading;
 
         Button syncButton;
         Button dropCreateButton;
@@ -34,13 +33,18 @@ namespace Vedligehold.Views
             NavigationPage.SetHasNavigationBar(this, false);
             layout = new StackLayout { Padding = 10, };
 
+            if (Device.OS == TargetPlatform.iOS)
+            {
+                // move layout under the status bar
+                layout.Padding = new Thickness(0, 20, 0, 0);
+            }
             dropCreateButton = new Button { Text = "Nulstil lokal database", BackgroundColor = buttonColor, TextColor = Color.White };
             syncButton = new Button { Text = "Synkroniser", BackgroundColor = buttonColor, TextColor = Color.White };
             deleteDbButton = new Button { Text = "Slet data fra lokal database", BackgroundColor = buttonColor, TextColor = Color.White };
             checkConnectionButton = new Button { Text = "Tjek forbindelse til NAV", BackgroundColor = buttonColor, TextColor = Color.White };
             searchSettingsButton = new Button { Text = "Administrer søgefilter", BackgroundColor = buttonColor, TextColor = Color.White };
 
-            version = new Label() { Text = "Version 22.0", VerticalOptions = LayoutOptions.EndAndExpand };
+            version = new Label() { Text = "Version 23.0", VerticalOptions = LayoutOptions.EndAndExpand };
 
             searchSettingsButton.Clicked += (s, e) =>
             {
@@ -141,8 +145,6 @@ namespace Vedligehold.Views
         }
         private void RemoveActivityIndicator()
         {
-
-            loading = false;
             layout.Children.Remove(ai);
             syncButton.IsEnabled = true;
             dropCreateButton.IsEnabled = true;

@@ -50,8 +50,14 @@ namespace Vedligehold.Views.CustomCells
             reading.SetBinding<MaintenanceActivity>(Label.TextProperty, i => i.Reading);
 
             mainGrid.SetBinding(Label.BackgroundColorProperty, new Binding("Done", converter: new BoolToColorConverter()));
-            mainGrid.Margin = 10;
-
+            if (Device.OS == TargetPlatform.iOS)
+            {
+                mainGrid.Margin = 0;
+            }
+            else
+            {
+                mainGrid.Margin = 10;
+            }
         }
     }
 }

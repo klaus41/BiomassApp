@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Vedligehold.Database;
+using Vedligehold.Models;
 using Vedligehold.Services;
 using Vedligehold.Views;
 using Xamarin.Forms;
@@ -16,6 +17,7 @@ namespace Vedligehold
         public App()
         {
             GlobalData gd = GlobalData.GetInstance;
+
             if (gd.IsLoggedIn)
             {
                 MainPage = gd.TabbedPage;
@@ -25,9 +27,30 @@ namespace Vedligehold
                 gd.TabbedPage.Children.Add(gd.LoginPage);
                 MainPage = gd.TabbedPage;
             }
-            ThreadManager tm = new ThreadManager();
-            tm.StartSynchronizationThread();
+            checkedConnectionSettings();
+
+
         }
+
+        private async void checkedConnectionSettings()
+        {
+            if (await Database.GetConnectionSetting(0) != null)
+            {
+                var s = await Database.GetConnectionSetting(0);
+                ThreadManager tm = new ThreadManager();
+                tm.StartSynchronizationThread();
+            }
+            else
+            {
+                ConnectionSettings settings = new ConnectionSettings()
+                {
+                    ID = 0,
+                    BaseAddress = "http://vedligehold.biomass.eliteit.dk/"
+                };
+                await Database.SaveConnectionSetting(settings);
+            }
+        }
+
         public static MaintenanceDatabase Database
         {
             get

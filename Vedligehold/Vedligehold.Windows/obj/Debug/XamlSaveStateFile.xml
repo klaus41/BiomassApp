@@ -6,6 +6,7 @@
     <ReferenceAssembly PathName="c:\users\klaus\documents\visual studio 2015\projects\vedligehold\packages\xam.plugin.geolocator.3.0.4\lib\win8\plugin.geolocator.dll" HashGuid="388f1122-9d57-ce2f-c8c7-dae5f9a81113" />
     <ReferenceAssembly PathName="c:\users\klaus\documents\visual studio 2015\projects\vedligehold\packages\xam.plugin.media.2.6.2\lib\win8\plugin.media.abstractions.dll" HashGuid="2f026a7c-41cf-6c4a-d5ab-5661045873a2" />
     <ReferenceAssembly PathName="c:\users\klaus\documents\visual studio 2015\projects\vedligehold\packages\xam.plugin.media.2.6.2\lib\win8\plugin.media.dll" HashGuid="7f014772-d7e3-ddb4-76f7-34221fb44f13" />
+    <ReferenceAssembly PathName="c:\users\klaus\documents\visual studio 2015\projects\vedligehold\vedligehold\vedligehold\bin\debug\vedligehold.dll" HashGuid="165f7ac0-7fd1-8630-7f7c-da29b55437c2" />
     <ReferenceAssembly PathName="c:\users\klaus\documents\visual studio 2015\projects\vedligehold\packages\xamarin.forms.2.3.3.180\lib\win81\xamarin.forms.core.dll" HashGuid="c782f70f-077f-7e2d-5bd4-f6b5da067f8a" />
     <ReferenceAssembly PathName="c:\users\klaus\documents\visual studio 2015\projects\vedligehold\packages\xamarin.forms.2.3.3.180\lib\win81\xamarin.forms.platform.dll" HashGuid="6b938cd4-44c0-2618-7eb6-4caa3f482076" />
     <ReferenceAssembly PathName="c:\users\klaus\documents\visual studio 2015\projects\vedligehold\packages\xamarin.forms.2.3.3.180\lib\win81\xamarin.forms.platform.winrt.dll" HashGuid="fe4acc44-27ba-0e4e-a08b-26ae7dccb678" />

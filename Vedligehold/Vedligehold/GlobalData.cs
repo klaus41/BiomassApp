@@ -21,6 +21,7 @@ namespace Vedligehold
         private string searchUserName;
         private TimeRegistrationModel timeRegisteredIn;
         private TimeRegistrationModel timeRegisteredOut;
+        private string baseAddress;
 
 
         private GlobalData() { }
@@ -134,6 +135,18 @@ namespace Vedligehold
             set
             {
                 isLoggedIn = value;
+            }
+        }
+
+        public string BaseAddress
+        {
+            get
+            {
+                return baseAddress;
+            }
+            set
+            {
+                baseAddress = value;
             }
         }
     }

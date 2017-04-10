@@ -28,11 +28,20 @@
     <AppxPackagedFile Include="C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.WinPhone\bin\Debug\Vedligehold.WinPhone.exe.config">
       <PackagePath>Vedligehold.WinPhone.exe.config</PackagePath>
     </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\packages\ExifLib.PCL.1.0.1\lib\portable-net45+sl50+win+WindowsPhoneApp81+wp80+Xamarin.iOS10+MonoAndroid10+MonoTouch10\ExifLib.dll">
+      <PackagePath>ExifLib.dll</PackagePath>
+    </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\packages\Xam.Plugin.Geolocator.3.0.4\lib\wpa81\Plugin.Geolocator.Abstractions.dll">
       <PackagePath>Plugin.Geolocator.Abstractions.dll</PackagePath>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\packages\Xam.Plugin.Geolocator.3.0.4\lib\wpa81\Plugin.Geolocator.dll">
       <PackagePath>Plugin.Geolocator.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\packages\Xam.Plugin.Media.2.6.2\lib\wpa81\Plugin.Media.Abstractions.dll">
+      <PackagePath>Plugin.Media.Abstractions.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\packages\Xam.Plugin.Media.2.6.2\lib\wpa81\Plugin.Media.dll">
+      <PackagePath>Plugin.Media.dll</PackagePath>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\packages\sqlite-net-pcl.1.3.1\lib\netstandard1.1\SQLite-net.dll">
       <PackagePath>SQLite-net.dll</PackagePath>
@@ -69,6 +78,9 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\packages\Xamarin.Forms.2.3.3.180\lib\wpa81\Xamarin.Forms.Xaml.dll">
       <PackagePath>Xamarin.Forms.Xaml.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\packages\XLabs.Core.2.0.5782\lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1\XLabs.Core.dll">
+      <PackagePath>XLabs.Core.dll</PackagePath>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold\bin\Debug\Newtonsoft.Json.dll">
       <PackagePath>Newtonsoft.Json.dll</PackagePath>
@@ -114,6 +126,15 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold\Resources\sbg.jpg">
       <PackagePath>Vedligehold\Resources\sbg.jpg</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\packages\Xam.Plugin.Media.2.6.2\lib\wpa81\Plugin.Media\CameraCaptureUI.xbf">
+      <PackagePath>Plugin.Media\CameraCaptureUI.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\packages\Xam.Plugin.Media.2.6.2\lib\wpa81\Plugin.Media\CameraCaptureUIPage.xbf">
+      <PackagePath>Plugin.Media\CameraCaptureUIPage.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\packages\Xam.Plugin.Media.2.6.2\lib\wpa81\Plugin.Media\Plugin.Media.xr.xml">
+      <PackagePath>Plugin.Media\Plugin.Media.xr.xml</PackagePath>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\packages\Xamarin.Forms.2.3.3.180\lib\wpa81\Xamarin.Forms.Platform.WinRT\PageControl.xbf">
       <PackagePath>Xamarin.Forms.Platform.WinRT\PageControl.xbf</PackagePath>

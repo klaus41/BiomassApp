@@ -16,7 +16,6 @@ namespace Vedligehold.Services.Synchronizers
         MaintenanceActivityService ts;
 
         int numberOfConflicts;
-        int numberOfSyncs;
         int numberOfMatches;
         int numberOfNewTasks;
 

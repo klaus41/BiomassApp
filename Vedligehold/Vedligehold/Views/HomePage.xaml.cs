@@ -58,6 +58,11 @@ namespace Vedligehold.Views
 
             layout = new StackLayout { Padding = 10, };
 
+            if (Device.OS == TargetPlatform.iOS)
+            {
+                // move layout under the status bar
+                layout.Padding = new Thickness(0, 20, 0, 0);
+            }
             layout.Children.Add(grid);
             layout.Children.Add(gridCriteria);
             layout.Children.Add(image);
@@ -262,11 +267,11 @@ namespace Vedligehold.Views
             }
             if (notdone == 1)
             {
-                tasks.Text = "Du har " + notdone + " ufærdig opgave.";
+                tasks.Text = "Du har " + notdone + " frigivet opgave.";
             }
             else
             {
-                tasks.Text = "Du har " + notdone + " ufærdige opgaver.";
+                tasks.Text = "Du har " + notdone + " frigivede opgaver.";
             }
             if (gd.TimeRegisteredIn != null)
             {
@@ -302,7 +307,5 @@ namespace Vedligehold.Views
 
             }
         }
-
-
     }
 }

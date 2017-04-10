@@ -26,6 +26,7 @@ namespace Vedligehold.Views
         bool showDone = false;
         public MaintenancePage()
         {
+
             Title = "Opgaver";
             //MakeToolBar();
             NavigationPage.SetHasNavigationBar(this, false);
@@ -71,7 +72,7 @@ namespace Vedligehold.Views
                 else
                 {
                     i = 1;
-                    await DisplayAlert("OBS!", "Opgaven er allerede markeret som færdig", "OK");
+                    await DisplayAlert("OBS!", "Opgaven er allerede markeret som udført", "OK");
                 }
             }
             UpdateItemSource();
@@ -115,7 +116,7 @@ namespace Vedligehold.Views
             };
 
             Button b = new Button() { Text = "Opret standardopgave", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
-            showDoneButton = new Button() { Text = "Vis færdige opgaver", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
+            showDoneButton = new Button() { Text = "Vis udførte opgaver", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
             showDoneButton.Clicked += ShowDoneButton_Clicked;
 
             b.Clicked += async (s, e) =>
@@ -134,20 +135,23 @@ namespace Vedligehold.Views
                 await db.SaveTaskAsync(task);
                 UpdateItemSource();
             };
-
-            Content = new ScrollView
+ 
+            StackLayout layout = new StackLayout
             {
-                Content = new StackLayout
-                {
-                    VerticalOptions = LayoutOptions.FillAndExpand,
-                    Children =
+                VerticalOptions = LayoutOptions.FillAndExpand,
+                Children =
                     {
                         showDoneButton,
                         lv
                     }
-                }
-            };
 
+            };
+            if (Device.OS == TargetPlatform.iOS)
+            {
+                // move layout under the status bar
+                layout.Padding = new Thickness(0, 20, 0, 0);
+            }
+            Content = layout;
             lv.Refreshing += Lv_Refreshing;
             lv.ItemTapped += Lv_ItemTapped;
 

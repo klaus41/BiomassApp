@@ -33,7 +33,7 @@ namespace Vedligehold.Views
             Button mapButton = new Button() { Text = "Vis på kort", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
             Button pdfButton = new Button() { Text = "Vis PDF", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
             Button textEditButton = new Button() { Text = "Tilpas tekst", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
-            Button doneEdit = new Button() { Text = "Færdig", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
+            Button doneEdit = new Button() { Text = "udført", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
             Button cancelEdit = new Button() { Text = "Fortryd", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
             Editor entryEdit = new Editor() { HeightRequest = 200, TextColor = Color.FromRgb(135, 206, 250) };
 
@@ -130,13 +130,13 @@ namespace Vedligehold.Views
             if (task.status == "Completed")
             {
                 btn.IsEnabled = false;
-                btn.Text = "Opgaven er markeret som færdig";
+                btn.Text = "Opgaven er markeret som udført";
                 btn.BackgroundColor = Color.FromRgb(205, 201, 201);
 
             }
             else
             {
-                btn.Text = "Sæt til færdig";
+                btn.Text = "Sæt til udført";
             }
 
             if (task.longitude == 0 || task.latitude == 0)

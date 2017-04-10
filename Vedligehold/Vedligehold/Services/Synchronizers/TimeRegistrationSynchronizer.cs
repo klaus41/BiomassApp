@@ -55,6 +55,7 @@ namespace Vedligehold.Services.Synchronizers
                         onlineList.Add(item);
                     }
 
+                    CheckIfFinishedOrDeleted();
                     PutDoneTimeRegsToNAV();
                     CheckForConflicts();
                     CheckForNewTasks();
@@ -86,6 +87,24 @@ namespace Vedligehold.Services.Synchronizers
                             Debug.WriteLine("NUMBER OF SYNCS !!!!!!!!!!!!!!!!!! " + numberOfSyncs + timeReg.No);
                         }
                     }
+                }
+            }
+        }
+        private async void CheckIfFinishedOrDeleted()
+        {
+            foreach (TimeRegistrationModel timereg in timeList)
+            {
+                int matches = 0;
+                foreach (TimeRegistrationModel onlineTask in onlineList)
+                {
+                    if (timereg.No == onlineTask.No)
+                    {
+                        matches++;
+                    }
+                }
+                if (matches == 0)
+                {
+                    await App.Database.DeleteTimeRegAsync(timereg);
                 }
             }
         }

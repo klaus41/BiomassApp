@@ -13,15 +13,25 @@ namespace Vedligehold.Views
         bool usernameText = false;
         bool passwordText;
         Button button;
+        Button connectionSettingsButton;
         Entry username;
         Entry password;
         GlobalData gd = GlobalData.GetInstance;
 
         public LoginPage()
         {
+
             NavigationPage.SetHasNavigationBar(this, false);
 
             var layout = new StackLayout { Padding = 10, };
+
+            if (Device.OS == TargetPlatform.iOS)
+            {
+                // move layout under the status bar
+                layout.Padding = new Thickness(0, 20, 0, 0);
+            }
+
+
             BackgroundColor = Color.White;
             Image image = new Image() { Source = "eistor.png", Opacity = 0.7, HorizontalOptions = LayoutOptions.StartAndExpand };
             Title = "Log ind";
@@ -39,14 +49,19 @@ namespace Vedligehold.Views
 
             password = new Entry { Placeholder = "Password", IsPassword = true };
             layout.Children.Add(password);
-
+            connectionSettingsButton = new Button { Text = "Opkoblingsindstillinger", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White, VerticalOptions = LayoutOptions.End };
             button = new Button { Text = "Log ind", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White, IsEnabled = false };
             layout.Children.Add(button);
             layout.Children.Add(image);
+            layout.Children.Add(connectionSettingsButton);
 
             password.TextChanged += Password_TextChanged;
             username.TextChanged += Username_TextChanged;
 
+            connectionSettingsButton.Clicked += async (s, e) =>
+            {
+                await Navigation.PushModalAsync(new ConnectionSettingsPage());
+            };
             button.Clicked += async (s, e) =>
             {
                 bool succes = false;
@@ -143,7 +158,7 @@ namespace Vedligehold.Views
         protected override void OnAppearing()
         {
             //bool usernameText = false;
-            bool passwordText = false;
+            passwordText = false;
             button.IsEnabled = false;
         }
     }

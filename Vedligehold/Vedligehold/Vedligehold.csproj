@@ -39,6 +39,7 @@
     <Compile Include="Database\IFileHelper.cs" />
     <Compile Include="Database\MaintenanceDatabase.cs" />
     <Compile Include="GlobalData.cs" />
+    <Compile Include="Models\ConnectionSettings.cs" />
     <Compile Include="Models\Contact.cs" />
     <Compile Include="Models\MaintenanceActivity.cs" />
     <Compile Include="Models\MaintenanceTask.cs" />
@@ -86,7 +87,7 @@
       <DependentUpon>MaintenancePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Services\Synchronizers\MaintenanceTaskSynchronizer.cs" />
-    <Compile Include="Views\Page1.cs" />
+    <Compile Include="Views\ConnectionSettingsPage.cs" />
     <Compile Include="Views\SearchSettingsPage.xaml.cs">
       <DependentUpon>SearchSettingsPage.xaml</DependentUpon>
     </Compile>

@@ -49,7 +49,7 @@ namespace Vedligehold.Views
             mapButton = new Button() { Text = "Vis på kort", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
             pdfButton = new Button() { Text = "Vis PDF", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
             backButton = new Button() { Text = "Tilbage", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
-            doneActButton = new Button() { Text = "Færdig", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
+            doneActButton = new Button() { Text = "Udført", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
             addNotesButton = new Button() { Text = "Tilføj notat", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
             cameraButton = new Button() { Text = "Tilføj billede", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
 
@@ -61,7 +61,7 @@ namespace Vedligehold.Views
                 //BackgroundColor = Color.White,
                 TextColor = Color.White,
                 //VerticalTextAlignment = TextAlignment.Center,
-                HorizontalTextAlignment = TextAlignment.Center,
+                HorizontalTextAlignment = TextAlignment.Start,
                 FontSize = 14,
                 //FontAttributes = FontAttributes.Bold
             };
@@ -73,7 +73,7 @@ namespace Vedligehold.Views
                 //BackgroundColor = Color.White,
                 TextColor = Color.White,//TextColor = Color.FromRgb(135, 206, 250),
                 //VerticalTextAlignment = TextAlignment.Center,
-                HorizontalTextAlignment = TextAlignment.Center,
+                HorizontalTextAlignment = TextAlignment.Start,
                 FontSize = 14,
                 //FontAttributes = FontAttributes.Bold
             };
@@ -85,7 +85,7 @@ namespace Vedligehold.Views
                 //BackgroundColor = Color.White,
                 TextColor = Color.White,//TextColor = Color.FromRgb(135, 206, 250),
                 //VerticalTextAlignment = TextAlignment.Center,
-                HorizontalTextAlignment = TextAlignment.Center,
+                HorizontalTextAlignment = TextAlignment.Start,
                 FontSize = 14,
                 //FontAttributes = FontAttributes.Bold
             };
@@ -97,13 +97,13 @@ namespace Vedligehold.Views
                 //BackgroundColor = Color.White,
                 TextColor = Color.White,//TextColor = Color.FromRgb(135, 206, 250),
                 //VerticalTextAlignment = TextAlignment.Center,
-                HorizontalTextAlignment = TextAlignment.Center,
+                HorizontalTextAlignment = TextAlignment.Start,
                 FontSize = 14,
                 //FontAttributes = FontAttributes.Bold
             };
             header = new Label()
             {
-                Text = "Information",
+                Text = "Opgave nr. " + task.no,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand,
                 //BackgroundColor = Color.White,
@@ -117,13 +117,13 @@ namespace Vedligehold.Views
             if (task.status == "Completed")
             {
                 doneButton.IsEnabled = false;
-                doneButton.Text = "Færdig";
+                doneButton.Text = "Udført";
                 doneButton.BackgroundColor = Color.FromRgb(205, 201, 201);
 
             }
             else
             {
-                doneButton.Text = "Sæt til færdig";
+                doneButton.Text = "Sæt til udført";
             }
 
             doneButton.Clicked += DoneButton_Clicked;
@@ -155,7 +155,7 @@ namespace Vedligehold.Views
 
             if (!CrossMedia.Current.IsCameraAvailable || !CrossMedia.Current.IsTakePhotoSupported)
             {
-                DisplayAlert("No Camera", ":( No camera available.", "OK");
+                await DisplayAlert("No Camera", ":( No camera available.", "OK");
                 return;
             }
             var file = await CrossMedia.Current.TakePhotoAsync(new Plugin.Media.Abstractions.StoreCameraMediaOptions
@@ -336,7 +336,7 @@ namespace Vedligehold.Views
 
             gridInfo = new Grid
             {
-                //Padding = new Thickness(10),
+                Padding = new Thickness(10),
                 RowDefinitions =
                 {
                     new RowDefinition { Height = GridLength.Auto },
@@ -352,6 +352,8 @@ namespace Vedligehold.Views
                 //ColumnSpacing = 10,
                 //RowSpacing = 10
             };
+
+           gridInfo.Margin = 10;
 
             grid.Children.Add(doneButton, 0, 2);
             Grid.SetColumnSpan(doneButton, 2);
@@ -411,7 +413,7 @@ namespace Vedligehold.Views
             {
                 if (entry.Text == null)
                 {
-                    DisplayAlert("Advarsel", "Der skal skrives en værdi i aflæsningsfeltet", "OK");
+                    await DisplayAlert("Advarsel", "Der skal skrives en værdi i aflæsningsfeltet", "OK");
                 }
                 else
                 {
@@ -521,13 +523,13 @@ namespace Vedligehold.Views
             if (taskGlobal.status == "Completed")
             {
                 doneButton.IsEnabled = false;
-                doneButton.Text = "Færdig";
+                doneButton.Text = "Udført";
                 doneButton.BackgroundColor = Color.FromRgb(205, 201, 201);
 
             }
             else
             {
-                doneButton.Text = "Sæt til færdig";
+                doneButton.Text = "Sæt til udført";
             }
         }
     }

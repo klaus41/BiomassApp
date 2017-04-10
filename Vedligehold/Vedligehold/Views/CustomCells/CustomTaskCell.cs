@@ -80,8 +80,16 @@ namespace Vedligehold.Views
             //colorImg.SetBinding(Image.SourceProperty, new Binding("done", converter: new BoolToColorConverter()));
 
             //mainGrid.Padding = 20;
-            mainGrid.Margin = 10;
-            //MakeCustomCell();
+
+            if (Device.OS == TargetPlatform.iOS)
+            {
+                mainGrid.Margin = 0;
+            }
+            else
+            {
+                mainGrid.Margin = 10;
+            }
+                //MakeCustomCell();
             CreateMenu();
         }
 
@@ -149,7 +157,7 @@ namespace Vedligehold.Views
                 mp.ShowPDF(_task);
             };
 
-            var doneAction = new MenuItem { Text = "Færdig" };
+            var doneAction = new MenuItem { Text = "Udført" };
             doneAction.SetBinding(MenuItem.CommandParameterProperty, new Binding("."));
             doneAction.Clicked += (sender, e) =>
             {

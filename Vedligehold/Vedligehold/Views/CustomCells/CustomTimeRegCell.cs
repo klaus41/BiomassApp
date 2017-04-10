@@ -70,8 +70,14 @@ namespace Vedligehold.Views.CustomCells
             time.SetBinding(Label.TextProperty, new Binding("Time", converter: new DateTimeToTimeConverter()));
             
             mainGrid.SetBinding(Label.BackgroundColorProperty, new Binding("Type", converter: new TimeRegTypeToColorConverter()));
-            mainGrid.Margin = 10;
-
+            if (Device.OS == TargetPlatform.iOS)
+            {
+                mainGrid.Margin = 0;
+            }
+            else
+            {
+                mainGrid.Margin = 10;
+            }
         }
     }
 }

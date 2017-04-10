@@ -52,6 +52,12 @@ namespace Vedligehold.Views
             checkOut.Clicked += CheckOut_Clicked;
             checkIn.Clicked += CheckIn_Clicked;
             StackLayout layout = new StackLayout { Padding = 10 };
+
+            if (Device.OS == TargetPlatform.iOS)
+            {
+                // move layout under the status bar
+                layout.Padding = new Thickness(0, 20, 0, 0);
+            }
             layout.Children.Add(checkIn);
             layout.Children.Add(checkOut);
             layout.Children.Add(lv);
@@ -136,7 +142,7 @@ namespace Vedligehold.Views
 
         protected override void OnAppearing()
         {
-            base.OnAppearing();
+            //base.OnAppearing();
             GetData();
         }
 
@@ -175,20 +181,6 @@ namespace Vedligehold.Views
                     }
                 }
             }
-
-            //if (gd.SearchUserName != null && gd.SearchDateTime > new DateTime(1900, 1, 1))
-            //{
-            //    lv.ItemsSource = timeRegList.Where(x => x.Time.Date == gd.SearchDateTime.Date && x.User == gd.SearchUserName);
-            //}
-            //else if (gd.SearchUserName == null && gd.SearchDateTime > new DateTime(1900, 1, 1))
-            //{
-            //    lv.ItemsSource = timeRegList.Where(x => x.Time.Date == gd.SearchDateTime.Date);
-
-            //}
-            //else if (gd.SearchUserName != null && gd.SearchDateTime < new DateTime(1900, 1, 1))
-            //{
-            //    lv.ItemsSource = timeRegList.Where(x => x.User == gd.SearchUserName);
-            //}
 
             if (gd.SearchUserName != null)
             {
