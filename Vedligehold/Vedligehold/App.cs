@@ -13,11 +13,10 @@ namespace Vedligehold
     public class App : Application
     {
         static MaintenanceDatabase database;
+        GlobalData gd = GlobalData.GetInstance;
 
         public App()
         {
-            GlobalData gd = GlobalData.GetInstance;
-
             if (gd.IsLoggedIn)
             {
                 MainPage = gd.TabbedPage;
@@ -36,9 +35,10 @@ namespace Vedligehold
         {
             if (await Database.GetConnectionSetting(0) != null)
             {
-                var s = await Database.GetConnectionSetting(0);
-                ThreadManager tm = new ThreadManager();
-                tm.StartSynchronizationThread();
+                //gd.Done = false;
+                //var s = await Database.GetConnectionSetting(0);
+                //ThreadManager tm = new ThreadManager();
+                //tm.StartSynchronizationThread();
             }
             else
             {
@@ -73,12 +73,12 @@ namespace Vedligehold
 
         protected override void OnSleep()
         {
-            // Handle when your app sleeps
+            gd.Done = true;
         }
 
         protected override void OnResume()
         {
-            // Handle when your app resumes
+            gd.Done = false;
         }
     }
 }

@@ -101,7 +101,6 @@ namespace Vedligehold.Views
                             var mts = new MaintenanceService();
                             await mts.UpdateTask(task);
                             numberOfSyncs++;
-                            Debug.WriteLine("NUMBER OF NEW TEXTS SYNC !!!!!!!!!!!!!!!!!! " + numberOfSyncs + task.no);
                         }
                     }
                 }
@@ -131,7 +130,6 @@ namespace Vedligehold.Views
                 {
                     await App.Database.SaveTaskAsync(onlineTask);
                     numberOfNewTasks++;
-                    Debug.WriteLine("NUMBER OF NEW TASKS " + numberOfNewTasks + "!!!!!!!!!!!!!!!!!! " + onlineTask.no);
 
                 }
                 numberOfMatches = 0;
@@ -148,8 +146,6 @@ namespace Vedligehold.Views
                     {
                         numberOfConflicts++;
                         await App.Database.UpdateTaskAsync(onlineTask);
-                        Debug.WriteLine("NUMBER OF CONFLICTS !!!!!!!!!!!!!!!!!! " + numberOfConflicts + task.no);
-
                     }
                 }
             }
@@ -167,7 +163,6 @@ namespace Vedligehold.Views
                             var mts = new MaintenanceService();
                             await mts.UpdateTask(task);
                             numberOfSyncs++;
-                            Debug.WriteLine("NUMBER OF SYNCS !!!!!!!!!!!!!!!!!! " + numberOfSyncs + task.no);
                         }
                     }
                 }

@@ -249,6 +249,7 @@ namespace Vedligehold.Views
         }
         protected async override void OnAppearing()
         {
+            gd.Sync();
             TimeRegistrationPage timepage = new TimeRegistrationPage();
             timepage.GetData();
 

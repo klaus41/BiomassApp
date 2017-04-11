@@ -95,8 +95,6 @@ namespace Vedligehold.Services.Synchronizers
                 {
                     await App.Database.SaveActivityASync(onlineTask);
                     numberOfNewTasks++;
-                    Debug.WriteLine("NUMBER OF NEW TASKS " + numberOfNewTasks + "!!!!!!!!!!!!!!!!!! " + onlineTask.UniqueID);
-
                 }
                 numberOfMatches = 0;
             }
@@ -111,8 +109,6 @@ namespace Vedligehold.Services.Synchronizers
                     {
                         numberOfConflicts++;
                         await App.Database.UpdateActivityAsync(onlineTask);
-                        Debug.WriteLine("NUMBER OF CONFLICTS !!!!!!!!!!!!!!!!!! " + numberOfConflicts + task.UniqueID);
-
                     }
                 }
             }

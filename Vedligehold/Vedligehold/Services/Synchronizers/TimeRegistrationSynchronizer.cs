@@ -84,7 +84,6 @@ namespace Vedligehold.Services.Synchronizers
                             var ts = new TimeRegistrationService();
                             await ts.UpdateTimeReg(timeReg);
                             numberOfSyncs++;
-                            Debug.WriteLine("NUMBER OF SYNCS !!!!!!!!!!!!!!!!!! " + numberOfSyncs + timeReg.No);
                         }
                     }
                 }
@@ -123,8 +122,6 @@ namespace Vedligehold.Services.Synchronizers
                 {
                     await App.Database.SaveTimeRegAsync(onlineTask);
                     numberOfNewTasks++;
-                    Debug.WriteLine("NUMBER OF NEW TASKS " + numberOfNewTasks + "!!!!!!!!!!!!!!!!!! " + onlineTask.No);
-
                 }
                 numberOfMatches = 0;
             }
@@ -139,8 +136,6 @@ namespace Vedligehold.Services.Synchronizers
                     {
                         numberOfConflicts++;
                         await App.Database.UpdateTimeRegAsync(onlineTask);
-                        Debug.WriteLine("NUMBER OF CONFLICTS !!!!!!!!!!!!!!!!!! " + numberOfConflicts + task.No);
-
                     }
                 }
             }

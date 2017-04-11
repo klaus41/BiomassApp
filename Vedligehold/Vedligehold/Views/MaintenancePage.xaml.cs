@@ -230,6 +230,7 @@ namespace Vedligehold.Views
 
         protected override void OnAppearing()
         {
+            gd.Sync();
             base.OnAppearing();
             UpdateItemSource();
         }

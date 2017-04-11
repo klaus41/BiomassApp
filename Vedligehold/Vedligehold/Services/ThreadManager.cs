@@ -13,6 +13,7 @@ namespace Vedligehold.Services
         MaintenanceActivitySynchronizer mas = new MaintenanceActivitySynchronizer();
         public async void StartSynchronizationThread()
         {
+            int i = 0;
             bool done = false;
             while (!done)
             {
@@ -21,7 +22,8 @@ namespace Vedligehold.Services
                    await mts.SyncDatabaseWithNAV();
                    await trs.SyncDatabaseWithNAV();
                    await mas.SyncDatabaseWithNAV();
-                   Debug.WriteLine("!!!!!!! SYNCED!!!!!");
+                   Debug.WriteLine(i + "!!!!!!! SYNCED!!!!!");
+                   i++;
                });
                await Task.Delay(30000);
             }

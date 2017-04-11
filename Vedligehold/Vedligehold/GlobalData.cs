@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Vedligehold.Models;
+using Vedligehold.Services.Synchronizers;
 using Vedligehold.Views;
 using Xamarin.Forms;
 
@@ -22,7 +24,10 @@ namespace Vedligehold
         private TimeRegistrationModel timeRegisteredIn;
         private TimeRegistrationModel timeRegisteredOut;
         private string baseAddress;
-
+        private bool done;
+        MaintenanceTaskSynchronizer mts = new MaintenanceTaskSynchronizer();
+        TimeRegistrationSynchronizer trs = new TimeRegistrationSynchronizer();
+        MaintenanceActivitySynchronizer mas = new MaintenanceActivitySynchronizer();
 
         private GlobalData() { }
 
@@ -45,7 +50,7 @@ namespace Vedligehold
                 {
                     tabbedPage = new TabbedPage();
                 }
-                
+
                 return tabbedPage;
             }
         }
@@ -148,6 +153,33 @@ namespace Vedligehold
             {
                 baseAddress = value;
             }
+        }
+
+        public bool Done
+        {
+            get
+            {
+                return done;
+            }
+            set
+            {
+                done = value;
+            }
+        }
+
+        public async void Sync()
+        {
+            //try
+            //{
+            //    await mts.SyncDatabaseWithNAV();
+            //    await trs.SyncDatabaseWithNAV();
+            //    await mas.SyncDatabaseWithNAV();
+            //    Debug.WriteLine("!!!!!!! SYNCED!!!!!");
+            //}
+            //catch
+            //{
+            //    Debug.WriteLine("Failed");
+            //}
         }
     }
 }
