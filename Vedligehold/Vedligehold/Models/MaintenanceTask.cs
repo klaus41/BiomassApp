@@ -12,7 +12,8 @@ namespace Vedligehold.Models
     {
         [PrimaryKey]
         public int no { get; set; }
-        public string type { get; set; }
+        public string TaskType { get; set; }
+        public string MaintenanceType { get; set; }
         public string anlæg { get; set; }
         public string anlægsbeskrivelse { get; set; }
         public string text { get; set; }
@@ -27,8 +28,8 @@ namespace Vedligehold.Models
         public string responsible { get; set; }
         public byte[] image { get; set; }
         public string AppNotes { get; set; }
-        //public bool synced { get; set; }
-
+        public string CustomerNo { get; set; }
+        public string CustomerName { get; set; }
 
     }
 

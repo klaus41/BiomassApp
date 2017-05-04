@@ -13,28 +13,44 @@ namespace Vedligehold.Services
     {
         public async Task<SalesPerson[]> GetSalesPersonsAsync()
         {
-            HttpClient client = GetHttpClient();
-         
-            var response = await client.GetAsync("api/salesperson/");
+            try
+            {
+                HttpClient client = GetHttpClient();
 
-            var statsJson = response.Content.ReadAsStringAsync().Result;
+                var response = await client.GetAsync("api/salesperson/");
 
-            var rootObject = JsonConvert.DeserializeObject<SalesPerson[]>(statsJson);
+                var statsJson = response.Content.ReadAsStringAsync().Result;
 
-            return rootObject;
+                var rootObject = JsonConvert.DeserializeObject<SalesPerson[]>(statsJson);
+
+                return rootObject;
+            }
+            catch
+            {
+                SalesPerson[] sl = null;
+                return sl;
+            }
         }
 
         public async Task<SalesPerson> GetSalesPersonAsync(string id)
         {
-            HttpClient client = GetHttpClient();
+            try
+            {
+                HttpClient client = GetHttpClient();
 
-            var response = await client.GetAsync("api/salesperson/" + id);
+                var response = await client.GetAsync("api/salesperson/" + id);
 
-            var statsJson = response.Content.ReadAsStringAsync().Result;
+                var statsJson = response.Content.ReadAsStringAsync().Result;
 
-            var rootObject = JsonConvert.DeserializeObject<SalesPerson>(statsJson);
+                var rootObject = JsonConvert.DeserializeObject<SalesPerson>(statsJson);
 
-            return rootObject;
+                return rootObject;
+            }
+            catch
+            {
+                SalesPerson sp = null;
+                return sp;
+            }
         }
     }
 }

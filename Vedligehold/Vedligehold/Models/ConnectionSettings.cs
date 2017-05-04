@@ -12,5 +12,6 @@ namespace Vedligehold.Models
         [PrimaryKey]
         public int ID { get; set; }
         public string BaseAddress { get; set; }
+        public string LastUser { get; set; }
     }
 }

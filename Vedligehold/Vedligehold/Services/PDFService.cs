@@ -15,29 +15,44 @@ namespace Vedligehold.Services
 
         public async Task<string> GetPDF(string id)
         {
-            HttpClient client = GetHttpClient();
-            
-            var response = await client.GetAsync(endPoint + id);
+            try
+            {
+                HttpClient client = GetHttpClient();
 
-            string result = response.Content.ReadAsStringAsync().Result;
+                var response = await client.GetAsync(endPoint + id);
 
-            //var rootObject = JsonConvert.DeserializeObject<MaintenanceTask[]>(statsJson);
-            
+                string result = response.Content.ReadAsStringAsync().Result;
 
-            return result;
+                //var rootObject = JsonConvert.DeserializeObject<MaintenanceTask[]>(statsJson);
+
+                return result;
+            }
+            catch
+            {
+                string jl = null;
+                return jl;
+            }
         }
 
         public async Task<PictureModel> PostPicture(PictureModel pic, string id)
         {
-            HttpClient client = GetHttpClient();
+            try
+            {
+                HttpClient client = GetHttpClient();
 
-            var data = JsonConvert.SerializeObject(pic);
+                var data = JsonConvert.SerializeObject(pic);
 
-            var content = new StringContent(data, Encoding.UTF8, "application/json");
+                var content = new StringContent(data, Encoding.UTF8, "application/json");
 
-            var response = await client.PostAsync("Api/MaintenanceActivity/Picture/" + id, content);
+                var response = await client.PostAsync("Api/MaintenanceActivity/Picture/" + id, content);
 
-            return JsonConvert.DeserializeObject<PictureModel>(response.Content.ReadAsStringAsync().Result);
+                return JsonConvert.DeserializeObject<PictureModel>(response.Content.ReadAsStringAsync().Result);
+            }
+            catch
+            {
+                PictureModel jl = null;
+                return jl;
+            }
         }
     }
 }

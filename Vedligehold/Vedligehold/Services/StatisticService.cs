@@ -13,15 +13,23 @@ namespace Vedligehold.Services
     {
         public async Task<Statistic[]> GetStatsAsync(string id)
         {
-            HttpClient client = GetHttpClient();
+            try
+            {
+                HttpClient client = GetHttpClient();
 
-            var response = await client.GetAsync("api/statistik/" + id);
+                var response = await client.GetAsync("api/statistik/" + id);
 
-            var statsJson = response.Content.ReadAsStringAsync().Result;
+                var statsJson = response.Content.ReadAsStringAsync().Result;
 
-            var rootObject = JsonConvert.DeserializeObject<Statistic[]>(statsJson);
+                var rootObject = JsonConvert.DeserializeObject<Statistic[]>(statsJson);
 
-            return rootObject;
+                return rootObject;
+            }
+            catch
+            {
+                Statistic[] jl = null;
+                return jl;
+            }
         }
     }
 }

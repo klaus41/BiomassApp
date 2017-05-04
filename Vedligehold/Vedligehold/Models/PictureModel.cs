@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SQLite;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,8 @@ namespace Vedligehold.Models
 {
     public class PictureModel
     {
-        public int Task_No { get; set; }
+        [PrimaryKey]
+        public string UniqueID { get; set; }
         public string Picture { get; set; }
     }
 }

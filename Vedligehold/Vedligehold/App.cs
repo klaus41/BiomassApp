@@ -13,7 +13,7 @@ namespace Vedligehold
     public class App : Application
     {
         static MaintenanceDatabase database;
-        GlobalData gd = GlobalData.GetInstance;
+        static GlobalData gd = GlobalData.GetInstance;
 
         public App()
         {
@@ -26,28 +26,28 @@ namespace Vedligehold
                 gd.TabbedPage.Children.Add(gd.LoginPage);
                 MainPage = gd.TabbedPage;
             }
-            checkedConnectionSettings();
 
-
+                checkedConnectionSettings();
         }
 
         private async void checkedConnectionSettings()
         {
             if (await Database.GetConnectionSetting(0) != null)
             {
-                //gd.Done = false;
-                //var s = await Database.GetConnectionSetting(0);
-                //ThreadManager tm = new ThreadManager();
-                //tm.StartSynchronizationThread();
+                gd.Done = false;
+                var s = await Database.GetConnectionSetting(0);
+
+                gd.ConnectionSettings = s;
             }
             else
             {
                 ConnectionSettings settings = new ConnectionSettings()
                 {
                     ID = 0,
-                    BaseAddress = "http://vedligehold.biomass.eliteit.dk/"
+                    BaseAddress = "http://opgaver.eliteit.dk/"
                 };
                 await Database.SaveConnectionSetting(settings);
+                gd.ConnectionSettings = settings;
             }
         }
 
@@ -68,7 +68,7 @@ namespace Vedligehold
 
         protected override void OnStart()
         {
-            // Handle when your app starts
+            string s = gd.ConnectionSettings.LastUser;
         }
 
         protected override void OnSleep()

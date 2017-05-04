@@ -28,6 +28,7 @@ namespace Vedligehold
         MaintenanceTaskSynchronizer mts = new MaintenanceTaskSynchronizer();
         TimeRegistrationSynchronizer trs = new TimeRegistrationSynchronizer();
         MaintenanceActivitySynchronizer mas = new MaintenanceActivitySynchronizer();
+        ConnectionSettings cs = new ConnectionSettings();
 
         private GlobalData() { }
 
@@ -167,19 +168,25 @@ namespace Vedligehold
             }
         }
 
-        public async void Sync()
+        public ConnectionSettings ConnectionSettings
         {
-            //try
-            //{
-            //    await mts.SyncDatabaseWithNAV();
-            //    await trs.SyncDatabaseWithNAV();
-            //    await mas.SyncDatabaseWithNAV();
-            //    Debug.WriteLine("!!!!!!! SYNCED!!!!!");
-            //}
-            //catch
-            //{
-            //    Debug.WriteLine("Failed");
-            //}
+            get
+            {
+                if (cs.BaseAddress == null)
+                {
+                    GetConSet();   
+                }
+                return cs;
+            }
+            set
+            {
+                cs = value;
+            }
+        }
+
+        private async void GetConSet()
+        {
+            cs = await App.Database.GetConnectionSetting(0);
         }
     }
 }

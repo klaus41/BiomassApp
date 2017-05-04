@@ -14,16 +14,24 @@ namespace Vedligehold.Services
     {
         public async Task<Contact[]> GetContactsAsync()
         {
-            HttpClient client = GetHttpClient();
+            try
+            {
+                HttpClient client = GetHttpClient();
 
-            var response = await client.GetAsync("api/contacts/");
+                var response = await client.GetAsync("api/contacts/");
 
-            var statsJson = response.Content.ReadAsStringAsync().Result;
+                var statsJson = response.Content.ReadAsStringAsync().Result;
 
-            var rootObject = JsonConvert.DeserializeObject<Contact[]>(statsJson);
+                var rootObject = JsonConvert.DeserializeObject<Contact[]>(statsJson);
 
-            return rootObject;
+                return rootObject;
+            }
+            catch
+            {
+                Contact[] cl = null;
+                return cl;
+            }
         }
-        
+
     }
 }

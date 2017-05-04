@@ -17,7 +17,6 @@ namespace Vedligehold.Views
         Statistic[] stats;
         string[] contactNumbers;
         bool loading;
-        bool syncing;
         StackLayout layout;
         ActivityIndicator ai;
         Button logOutButton;
@@ -96,8 +95,8 @@ namespace Vedligehold.Views
         {
             searchCriteriaHeader = new Label() { Text = "Søgekriterier", HorizontalOptions = LayoutOptions.Center, FontAttributes = FontAttributes.Bold, FontSize = 16, TextColor = BackgroundColor };
             tasks = new Label() { TextColor = BackgroundColor, HorizontalOptions = LayoutOptions.Center };
-            searchTimeFrom = new Label() { Text = "Tid fra", TextColor = BackgroundColor };
-            searchTimeTo = new Label() { Text = "Tid til", TextColor = BackgroundColor };
+            searchTimeFrom = new Label() { Text = "Tid fra", TextColor = BackgroundColor, HorizontalOptions = LayoutOptions.End };
+            searchTimeTo = new Label() { Text = "Tid til", TextColor = BackgroundColor, HorizontalOptions = LayoutOptions.End };
             searchUser = new Label() { Text = "Bruger", TextColor = BackgroundColor };
 
             gridCriteria = new Grid
@@ -132,7 +131,7 @@ namespace Vedligehold.Views
         {
             userInfo = new Label() { Text = "Velkommen " + gd.User.Name, HorizontalOptions = LayoutOptions.Center, FontAttributes = FontAttributes.Bold, FontSize = 16, TextColor = BackgroundColor };
             timeRegisteredIn = new Label() { Text = "Du er ikke mødt ind endnu", TextColor = BackgroundColor };
-            timeRegisteredOut = new Label() { Text = "Du er ikke meldt ud endnu", TextColor = BackgroundColor };
+            timeRegisteredOut = new Label() { Text = "Du er ikke meldt ud endnu", TextColor = BackgroundColor, HorizontalOptions = LayoutOptions.End };
 
             grid = new Grid
             {
@@ -249,8 +248,7 @@ namespace Vedligehold.Views
         }
         protected async override void OnAppearing()
         {
-            gd.Sync();
-            TimeRegistrationPage timepage = new TimeRegistrationPage();
+            MeetLeavePage timepage = new MeetLeavePage();
             timepage.GetData();
 
             taskList = null;
@@ -272,7 +270,7 @@ namespace Vedligehold.Views
             }
             else
             {
-                tasks.Text = "Du har " + notdone + " frigivede opgaver.";
+                tasks.Text = "Du har " + notdone + " frigivne opgaver.";
             }
             if (gd.TimeRegisteredIn != null)
             {

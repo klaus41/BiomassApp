@@ -51,17 +51,13 @@ C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Ved
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold\obj\Release\Vedligehold.Views.HomePage.xaml.g.cs
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold\obj\Release\Vedligehold.Views.StatisticsPage.xaml.g.cs
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold\obj\Release\Vedligehold.Views.MaintenancePage.xaml.g.cs
-C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold\obj\Release\Vedligehold.Views.TaskDetail.xaml.g.cs
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold\obj\Release\Vedligehold.Views.LoginPage.xaml.g.cs
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold\obj\Release\Vedligehold.Views.SettingsPage.xaml.g.cs
-C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold\obj\Release\Vedligehold.Views.ShowPDFPage.xaml.g.cs
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold\obj\Release\Vedligehold.Views.TimeRegistrationDetailPage.xaml.g.cs
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold\obj\Release\Vedligehold.Views.TimeRegistrationPage.xaml.g.cs
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold\obj\Release\Vedligehold.Views.SearchSettingsPage.xaml.g.cs
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold\obj\Release\Vedligehold.dll
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold\obj\Release\Vedligehold.pdb
-C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold\obj\Release\Vedligehold.dll.mdb
-C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold\bin\Release\Vedligehold.dll.mdb
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold\obj\Release\Vedligehold.dll.mdb
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold\bin\Release\Vedligehold.dll.mdb
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold\obj\Release\Vedligehold.dll.mdb

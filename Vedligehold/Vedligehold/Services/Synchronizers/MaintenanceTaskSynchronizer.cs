@@ -23,13 +23,21 @@ namespace Vedligehold.Views
         public async Task<bool> HasConnectionToNAV()
         {
             bool connection;
+            SalesPersonService service = new SalesPersonService();
+            SalesPerson[] persons = null;
             try
             {
-                var service = new PDFService();
-                string data = await service.GetPDF("A00005");
-                connection = true;
+                persons = await service.GetSalesPersonsAsync();
             }
             catch
+            {
+                connection = false;
+            }
+            if (persons != null)
+            {
+                connection = true;
+            }
+            else
             {
                 connection = false;
             }
@@ -113,6 +121,8 @@ namespace Vedligehold.Views
         {
             await App.Database.DeleteAll();
             await App.Database.DeleteAllTimeReg();
+            //await App.Database.DeleteJobRecLinesAsync();
+            await App.Database.DeleteAllActivities();
         }
 
         private async void CheckForNewTasks()

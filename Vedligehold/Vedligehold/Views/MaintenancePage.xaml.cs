@@ -26,7 +26,7 @@ namespace Vedligehold.Views
         bool showDone = false;
         public MaintenancePage()
         {
-
+           
             Title = "Opgaver";
             //MakeToolBar();
             NavigationPage.SetHasNavigationBar(this, false);
@@ -115,27 +115,9 @@ namespace Vedligehold.Views
                 IsPullToRefreshEnabled = true
             };
 
-            Button b = new Button() { Text = "Opret standardopgave", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
             showDoneButton = new Button() { Text = "Vis udførte opgaver", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
             showDoneButton.Clicked += ShowDoneButton_Clicked;
-
-            b.Clicked += async (s, e) =>
-            {
-                MaintenanceTask task = new MaintenanceTask
-                {
-                    no = tasks.Last().no + 1,
-                    type = "Rundering",
-                    anlæg = "A00005",
-                    anlægsbeskrivelse = "GasAlertMicro ",
-                    text = "Test",
-                    weekly = true,
-                    daily = false,
-                    //done = false
-                };
-                await db.SaveTaskAsync(task);
-                UpdateItemSource();
-            };
- 
+     
             StackLayout layout = new StackLayout
             {
                 VerticalOptions = LayoutOptions.FillAndExpand,
@@ -227,10 +209,9 @@ namespace Vedligehold.Views
                 lv.ItemsSource = itemssourceList.Where(x => x.status == "Released");
             }
         }
-
+      
         protected override void OnAppearing()
         {
-            gd.Sync();
             base.OnAppearing();
             UpdateItemSource();
         }

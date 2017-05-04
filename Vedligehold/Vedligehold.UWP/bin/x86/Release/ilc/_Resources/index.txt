@@ -2,10 +2,8 @@ Vedligehold, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   Vedligehold.Views.HomePage.xaml
   Vedligehold.Views.StatisticsPage.xaml
   Vedligehold.Views.MaintenancePage.xaml
-  Vedligehold.Views.TaskDetail.xaml
   Vedligehold.Views.LoginPage.xaml
   Vedligehold.Views.SettingsPage.xaml
-  Vedligehold.Views.ShowPDFPage.xaml
   Vedligehold.Views.TimeRegistrationDetailPage.xaml
   Vedligehold.Views.TimeRegistrationPage.xaml
   Vedligehold.Views.SearchSettingsPage.xaml

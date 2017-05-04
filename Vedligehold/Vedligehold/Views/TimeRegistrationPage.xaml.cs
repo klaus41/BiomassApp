@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Vedligehold.Database;
 using Vedligehold.Models;
+using Vedligehold.Services;
 using Vedligehold.Services.Synchronizers;
 using Vedligehold.Views.CustomCells;
 using Xamarin.Forms;
@@ -15,184 +16,210 @@ namespace Vedligehold.Views
 {
     public partial class TimeRegistrationPage : ContentPage
     {
+        List<JobRecLine> jobList;
+        List<JobRecLine> jobItemsSourceList;
         ListView lv;
         MaintenanceDatabase db = App.Database;
-        List<TimeRegistrationModel> timeRegList;
-        Button checkIn;
-        Button checkOut;
-        Label checkInLabel;
-        Label checkOutLabel;
         GlobalData gd = GlobalData.GetInstance;
-        bool _in;
-        bool _out;
-        public TimeRegistrationPage()
+        MaintenanceTask taskGlobal;
+
+        Grid gridInfo;
+        Grid grid;
+
+        Label asset;
+        Label type;
+        Label text;
+        Label assetDescription;
+        Label header;
+
+        Button doneButton;
+        Button jobLineButton;
+        public TimeRegistrationPage(MaintenanceTask task)
         {
-            _in = true;
-            _out = false;
-            NavigationPage.SetHasNavigationBar(this, false);
+            taskGlobal = task;
             Title = "Tidsregistrering";
 
-            var temp = new DataTemplate(typeof(CustomTimeRegCell));
+            var temp = new DataTemplate(typeof(CustomCaseCell));
 
             lv = new ListView()
             {
                 HasUnevenRows = true,
-                ItemTemplate = temp,
-                IsPullToRefreshEnabled = true
+                ItemTemplate = temp
             };
+            lv.ItemTapped += Lv_ItemTapped;
 
 
-            lv.Refreshing += Lv_Refreshing;
-            //lv.ItemTapped += Lv_ItemTapped; ;
-            checkIn = new Button() { Text = "Mød ind", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White, IsEnabled = false };
-            checkOut = new Button() { Text = "Meld ud", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White, IsEnabled = false };
-            checkInLabel = new Label();
-            checkOutLabel = new Label();
 
-            checkOut.Clicked += CheckOut_Clicked;
-            checkIn.Clicked += CheckIn_Clicked;
-            StackLayout layout = new StackLayout { Padding = 10 };
+            MakeGrid();
+            UpdateItemsSource();
+
+            StackLayout layout = new StackLayout
+            {
+                VerticalOptions = LayoutOptions.FillAndExpand,
+                Children =
+                    {
+                        gridInfo,
+                        lv,
+                        grid
+                    }
+
+            };
 
             if (Device.OS == TargetPlatform.iOS)
             {
                 // move layout under the status bar
                 layout.Padding = new Thickness(0, 20, 0, 0);
             }
-            layout.Children.Add(checkIn);
-            layout.Children.Add(checkOut);
-            layout.Children.Add(lv);
-            Content = new ScrollView { Content = layout };
+            Content = layout;
+
+            MessagingCenter.Subscribe<JobRecLine>(this, "hi", (sender) =>
+            {
+                Navigation.PushModalAsync(new JobRecLineUpdateForm(sender));
+            });
+        }
+
+        private void MakeGrid()
+        {
+            doneButton = new Button() { Text = "Tilbage", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
+            jobLineButton = new Button() { Text = "Registrer tid", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
+            doneButton.Clicked += DoneButton_Clicked;
+            jobLineButton.Clicked += JobLineButton_Clicked;
+
+            asset = new Label()
+            {
+                Text = "Anlæg: " + taskGlobal.anlæg,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                VerticalOptions = LayoutOptions.FillAndExpand,
+                TextColor = Color.White,
+                HorizontalTextAlignment = TextAlignment.Start,
+                FontSize = 14,
+            };
+            assetDescription = new Label()
+            {
+                Text = "Beskrivelse: " + taskGlobal.anlægsbeskrivelse,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                VerticalOptions = LayoutOptions.FillAndExpand,
+                TextColor = Color.White,
+                HorizontalTextAlignment = TextAlignment.Start,
+                FontSize = 14,
+            };
+            type = new Label()
+            {
+                Text = "Type: " + taskGlobal.TaskType,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                VerticalOptions = LayoutOptions.FillAndExpand,
+                TextColor = Color.White,
+                HorizontalTextAlignment = TextAlignment.Start,
+                FontSize = 14,
+            };
+            text = new Label()
+            {
+                Text = "Tekst: " + taskGlobal.text,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                VerticalOptions = LayoutOptions.FillAndExpand,
+                TextColor = Color.White,
+                HorizontalTextAlignment = TextAlignment.Start,
+                FontSize = 14,
+            };
+            header = new Label()
+            {
+                Text = "Opgave nr. " + taskGlobal.no,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                VerticalOptions = LayoutOptions.FillAndExpand,
+                TextColor = Color.White,
+                VerticalTextAlignment = TextAlignment.Center,
+                HorizontalTextAlignment = TextAlignment.Center,
+                FontSize = 18,
+                FontAttributes = FontAttributes.Bold
+            };
+
+
+            grid = new Grid
+            {
+                Padding = new Thickness(10),
+                RowDefinitions =
+                {
+                    new RowDefinition { Height = GridLength.Auto },
+                    new RowDefinition { Height = GridLength.Auto }
+                },
+                ColumnDefinitions =
+                {
+                    new ColumnDefinition { Width = new GridLength(1,GridUnitType.Star) }
+                },
+                VerticalOptions = LayoutOptions.EndAndExpand,
+            };
+
+            gridInfo = new Grid
+            {
+                Padding = new Thickness(10),
+                RowDefinitions =
+                {
+                    new RowDefinition { Height = GridLength.Auto },
+                    new RowDefinition { Height = GridLength.Auto },
+                    new RowDefinition { Height = GridLength.Auto }
+                },
+                ColumnDefinitions =
+                {
+                    new ColumnDefinition { Width = new GridLength(1,GridUnitType.Star) },
+                    new ColumnDefinition { Width = new GridLength(1,GridUnitType.Star) }
+                },
+                BackgroundColor = Color.FromRgb(135, 206, 250),
+
+            };
+
+
+            gridInfo.Margin = 10;
+
+            gridInfo.Children.Add(header, 0, 0);
+            Grid.SetColumnSpan(header, 2);
+            gridInfo.Children.Add(asset, 0, 1);
+            gridInfo.Children.Add(assetDescription, 0, 2);
+            gridInfo.Children.Add(type, 1, 1);
+            gridInfo.Children.Add(text, 1, 2);
+
+            grid.Children.Add(jobLineButton, 0, 0);
+            grid.Children.Add(doneButton, 0, 1);
+
+        }
+
+        private void JobLineButton_Clicked(object sender, EventArgs e)
+        {
+            Navigation.PushModalAsync(new JobRecLineForm(taskGlobal));
+        }
+
+        private void DoneButton_Clicked(object sender, EventArgs e)
+        {
+            Navigation.PopModalAsync();
         }
 
         private void Lv_ItemTapped(object sender, ItemTappedEventArgs e)
         {
-            throw new NotImplementedException();
+            var action = ((ListView)sender).SelectedItem;
+            JobRecLine c = (JobRecLine)action;
+
+            this.Navigation.PushModalAsync(new JobRecLineDetail(c));
         }
 
-        private async void Lv_Refreshing(object sender, EventArgs e)
+        private async void UpdateItemsSource()
         {
-            bool response = false;
-            while (!response)
+            jobList = null;
+
+            while (jobList == null)
             {
-                TimeRegistrationSynchronizer trs = new TimeRegistrationSynchronizer();
-                response = await trs.SyncDatabaseWithNAV();
+                jobList = await App.Database.GetJobRecLinesAsync();
             }
-            GetData();
-            if (lv.IsRefreshing)
-            {
-                lv.EndRefresh();
-            }
-        }
 
-        private async void CheckOut_Clicked(object sender, EventArgs e)
-        {
-            checkOut.IsEnabled = false;
-            TimeRegistrationModel timeReg = new TimeRegistrationModel
-            {
-                No = timeRegList.Last().No + 1,
-                Type = "Check out",
-                Time = DateTime.Now,
-                User = gd.User.Code
-            };
-            try
-            {
-                var locator = CrossGeolocator.Current;
-                locator.DesiredAccuracy = 50;
-                var position = await locator.GetPositionAsync(timeoutMilliseconds: 10000);
+            List<JobRecLine> jsl = jobList.Where(x => x.MaintenanceTaskNo == taskGlobal.no.ToString()).ToList();
+            jobItemsSourceList = jsl.Where(x => x.Journal_Batch_Name == "CS").ToList();
+            lv.ItemsSource = jsl;
 
-                timeReg.Latitude = position.Latitude;
-                timeReg.Longitude = position.Longitude;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Unable to get location, may need to increase timeout: " + ex);
-            }
-            gd.TimeRegisteredOut = timeReg;
-            await db.SaveTimeRegAsync(timeReg);
-        }
-
-        private async void CheckIn_Clicked(object sender, EventArgs e)
-        {
-            checkIn.IsEnabled = false;
-            TimeRegistrationModel timeReg = new TimeRegistrationModel();
-
-            timeReg.No = timeRegList.Last().No + 1;
-            timeReg.Type = "Check in";
-            timeReg.Time = DateTime.Now;
-            timeReg.User = gd.User.Code;
-
-
-            try
-            {
-                var locator = CrossGeolocator.Current;
-                locator.DesiredAccuracy = 50;
-                var position = await locator.GetPositionAsync(timeoutMilliseconds: 10000);
-
-                timeReg.Latitude = position.Latitude;
-                timeReg.Longitude = position.Longitude;
-
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Unable to get location, may need to increase timeout: " + ex);
-            }
-            gd.TimeRegisteredIn = timeReg;
-            await db.SaveTimeRegAsync(timeReg);
         }
 
         protected override void OnAppearing()
         {
-            gd.Sync();
-            //base.OnAppearing();
-            GetData();
+            UpdateItemsSource();
         }
 
 
-        public async void GetData()
-        {
-            List<TimeRegistrationModel> tempList = new List<TimeRegistrationModel>();
-            tempList = timeRegList;
-            while (tempList == timeRegList)
-            {
-                timeRegList = await db.GetTimeRegsAsync();
-            }
-            if (timeRegList.Count == 0)
-            {
-                TimeRegistrationSynchronizer mts = new TimeRegistrationSynchronizer();
-                mts.DeleteAndPopulateDb();
-            }
-            foreach (var item in timeRegList)
-            {
-                if (item.Time > DateTime.Today && item.User == gd.User.Code)
-                {
-                    if (item.Type == "Check in")
-                    {
-                        _in = false;
-                        _out = true;
-                        //checkIn.IsEnabled = false;
-                        checkIn.Text = "Allerede mødt";
-                        gd.TimeRegisteredIn = item;
-                    }
-                    if (item.Type == "Check out")
-                    {
-                        _out = false;
-                        //checkOut.IsEnabled = false;
-                        checkOut.Text = "Allerede meldt ud";
-                        gd.TimeRegisteredOut = item;
-                    }
-                }
-            }
-
-            if (gd.SearchUserName != null)
-            {
-                lv.ItemsSource = timeRegList.Where(x => x.User == gd.SearchUserName).OrderByDescending(x => x.Time);
-            }
-            else
-            {
-                lv.ItemsSource = timeRegList.OrderByDescending(x => x.Time);
-            }
-            checkIn.IsEnabled = _in;
-            checkOut.IsEnabled = _out;
-        }
     }
 }

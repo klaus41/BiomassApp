@@ -83,6 +83,7 @@ C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Ved
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.Droid\obj\Release\R.cs.flag
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.Droid\obj\Release\uploadflags.txt
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.Droid\bin\Release\Vedligehold.Droid.dll.mdb
+C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.Droid\bin\Release\Vedligehold.dll.mdb
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.Droid\bin\Release\Java.Interop.dll.mdb
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.Droid\bin\Release\Microsoft.CSharp.dll.mdb
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.Droid\bin\Release\Mono.Android.dll.mdb
@@ -99,7 +100,6 @@ C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Ved
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.Droid\bin\Release\System.ServiceModel.Internals.dll.mdb
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.Droid\bin\Release\System.Xml.dll.mdb
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.Droid\bin\Release\System.Xml.Linq.dll.mdb
-C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.Droid\bin\Release\Vedligehold.dll.mdb
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.Droid\obj\Release\android\assets\FormsViewGroup.dll.mdb
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.Droid\obj\Release\android\assets\Java.Interop.dll.mdb
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.Droid\obj\Release\android\assets\Microsoft.CSharp.dll.mdb

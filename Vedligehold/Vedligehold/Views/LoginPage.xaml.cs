@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
+using Vedligehold.Database;
 using Vedligehold.Models;
 using Vedligehold.Services;
 using Xamarin.Forms;
@@ -16,8 +17,9 @@ namespace Vedligehold.Views
         Button connectionSettingsButton;
         Entry username;
         Entry password;
-        GlobalData gd = GlobalData.GetInstance;
 
+        GlobalData gd = GlobalData.GetInstance;
+        MaintenanceDatabase db = App.Database;
         public LoginPage()
         {
 
@@ -42,9 +44,9 @@ namespace Vedligehold.Views
                 HorizontalTextAlignment = TextAlignment.Center
             };
 
-            //layout.Children.Add(label);
-
             username = new Entry { Placeholder = "Brugernavn" };
+
+
             layout.Children.Add(username);
 
             password = new Entry { Placeholder = "Password", IsPassword = true };
@@ -52,8 +54,8 @@ namespace Vedligehold.Views
             connectionSettingsButton = new Button { Text = "Opkoblingsindstillinger", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White, VerticalOptions = LayoutOptions.End };
             button = new Button { Text = "Log ind", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White, IsEnabled = false };
             layout.Children.Add(button);
-            layout.Children.Add(image);
             layout.Children.Add(connectionSettingsButton);
+            layout.Children.Add(image);
 
             password.TextChanged += Password_TextChanged;
             username.TextChanged += Username_TextChanged;
@@ -74,11 +76,13 @@ namespace Vedligehold.Views
                     };
                     layout.Children.Add(ai);
                     button.IsEnabled = false;
+                    connectionSettingsButton.IsEnabled = false;
 
                     var sv = new SalesPersonService();
                     try
                     {
-                        SalesPerson person = await sv.GetSalesPersonAsync(username.Text);
+                        SalesPerson person = await sv.GetSalesPersonAsync(username.Text.ToUpper());
+
                         if (password.Text == person.Password)
                         {
                             succes = true;
@@ -102,16 +106,22 @@ namespace Vedligehold.Views
                         gd.IsLoggedIn = true;
 
                         gd.TabbedPage.Children.Add(new HomePage());
-                        gd.TabbedPage.Children.Add(new TimeRegistrationPage());
+                        gd.TabbedPage.Children.Add(new MeetLeavePage());
                         gd.TabbedPage.Children.Add(new MaintenancePage());
                         gd.TabbedPage.Children.Add(new SettingsPage());
 
                         gd.TabbedPage.Children.Remove(gd.LoginPage);
-                    
+
                         password.Text = null;
+                        if (Device.OS != TargetPlatform.iOS)
+                        {
+                            ThreadManager tm = new ThreadManager();
+                            tm.StartSynchronizationThread();
+                        }
                     }
                     loading = false;
                     button.IsEnabled = true;
+                    connectionSettingsButton.IsEnabled = true;
 
                     layout.Children.Remove(ai);
                 }
@@ -122,6 +132,11 @@ namespace Vedligehold.Views
         }
 
         private void Username_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            CheckUserName();
+        }
+
+        private void CheckUserName()
         {
             usernameText = true;
             if (username.Text == null)
@@ -139,6 +154,11 @@ namespace Vedligehold.Views
         }
 
         private void Password_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            CheckPassword();
+        }
+
+        private void CheckPassword()
         {
             passwordText = true;
             if (password.Text == null)
@@ -160,6 +180,8 @@ namespace Vedligehold.Views
             //bool usernameText = false;
             passwordText = false;
             button.IsEnabled = false;
+            CheckPassword();
+            CheckUserName();
         }
     }
 }

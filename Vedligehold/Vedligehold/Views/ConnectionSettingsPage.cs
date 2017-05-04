@@ -18,12 +18,16 @@ namespace Vedligehold.Views
     {
         Entry connectionSettingString;
         Button enter;
+        Button cancel;
+
+        StackLayout layout;
         ConnectionSettings settings;
         MaintenanceDatabase db = App.Database;
         string old;
 
         public ConnectionSettingsPage()
         {
+          
             connectionSettingString = new Entry();
 
             if (db.GetConnectionSetting(0) != null)
@@ -38,16 +42,30 @@ namespace Vedligehold.Views
             }
 
             enter = new Button { Text = "OK", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
-            enter.Clicked += Enter_Clicked;
+            cancel = new Button { Text = "Cancel", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
 
-            Content = new StackLayout
+            enter.Clicked += Enter_Clicked;
+            cancel.Clicked += Cancel_Clicked;
+            layout = new StackLayout
             {
                 Children =
                 {
                     connectionSettingString,
-                    enter
+                    enter,
+                    cancel
                 }
             };
+            if (Device.OS == TargetPlatform.iOS)
+            {
+                // move layout under the status bar
+                layout.Padding = new Thickness(0, 20, 0, 0);
+            }
+            Content = layout;
+        }
+
+        private void Cancel_Clicked(object sender, EventArgs e)
+        {
+            this.Navigation.PopModalAsync();
         }
 
         private async void Enter_Clicked(object sender, EventArgs e)

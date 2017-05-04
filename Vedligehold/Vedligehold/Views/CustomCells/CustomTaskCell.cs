@@ -17,27 +17,27 @@ namespace Vedligehold.Views
         {
             //SetColor();
 
-            Label type = new Label();
-            Label anlægsbeskrivelse = new Label()
+            Label typeLabel = new Label();
+            Label plannedDateLabel = new Label()
             {
                 FontSize = 12,
-                FontAttributes = FontAttributes.Bold
+                FontAttributes = FontAttributes.Bold,
+                HorizontalOptions = LayoutOptions.CenterAndExpand,
+                VerticalOptions = LayoutOptions.CenterAndExpand
             };
-            Image colorImg = new Image()
+            Label responsibleLabel = new Label()
             {
-                VerticalOptions = LayoutOptions.End
-            };
 
-            Label done = new Label()
+            };
+            Label noLabel = new Label()
             {
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
                 VerticalOptions = LayoutOptions.CenterAndExpand
             };
-            Label image = new Label()
-            {
-                HorizontalOptions = LayoutOptions.CenterAndExpand,
-                VerticalOptions = LayoutOptions.CenterAndExpand
-            };
+            Label descriptionLabel = new Label();
+            Label customerLabel = new Label();
+
+
 
             Grid mainGrid = new Grid
             {
@@ -50,36 +50,76 @@ namespace Vedligehold.Views
                 ColumnDefinitions =
                 {
                     new ColumnDefinition { Width = new GridLength(1,GridUnitType.Star) },
-                    new ColumnDefinition { Width = new GridLength(3,GridUnitType.Star) },
+                    new ColumnDefinition { Width = new GridLength(2,GridUnitType.Star) },
+                    new ColumnDefinition { Width = new GridLength(2,GridUnitType.Star) },
                     new ColumnDefinition { Width = new GridLength(1,GridUnitType.Star) }
                 }
             };
 
-            mainGrid.Children.Add(image, 0, 0);
-            Grid.SetRowSpan(image, 2);
+            mainGrid.Children.Add(noLabel, 0, 0);
+            mainGrid.Children.Add(typeLabel, 1, 0);
+            mainGrid.Children.Add(plannedDateLabel, 5, 0);
+            mainGrid.Children.Add(customerLabel, 1, 1);
 
-            mainGrid.Children.Add(type, 1, 0);
-            mainGrid.Children.Add(anlægsbeskrivelse, 1, 1);
+            mainGrid.Children.Add(responsibleLabel, 3, 0);
 
-            mainGrid.Children.Add(done, 4, 0);
-            Grid.SetRowSpan(done, 2);
-            //mainGrid.Children.Add(colorImg, 4, 0);
-            //Grid.SetRowSpan(done, 2);
+            mainGrid.Children.Add(descriptionLabel, 3, 1);
+
+            Grid.SetRowSpan(noLabel, 2);
+            Grid.SetRowSpan(plannedDateLabel, 2);
+            Grid.SetColumnSpan(customerLabel, 2);
+            Grid.SetColumnSpan(responsibleLabel, 2);
+            Grid.SetColumnSpan(typeLabel, 2);
+            Grid.SetColumnSpan(descriptionLabel, 2);
+
+
+
+            //Grid mainGrid = new Grid
+            //{
+            //    Padding = new Thickness(10),
+            //    RowDefinitions =
+            //    {
+            //        new RowDefinition { Height = GridLength.Auto },
+            //        new RowDefinition { Height = GridLength.Auto },
+            //        new RowDefinition { Height = GridLength.Auto },
+            //        new RowDefinition { Height = GridLength.Auto }
+            //    },
+            //    ColumnDefinitions =
+            //    {
+            //        new ColumnDefinition { Width = new GridLength(1,GridUnitType.Star) },
+            //        new ColumnDefinition { Width = new GridLength(3,GridUnitType.Star) },
+            //        new ColumnDefinition { Width = new GridLength(1,GridUnitType.Star) }
+            //    }
+            //};
+
+            //mainGrid.Children.Add(noLabel, 0, 0);
+            //mainGrid.Children.Add(typeLabel, 1, 0);
+            //mainGrid.Children.Add(plannedDateLabel, 4, 0);
+            //mainGrid.Children.Add(customerLabel, 1, 2);
+
+            //mainGrid.Children.Add(responsibleLabel, 1, 1);
+
+            //mainGrid.Children.Add(descriptionLabel, 1, 3);
+
+            //Grid.SetRowSpan(noLabel, 4);
+            //Grid.SetRowSpan(plannedDateLabel, 4);
+            //Grid.SetColumnSpan(customerLabel, 3);
+            //Grid.SetColumnSpan(responsibleLabel, 3);
+            //Grid.SetColumnSpan(typeLabel, 3);
+            //Grid.SetColumnSpan(descriptionLabel, 5);
 
             mainGrid.BackgroundColor = color;
             View = mainGrid;
 
-            image.SetBinding<MaintenanceTask>(Label.TextProperty, i => i.no);
+            noLabel.SetBinding<MaintenanceTask>(Label.TextProperty, i => i.no);
+            typeLabel.SetBinding<MaintenanceTask>(Label.TextProperty, i => i.TaskType);
+            plannedDateLabel.SetBinding(Label.TextProperty, new Binding("planned_Date", converter: new DateTimeToDateConverter()));
+            responsibleLabel.SetBinding<MaintenanceTask>(Label.TextProperty, i => i.responsible);
+            descriptionLabel.SetBinding<MaintenanceTask>(Label.TextProperty, i => i.text);
+            customerLabel.SetBinding<MaintenanceTask>(Label.TextProperty, i => i.CustomerName);
 
-            type.SetBinding<MaintenanceTask>(Label.TextProperty, i => i.type);
-            anlægsbeskrivelse.SetBinding(Label.TextProperty, new Binding("planned_Date", converter: new DateTimeToDateConverter()));
-
-            //anlægsbeskrivelse.SetBinding<MaintenanceTask>(Label.TextProperty, i => i.planned_Date);
-            done.SetBinding<MaintenanceTask>(Label.TextProperty, i => i.responsible);
             mainGrid.SetBinding(Label.BackgroundColorProperty, new Binding("status", converter: new MaintenanceTaskRowColor()));
-            //colorImg.SetBinding(Image.SourceProperty, new Binding("done", converter: new BoolToColorConverter()));
 
-            //mainGrid.Padding = 20;
 
             if (Device.OS == TargetPlatform.iOS)
             {
@@ -89,60 +129,10 @@ namespace Vedligehold.Views
             {
                 mainGrid.Margin = 10;
             }
-                //MakeCustomCell();
+            //MakeCustomCell();
             CreateMenu();
         }
 
-        private void SetColor()
-        {
-            int rowindex = Convert.ToInt32(Application.Current.Properties["gridrowindex"]);
-
-            if (rowindex % 2 == 0)
-            {
-                color = Color.Default;
-            }
-            else
-            {
-                color = Color.FromRgb(224, 224, 224);
-            }
-
-            rowindex = rowindex + 1;
-            Application.Current.Properties["gridrowindex"] = rowindex;
-        }
-
-        private void MakeCustomCell()
-        {
-            StackLayout cellWrapper = new StackLayout();
-            StackLayout horizontalLayout = new StackLayout();
-            Label no = new Label();
-            Label type = new Label();
-            Label anlæg = new Label();
-            Label anlægsbeskrivelse = new Label();
-            Label text = new Label();
-
-            //set bindings
-            no.SetBinding(Label.TextProperty, "no");
-            type.SetBinding(Label.TextProperty, "type");
-            anlæg.SetBinding(Label.TextProperty, "anlæg");
-            anlægsbeskrivelse.SetBinding(Label.TextProperty, "anlægsbeskrivelse");
-            text.SetBinding(Label.TextProperty, "text");
-
-            //Set properties for desired design
-            cellWrapper.BackgroundColor = Color.FromHex("#eee");
-            horizontalLayout.Orientation = StackOrientation.Horizontal;
-            anlægsbeskrivelse.HorizontalOptions = LayoutOptions.FillAndExpand;
-            text.HorizontalOptions = LayoutOptions.EndAndExpand;
-
-            //add views to the view hierarchy
-            //horizontalLayout.Children.Add(no);
-            horizontalLayout.Children.Add(type);
-            //horizontalLayout.Children.Add(anlæg);
-            horizontalLayout.Children.Add(anlægsbeskrivelse);
-            horizontalLayout.Children.Add(text);
-
-            cellWrapper.Children.Add(horizontalLayout);
-            View = cellWrapper;
-        }
 
         private void CreateMenu()
         {
@@ -163,10 +153,10 @@ namespace Vedligehold.Views
             {
                 var mi = ((MenuItem)sender);
                 MaintenanceTask _task = (MaintenanceTask)mi.CommandParameter;
-                
-                    MaintenancePage mp = new MaintenancePage();
-                    mp.SetDone(_task);
-                
+
+                MaintenancePage mp = new MaintenancePage();
+                mp.SetDone(_task);
+
             };
             var mapAction = new MenuItem { Text = "Kort" };
             mapAction.SetBinding(MenuItem.CommandParameterProperty, new Binding("."));
@@ -177,7 +167,7 @@ namespace Vedligehold.Views
                 MaintenancePage mp = new MaintenancePage();
                 mp.ShowOnMap(_task);
             };
-            
+
             ContextActions.Add(pdfAction);
             ContextActions.Add(mapAction);
             ContextActions.Add(doneAction);

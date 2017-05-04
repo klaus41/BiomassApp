@@ -99,5 +99,6 @@ C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Ved
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.iOS\obj\iPhone\Release\optimized\Icon-Small-50.png
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.iOS\obj\iPhone\Release\optimized\Icon-Small-50@2x.png
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.iOS\obj\iPhone\Release\optimized\Icon-App-83.5x83.5@2x.png
+C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.iOS\obj\iPhone\Release\optimized\LOGO.png
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.iOS\obj\iPhone\Release\Vedligehold.iOS.exe.mdb
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.iOS\bin\iPhone\Release\Vedligehold.iOS.exe.mdb

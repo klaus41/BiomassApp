@@ -101,6 +101,5 @@ C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Ved
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.iOS\obj\iPhoneSimulator\Debug\Vedligehold.iOS.csprojResolveAssemblyReference.cache
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.iOS\obj\iPhoneSimulator\Debug\Vedligehold.iOS.exe
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.iOS\obj\iPhoneSimulator\Debug\Vedligehold.iOS.pdb
-C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.iOS\bin\iPhoneSimulator\Debug\Vedligehold.dll.mdb
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.iOS\obj\iPhoneSimulator\Debug\Vedligehold.iOS.exe.mdb
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.iOS\bin\iPhoneSimulator\Debug\Vedligehold.iOS.exe.mdb

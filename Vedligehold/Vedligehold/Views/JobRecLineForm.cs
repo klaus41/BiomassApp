@@ -1,0 +1,137 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Vedligehold.Models;
+using Xamarin.Forms;
+
+namespace Vedligehold.Views
+{
+    public class JobRecLineForm : ContentPage
+    {
+        StackLayout layout;
+
+        string workType = null;
+
+        Entry descriptionEntry;
+        Entry amount;
+        Button workTypeButton;
+        Button unitCodeButton;
+        Button done;
+        Button cancel;
+
+        DatePicker datePicker;
+
+        JobRecLine recLine;
+        MaintenanceTask taskGlobal;
+        public JobRecLineForm(MaintenanceTask task)
+        {
+            recLine = new JobRecLine();
+            taskGlobal = task;
+
+            descriptionEntry = new Entry { Text = taskGlobal.text };
+            amount = new Entry { Placeholder = "Antal", Keyboard = Keyboard.Numeric };
+
+            workTypeButton = new Button { Text = "Arbejdstype", BackgroundColor = Color.Red, TextColor = Color.White };
+            unitCodeButton = new Button { Text = "Enhedskode", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
+            done = new Button { Text = "OK", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
+            cancel = new Button { Text = "Cancel", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White, VerticalOptions = LayoutOptions.EndAndExpand };
+            datePicker = new DatePicker()
+            {
+                Format = "D",
+                Date = DateTime.Today
+            };
+            workTypeButton.Clicked += WorkTypeButton_Clicked;
+            done.Clicked += Done_Clicked;
+            cancel.Clicked += Cancel_Clicked;
+            layout = new StackLayout
+            {
+                Children =
+                {
+                    datePicker,
+                    workTypeButton,
+                    descriptionEntry,
+                    amount,
+                    done,
+                    cancel
+                }
+            };
+            if (Device.OS == TargetPlatform.iOS)
+            {
+                // move layout under the status bar
+                layout.Padding = new Thickness(0, 20, 0, 0);
+            }
+            Content = layout;
+        }
+
+        private void Cancel_Clicked(object sender, EventArgs e)
+        {
+            Navigation.PopModalAsync();
+        }
+
+        private void Done_Clicked(object sender, EventArgs e)
+        {
+            if (workType == null || amount.Text == "")
+            {
+                DisplayAlert("Fejl!", "Du skal oplyse både en arbejdstype og antal", "OK");
+            }
+            else
+            {
+                SetRecLineValues();
+                Debug.WriteLine("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + recLine.JobRecLineGUID);
+                var response = App.Database.SaveJobRecLineAsync(recLine);
+
+                Navigation.PopModalAsync();
+            }
+        }
+
+        private void SetRecLineValues()
+        {
+            recLine.JobRecLineGUID = Guid.NewGuid();
+            recLine.Description = descriptionEntry.Text;
+            //recLine.Job_No = ""; //sagsnummer - bør komme fra opgaven
+            //recLine.Job_Planning_Line_No = 0;
+            //recLine.Job_Task_No = ""; //sagsopgavenummer - bør komme fra opgaven
+            //recLine.Journal_Batch_Name = "KG";
+            //recLine.Journal_Template_Name = "SAGER";
+            //recLine.Line_No = 0;
+            recLine.MaintenanceTaskNo = taskGlobal.no.ToString();
+            //recLine.No = GlobalData.GetInstance.User.Code;
+            recLine.Posting_Date = DateTime.Today;
+            recLine.Quantity = int.Parse(amount.Text);
+            //recLine.Type = "Resource";
+        }
+
+        private async void WorkTypeButton_Clicked(object sender, EventArgs e)
+        {
+            string[] options = new string[4] { "Kørsel", "Rejsetid", "Stk", "Konsulenttimer" };
+            workType = await DisplayActionSheet("Arbejdstype", "Cancel", null, options);
+
+            recLine.WorkType = workType;
+            workTypeButton.Text = "arbejdstype (" + workType + ")";
+
+            switch (workType)
+            {
+                case "Kørsel":
+                    recLine.Unit_of_Measure_Code = "KM";
+                    recLine.Work_Type_Code = "KM";
+                    break;
+                case "Rejsetid":
+                    recLine.Unit_of_Measure_Code = "TIMER";
+                    recLine.Work_Type_Code = "REJSETID";
+                    break;
+                case "Stk":
+                    recLine.Unit_of_Measure_Code = "STK";
+                    recLine.Work_Type_Code = "STK";
+                    break;
+                case "Konsulenttimer":
+                    recLine.Unit_of_Measure_Code = "TIMER";
+                    recLine.Work_Type_Code = "TIMER";
+                    break;
+            }
+            workTypeButton.BackgroundColor = Color.FromRgb(135, 206, 250);
+        }
+    }
+}

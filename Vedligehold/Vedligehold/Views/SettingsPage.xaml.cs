@@ -44,7 +44,7 @@ namespace Vedligehold.Views
             checkConnectionButton = new Button { Text = "Tjek forbindelse til NAV", BackgroundColor = buttonColor, TextColor = Color.White };
             searchSettingsButton = new Button { Text = "Administrer søgefilter", BackgroundColor = buttonColor, TextColor = Color.White };
 
-            version = new Label() { Text = "Version 23.0", VerticalOptions = LayoutOptions.EndAndExpand };
+            version = new Label() { Text = "Version 27.0", VerticalOptions = LayoutOptions.EndAndExpand };
 
             searchSettingsButton.Clicked += (s, e) =>
             {
@@ -99,7 +99,7 @@ namespace Vedligehold.Views
                         timesync.DeleteAndPopulateDb();
                         actSync.DeleteAndPopulateDb();
                         RemoveActivityIndicator();
-                        await DisplayAlert("Synkronisering", "Du har nu erstattet " + data[0].ToString() + " lokale opgaver med " + data[1] + " opgaver fra Navision", "OK");
+                        await DisplayAlert("Synkronisering", "Synkronisering færdig", "OK");
                     }
                     catch
                     {
@@ -118,9 +118,11 @@ namespace Vedligehold.Views
                     MaintenanceTaskSynchronizer sync = new MaintenanceTaskSynchronizer();
                     TimeRegistrationSynchronizer timesync = new TimeRegistrationSynchronizer();
                     MaintenanceActivitySynchronizer actSync = new MaintenanceActivitySynchronizer();
+                    JobRecLineSynchronizer jobSync = new JobRecLineSynchronizer();
                     await sync.SyncDatabaseWithNAV();
                     await timesync.SyncDatabaseWithNAV();
                     await actSync.SyncDatabaseWithNAV();
+                     jobSync.SyncDatabaseWithNAV();
 
                     RemoveActivityIndicator();
                     await DisplayAlert("Synkronisering", "Enheden er nu synkroniseret med NAV", "OK");
@@ -133,7 +135,7 @@ namespace Vedligehold.Views
                 }
             };
 
-            layout.Children.Add(dropCreateButton);
+            //layout.Children.Add(dropCreateButton);
             layout.Children.Add(syncButton);
             layout.Children.Add(deleteDbButton);
             layout.Children.Add(checkConnectionButton);

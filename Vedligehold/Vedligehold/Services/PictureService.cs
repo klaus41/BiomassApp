@@ -13,7 +13,7 @@ namespace Vedligehold.Services
     {
         string endPoint = "api/Picture/";
 
-        public async Task<PictureModel> PostPicture(PictureModel picture, int id)
+        public async Task<PictureModel> PostPicture(PictureModel picture, string id)
         {
             HttpClient client = GetHttpClient();
 

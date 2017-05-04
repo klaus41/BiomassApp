@@ -39,9 +39,9 @@ namespace Vedligehold.Views.CustomCells
             mainGrid.BackgroundColor = color;
             View = mainGrid;
 
-            type.SetBinding<TaskDetailModel>(Label.TextProperty, i => i.type);
+            type.SetBinding<JobRecLineDetailModel>(Label.TextProperty, i => i.type);
 
-            value.SetBinding<TaskDetailModel>(Label.TextProperty, i => i.value);
+            value.SetBinding<JobRecLineDetailModel>(Label.TextProperty, i => i.value);
 
             //MakeCustomCell();
         }

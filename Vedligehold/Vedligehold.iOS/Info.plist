@@ -22,7 +22,7 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>MinimumOSVersion</key>
-	<string>10.1</string>
+	<string>10.3</string>
 	<key>CFBundleDisplayName</key>
 	<string>Vedligehold</string>
 	<key>CFBundleShortVersionString</key>
@@ -57,7 +57,7 @@
 	<key>UIStatusBarStyle</key>
 	<string>UIStatusBarStyleLightContent</string>
 	<key>CFBundleVersion</key>
-	<string>1.6</string>
+	<string>1.8</string>
 	<key>CFBundleIdentifier</key>
 	<string>dk.eliteit.vedligeholdv2</string>
 	<key>NSCameraUsageDescription</key>

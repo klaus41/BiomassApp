@@ -11,7 +11,7 @@ namespace Vedligehold.Models
         public string Code { get; set; }
         public string Name { get; set; }
         public string Password { get; set; }
-        public bool Intern { get; set; }
-        public string ETag { get; set; }
+        //public bool Intern { get; set; }
+        //public string ETag { get; set; }
     }
 }

@@ -98,12 +98,6 @@
     <AppxPackagedFile Include="C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.UWP\bin\x86\Release\ilc\_Resources\7.rsrc">
       <PackagePath>_Resources\7.rsrc</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.UWP\bin\x86\Release\ilc\_Resources\8.rsrc">
-      <PackagePath>_Resources\8.rsrc</PackagePath>
-    </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.UWP\bin\x86\Release\ilc\_Resources\9.rsrc">
-      <PackagePath>_Resources\9.rsrc</PackagePath>
-    </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.UWP\bin\x86\Release\ilc\_Resources\index.txt">
       <PackagePath>_Resources\index.txt</PackagePath>
     </AppxPackagedFile>

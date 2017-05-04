@@ -1,0 +1,36 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Vedligehold.Database;
+using Vedligehold.Models;
+
+namespace Vedligehold.Services.Synchronizers
+{
+    public class PictureSynchronizer
+    {
+        List<PictureModel> pictureList;
+
+        PDFService pdf = new PDFService();
+        MaintenanceDatabase database = App.Database;
+
+        public async void PutPicturesToNAV()
+        {
+            try
+            {
+                pictureList = await database.GetPicturesAsync();
+                foreach (PictureModel item in pictureList)
+                {
+                    await pdf.PostPicture(item, item.UniqueID);
+                    await database.DeletePictureAsync(item);
+                }
+            }
+            catch
+            {
+                Debug.WriteLine("error no stuff");
+            }
+        }
+    }
+}

@@ -19,6 +19,8 @@ namespace Vedligehold.Database
             database.CreateTableAsync<TimeRegistrationModel>().Wait();
             database.CreateTableAsync<MaintenanceActivity>().Wait();
             database.CreateTableAsync<ConnectionSettings>().Wait();
+            database.CreateTableAsync<PictureModel>().Wait();
+            database.CreateTableAsync<JobRecLine>().Wait();
         }
 
         public Task<List<MaintenanceTask>> GetTasksAsync()
@@ -120,6 +122,65 @@ namespace Vedligehold.Database
         public Task<int> SaveConnectionSetting(ConnectionSettings task)
         {
             return database.InsertAsync(task);
+        }
+        public Task<List<PictureModel>> GetPicturesAsync()
+        {
+            return database.Table<PictureModel>().ToListAsync();
+        }
+
+        public Task<PictureModel> GetPictureAsync(string id)
+        {
+            return database.Table<PictureModel>().Where(i => i.UniqueID == id).FirstOrDefaultAsync();
+        }
+
+        public Task<int> SavePictureAsync(PictureModel task)
+        {
+            return database.InsertAsync(task);
+        }
+
+        public Task<int> UpdatePictureAsync(PictureModel task)
+        {
+            return database.UpdateAsync(task);
+        }
+        public Task<int> DeletePictureAsync(PictureModel task)
+        {
+            return database.DeleteAsync(task);
+        }
+
+        public Task<int> DeletePictureAsync()
+        {
+            return database.ExecuteAsync("delete from " + "PictureModel");
+        }
+        public Task<List<JobRecLine>> GetJobRecLinesAsync()
+        {
+            return database.Table<JobRecLine>().ToListAsync();
+        }
+
+        public Task<JobRecLine> GetJobRecLineAsync(Guid id)
+        {
+            return database.Table<JobRecLine>().Where(i => i.JobRecLineGUID == id).FirstOrDefaultAsync();
+        }
+
+        public Task<int> SaveJobRecLineAsync(JobRecLine task)
+        {
+            return database.InsertAsync(task);
+        }
+
+        public Task<int> UpdateJobRecLineAsync(JobRecLine task)
+        {
+            return database.UpdateAsync(task);
+            //return database.ExecuteAsync("UPDATE JobRecLine SET Quantity = 99");
+
+            //return database.ExecuteAsync("UPDATE JobRecLine SET Quantity = 3666 WHERE JobRecLineGUID = " + task.JobRecLineGUID);
+        }
+        public Task<int> DeleteJobRecLineAsync(JobRecLine task)
+        {
+            return database.DeleteAsync(task);
+        }
+
+        public Task<int> DeleteJobRecLinesAsync()
+        {
+            return database.ExecuteAsync("delete from " + "JobRecLine");
         }
     }
 }
