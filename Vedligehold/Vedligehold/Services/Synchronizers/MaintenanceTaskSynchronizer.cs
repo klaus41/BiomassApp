@@ -117,7 +117,7 @@ namespace Vedligehold.Services.Synchronizers
         {
             await App.Database.DeleteAll();
             await App.Database.DeleteAllTimeReg();
-            //await App.Database.DeleteJobRecLinesAsync();
+            await App.Database.DeleteJobRecLinesAsync();
             await App.Database.DeleteAllActivities();
         }
 

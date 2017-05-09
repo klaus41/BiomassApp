@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,7 +35,7 @@ namespace Vedligehold.Views
             workType = jobRecLine.WorkType;
 
             descriptionEntry = new Entry { Text = recLineGlobal.Description };
-            amount = new Entry { Text = recLineGlobal.Quantity.ToString(), Keyboard = Keyboard.Numeric };
+            amount = new Entry { Text = recLineGlobal.Quantity.ToString(CultureInfo.InvariantCulture), Keyboard = Keyboard.Numeric };
 
             workTypeButton = new Button { Text = "Arbejdstype (" + recLineGlobal.WorkType + ")", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
             unitCodeButton = new Button { Text = "Enhedskode", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
@@ -91,9 +92,11 @@ namespace Vedligehold.Views
 
         private void SetRecLineValues()
         {
+            double temp;
+            Double.TryParse(amount.Text, NumberStyles.Number, CultureInfo.InvariantCulture, out temp);
             recLineGlobal.Description = descriptionEntry.Text;
             recLineGlobal.Posting_Date = DateTime.Today;
-            recLineGlobal.Quantity = int.Parse(amount.Text);
+            recLineGlobal.Quantity = temp;
             recLineGlobal.Edited = true;
         }
 

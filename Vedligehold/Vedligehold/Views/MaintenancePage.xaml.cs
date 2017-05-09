@@ -199,6 +199,7 @@ namespace Vedligehold.Views
             while (!response)
             {
                 await syncFacade.MaintenanceActivitySynchronizer.SyncDatabaseWithNAV();
+                syncFacade.JobRecLineSynchronizer.SyncDatabaseWithNAV();
                 response = await syncFacade.MaintenanceTaskSynchronizer.SyncDatabaseWithNAV();
             }
             UpdateItemSource();
@@ -233,7 +234,7 @@ namespace Vedligehold.Views
                     itemssourceList = tasks;
                 }
 
-                itemssourceList = itemssourceList.Where(x => x.responsible.ToLower().Contains(searchString.ToLower()) || x.CustomerName.ToLower().Contains(searchString.ToLower()) || x.TaskType.ToLower().Contains(searchString.ToLower()) || x.text.ToLower().Contains(searchString.ToLower()));
+                itemssourceList = itemssourceList.Where(x => x.responsible.ToLower().Contains(searchString.ToLower()) || x.CustomerName.ToLower().Contains(searchString.ToLower()) || x.TaskType.ToLower().Contains(searchString.ToLower()) || x.text.ToLower().Contains(searchString.ToLower()) || x.no.ToString().Contains(searchString));
 
                 if (showDone)
                 {

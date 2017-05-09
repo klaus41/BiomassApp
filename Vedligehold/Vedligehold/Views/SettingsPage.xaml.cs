@@ -45,7 +45,7 @@ namespace Vedligehold.Views
             checkConnectionButton = new Button { Text = "Tjek forbindelse til NAV", BackgroundColor = buttonColor, TextColor = Color.White };
             searchSettingsButton = new Button { Text = "Administrer søgefilter", BackgroundColor = buttonColor, TextColor = Color.White };
 
-            version = new Label() { Text = "Version 33.0", VerticalOptions = LayoutOptions.EndAndExpand };
+            version = new Label() { Text = "Version 34.0", VerticalOptions = LayoutOptions.EndAndExpand };
 
             searchSettingsButton.Clicked += (s, e) =>
             {
