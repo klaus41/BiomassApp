@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Vedligehold.Database;
 using Vedligehold.Models;
+using Vedligehold.Services.Synchronizers;
 using Xamarin.Forms;
 
 namespace Vedligehold.Views
@@ -23,6 +24,7 @@ namespace Vedligehold.Views
         StackLayout layout;
         ConnectionSettings settings;
         MaintenanceDatabase db = App.Database;
+        SynchronizerFacade facade = SynchronizerFacade.GetInstance;
         string old;
 
         public ConnectionSettingsPage()
@@ -78,8 +80,7 @@ namespace Vedligehold.Views
 
                 try
                 {
-                    MaintenanceTaskSynchronizer sync = new MaintenanceTaskSynchronizer();
-                    bool connected = await sync.HasConnectionToNAV();
+                    bool connected = await facade.MaintenanceTaskSynchronizer.HasConnectionToNAV();
                     if (connected)
                     {
                         await DisplayAlert("Forbindelse", "Adressen er opdateret og enheden har forbindelse til NAV", "OK");

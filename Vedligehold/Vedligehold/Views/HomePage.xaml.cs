@@ -13,9 +13,6 @@ namespace Vedligehold.Views
 {
     public partial class HomePage : ContentPage
     {
-        Contact[] contacts;
-        Statistic[] stats;
-        string[] contactNumbers;
         bool loading;
         StackLayout layout;
         ActivityIndicator ai;
@@ -33,7 +30,10 @@ namespace Vedligehold.Views
         Image image;
 
         List<MaintenanceTask> taskList;
+
         GlobalData gd = GlobalData.GetInstance;
+        ServiceFacade facade = ServiceFacade.GetInstance;
+
         Color buttonColor;
 
         Grid grid;
@@ -171,60 +171,6 @@ namespace Vedligehold.Views
             }
             gd.TabbedPage.Children.Add(gd.LoginPage);
             gd.IsLoggedIn = false;
-        }
-
-        public async void StatButtonMethod()
-        {
-            loading = true;
-            while (loading)
-            {
-                ShowActivityIndicator();
-                stats = null;
-                contacts = null;
-
-                while (contacts == null)
-                {
-                    ActivityIndicator ai = new ActivityIndicator()
-                    {
-                        IsRunning = true
-                    };
-                    var sv = new ContactService();
-                    var es = await sv.GetContactsAsync();
-                    contacts = es;
-                }
-
-
-                contactNumbers = new string[contacts.Count()];
-
-                for (int i = 0; i < contacts.Count(); i++)
-                {
-                    contactNumbers[i] = contacts[i].no + " - " + contacts[i].company_Name;
-                }
-
-                var action = await DisplayActionSheet("Vælg leverandørnummer", "Cancel", null, contactNumbers);
-
-                Debug.WriteLine("ACTION!!!!" + action);
-                try
-                {
-                    if (action != "Cancel")
-                    {
-                        int l = action.IndexOf(" ");
-                        string id = action.Substring(0, l);
-
-                        while (stats == null)
-                        {
-                            var sv = new StatisticService();
-                            var es = await sv.GetStatsAsync(id);
-                            stats = es;
-                        }
-
-                        await Navigation.PushModalAsync(new StatisticsPage(stats));
-                    }
-                }
-
-                catch { }
-                RemoveActivityIndicator();
-            }
         }
 
         private void RemoveActivityIndicator()

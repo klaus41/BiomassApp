@@ -167,6 +167,19 @@ namespace Vedligehold.Views
 
             };
 
+            if (taskGlobal.status == "Completed")
+            {
+                gridInfo.BackgroundColor = Color.FromRgb(135, 206, 250);
+            }
+            else
+            {
+                gridInfo.BackgroundColor = Color.FromRgb(205, 201, 201);
+                header.TextColor = Color.Black;
+                asset.TextColor = Color.Black;
+                assetDescription.TextColor = Color.Black;
+                type.TextColor = Color.Black;
+                text.TextColor = Color.Black;
+            }
 
             gridInfo.Margin = 10;
 
@@ -208,10 +221,15 @@ namespace Vedligehold.Views
             {
                 jobList = await App.Database.GetJobRecLinesAsync();
             }
-
+            Resources resource = null;
+            while (resource == null)
+            {
+                List<Resources> rl = await db.GetResourcesAsync();
+                resource = rl.Where(x => x.Name == gd.User.Name).FirstOrDefault();
+            }
             List<JobRecLine> jsl = jobList.Where(x => x.MaintenanceTaskNo == taskGlobal.no.ToString()).ToList();
-            jobItemsSourceList = jsl.Where(x => x.Journal_Batch_Name == "CS").ToList();
-            lv.ItemsSource = jsl;
+            jobItemsSourceList = jsl.Where(x => x.No == resource.No).ToList();
+            lv.ItemsSource = jobItemsSourceList;
 
         }
 

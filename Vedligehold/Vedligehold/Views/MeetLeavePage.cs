@@ -22,6 +22,8 @@ namespace Vedligehold.Views
         Button checkOut;
         Label checkInLabel;
         Label checkOutLabel;
+        StackLayout layout;
+        SynchronizerFacade syncFace = SynchronizerFacade.GetInstance;
         GlobalData gd = GlobalData.GetInstance;
         bool _in;
         bool _out;
@@ -51,7 +53,7 @@ namespace Vedligehold.Views
 
             checkOut.Clicked += CheckOut_Clicked;
             checkIn.Clicked += CheckIn_Clicked;
-            StackLayout layout = new StackLayout { Padding = 10 };
+            layout = new StackLayout { Padding = 10 };
 
             if (Device.OS == TargetPlatform.iOS)
             {
@@ -74,8 +76,7 @@ namespace Vedligehold.Views
             bool response = false;
             while (!response)
             {
-                TimeRegistrationSynchronizer trs = new TimeRegistrationSynchronizer();
-                response = await trs.SyncDatabaseWithNAV();
+                response = await syncFace.TimeRegistrationSynchronizer.SyncDatabaseWithNAV();
             }
             GetData();
             if (lv.IsRefreshing)
@@ -83,16 +84,22 @@ namespace Vedligehold.Views
                 lv.EndRefresh();
             }
         }
-
-        private async void CheckOut_Clicked(object sender, EventArgs e)
+        private async Task<TimeRegistrationModel> MakeNewTimeReg(string type)
         {
-            checkOut.IsEnabled = false;
+            ActivityIndicator ai = new ActivityIndicator()
+            {
+                IsRunning = true
+            };
+            layout.Children.Remove(lv);
+            layout.Children.Add(ai);
             TimeRegistrationModel timeReg = new TimeRegistrationModel
             {
-                No = timeRegList.Last().No + 1,
-                Type = "Check out",
-                Time = DateTime.Now,
-                User = gd.User.Code
+                //No = timeRegList.OrderByDescending(x => x.No).FirstOrDefault().No + 1,
+                Type = type,
+                Time = DateTime.Now.ToUniversalTime(),
+                User = gd.User.Code,
+                New = true,
+                Sent = false
             };
             try
             {
@@ -107,44 +114,25 @@ namespace Vedligehold.Views
             {
                 Debug.WriteLine("Unable to get location, may need to increase timeout: " + ex);
             }
-            gd.TimeRegisteredOut = timeReg;
+
             await db.SaveTimeRegAsync(timeReg);
+            GetData();
+            layout.Children.Add(lv);
+            layout.Children.Remove(ai);
+            return timeReg;
+        }
+        private async void CheckOut_Clicked(object sender, EventArgs e)
+        {
+            checkOut.IsEnabled = false;
+            gd.TimeRegisteredOut = await MakeNewTimeReg("Check out");
+
+
         }
 
         private async void CheckIn_Clicked(object sender, EventArgs e)
         {
             checkIn.IsEnabled = false;
-            TimeRegistrationModel timeReg = new TimeRegistrationModel();
-
-            try
-            {
-                timeReg.No = timeRegList.Last().No + 1;
-            }
-            catch
-            {
-                timeReg.No = 1;
-            }
-            timeReg.Type = "Check in";
-            timeReg.Time = DateTime.Now;
-            timeReg.User = gd.User.Code;
-
-
-            try
-            {
-                var locator = CrossGeolocator.Current;
-                locator.DesiredAccuracy = 50;
-                var position = await locator.GetPositionAsync(timeoutMilliseconds: 10000);
-
-                timeReg.Latitude = position.Latitude;
-                timeReg.Longitude = position.Longitude;
-
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Unable to get location, may need to increase timeout: " + ex);
-            }
-            gd.TimeRegisteredIn = timeReg;
-            await db.SaveTimeRegAsync(timeReg);
+            gd.TimeRegisteredIn = await MakeNewTimeReg("Check in");
         }
 
         protected override void OnAppearing()
@@ -156,49 +144,82 @@ namespace Vedligehold.Views
 
         public async void GetData()
         {
-            List<TimeRegistrationModel> tempList = new List<TimeRegistrationModel>();
-            tempList = timeRegList;
-            while (tempList == timeRegList)
+            timeRegList = null;
+
+            while (timeRegList == null)
             {
                 timeRegList = await db.GetTimeRegsAsync();
             }
-            if (timeRegList.Count == 0)
+            List<TimeRegistrationModel> itemssourceList = timeRegList.Where(x => x.User == gd.User.Code).OrderByDescending(x => x.Time).ToList();
+            TimeRegistrationModel first = itemssourceList.FirstOrDefault();
+            if (first != null)
             {
-                TimeRegistrationSynchronizer mts = new TimeRegistrationSynchronizer();
-                mts.DeleteAndPopulateDb();
-            }
-            foreach (var item in timeRegList)
-            {
-                if (item.Time > DateTime.Today && item.User == gd.User.Code)
+                if (first.Type == "Check in")
                 {
-                    if (item.Type == "Check in")
-                    {
-                        _in = false;
-                        _out = true;
-                        //checkIn.IsEnabled = false;
-                        checkIn.Text = "Allerede mødt";
-                        gd.TimeRegisteredIn = item;
-                    }
-                    if (item.Type == "Check out")
-                    {
-                        _out = false;
-                        //checkOut.IsEnabled = false;
-                        checkOut.Text = "Allerede meldt ud";
-                        gd.TimeRegisteredOut = item;
-                    }
+                    _in = false;
+                    _out = true;
+                    //checkIn.IsEnabled = false;
+                    checkOut.Text = "Meld ud";
+                    checkIn.Text = "Allerede mødt";
+                    gd.TimeRegisteredIn = first;
                 }
-            }
-
-            if (gd.SearchUserName != null)
-            {
-                lv.ItemsSource = timeRegList.Where(x => x.User == gd.SearchUserName).OrderByDescending(x => x.Time);
-            }
-            else
-            {
-                lv.ItemsSource = timeRegList.OrderByDescending(x => x.Time);
+                else
+                {
+                    _out = false;
+                    _in = true;
+                    //checkOut.IsEnabled = false;       
+                    checkIn.Text = "Mød ind";
+                    checkOut.Text = "Allerede meldt ud";
+                    gd.TimeRegisteredOut = first;
+                }
             }
             checkIn.IsEnabled = _in;
             checkOut.IsEnabled = _out;
+
+            lv.ItemsSource = itemssourceList;
+
+            //List<TimeRegistrationModel> tempList = new List<TimeRegistrationModel>();
+            //tempList = timeRegList;
+            //while (tempList == timeRegList)
+            //{
+            //    timeRegList = await db.GetTimeRegsAsync();
+            //}
+            //if (timeRegList.Count == 0)
+            //{
+            //    TimeRegistrationSynchronizer mts = new TimeRegistrationSynchronizer();
+            //    mts.DeleteAndPopulateDb();
+            //}
+            //foreach (var item in timeRegList)
+            //{
+            //    if (item.Time > DateTime.Today && item.User == gd.User.Code)
+            //    {
+            //        if (item.Type == "Check in")
+            //        {
+            //            _in = false;
+            //            _out = true;
+            //            //checkIn.IsEnabled = false;
+            //            checkIn.Text = "Allerede mødt";
+            //            gd.TimeRegisteredIn = item;
+            //        }
+            //        if (item.Type == "Check out")
+            //        {
+            //            _out = false;
+            //            //checkOut.IsEnabled = false;
+            //            checkOut.Text = "Allerede meldt ud";
+            //            gd.TimeRegisteredOut = item;
+            //        }
+            //    }
+            //}
+
+            //if (gd.SearchUserName != null)
+            //{
+            //    lv.ItemsSource = timeRegList.Where(x => x.User == gd.SearchUserName).OrderByDescending(x => x.Time);
+            //}
+            //else
+            //{
+            //    lv.ItemsSource = timeRegList.OrderByDescending(x => x.Time);
+            //}
+
         }
     }
 }

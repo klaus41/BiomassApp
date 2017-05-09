@@ -21,6 +21,8 @@ namespace Vedligehold.Database
             database.CreateTableAsync<ConnectionSettings>().Wait();
             database.CreateTableAsync<PictureModel>().Wait();
             database.CreateTableAsync<JobRecLine>().Wait();
+            database.CreateTableAsync<Resources>().Wait();
+
         }
 
         public Task<List<MaintenanceTask>> GetTasksAsync()
@@ -169,9 +171,6 @@ namespace Vedligehold.Database
         public Task<int> UpdateJobRecLineAsync(JobRecLine task)
         {
             return database.UpdateAsync(task);
-            //return database.ExecuteAsync("UPDATE JobRecLine SET Quantity = 99");
-
-            //return database.ExecuteAsync("UPDATE JobRecLine SET Quantity = 3666 WHERE JobRecLineGUID = " + task.JobRecLineGUID);
         }
         public Task<int> DeleteJobRecLineAsync(JobRecLine task)
         {
@@ -181,6 +180,34 @@ namespace Vedligehold.Database
         public Task<int> DeleteJobRecLinesAsync()
         {
             return database.ExecuteAsync("delete from " + "JobRecLine");
+        }
+        public Task<List<Resources>> GetResourcesAsync()
+        {
+            return database.Table<Resources>().ToListAsync();
+        }
+
+        public Task<Resources> GetResourceAsync(string id)
+        {
+            return database.Table<Resources>().Where(i => i.No == id).FirstOrDefaultAsync();
+        }
+
+        public Task<int> SaveResourcesAsync(Resources task)
+        {
+            return database.InsertAsync(task);
+        }
+
+        public Task<int> UpdateResourcesAsync(Resources task)
+        {
+            return database.UpdateAsync(task);
+        }
+        public Task<int> DeleteResourcesAsync(Resources task)
+        {
+            return database.DeleteAsync(task);
+        }
+
+        public Task<int> DeleteResourcesAsync()
+        {
+            return database.ExecuteAsync("delete from " + "Resources");
         }
     }
 }

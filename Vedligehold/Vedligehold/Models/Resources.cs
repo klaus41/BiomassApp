@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Vedligehold.Services.Synchronizers
+namespace Vedligehold.Models
 {
-    public abstract class AbstractSynchronizer<T>
+    public class Resources
     {
-
+        public string No { get; set; }
+        public string Name { get; set; }
     }
 }

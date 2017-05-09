@@ -13,7 +13,7 @@ namespace Vedligehold.Services.Synchronizers
         bool done;
         List<MaintenanceActivity> timeList;
         List<MaintenanceActivity> onlineList;
-        MaintenanceActivityService ts;
+        ServiceFacade facade = ServiceFacade.GetInstance;
 
         int numberOfConflicts;
         int numberOfMatches;
@@ -27,8 +27,7 @@ namespace Vedligehold.Services.Synchronizers
             List<MaintenanceActivity> taskList = await App.Database.GetAcitivitiesAsync();
             if (!taskList.Any())
             {
-                var sv = new MaintenanceActivityService();
-                var es = await sv.GetMaintenanceActivitiesAsync();
+                var es = await facade.MaintenanceActivityService.GetMaintenanceActivitiesAsync();
 
                 foreach (var item in es)
                 {
@@ -43,8 +42,7 @@ namespace Vedligehold.Services.Synchronizers
             timeList = await App.Database.GetAcitivitiesAsync();
             try
             {
-                ts = new MaintenanceActivityService();
-                var es = await ts.GetMaintenanceActivitiesAsync();
+                var es = await facade.MaintenanceActivityService.GetMaintenanceActivitiesAsync();
                 onlineList = new List<MaintenanceActivity>();
 
                 foreach (var item in es)
@@ -72,9 +70,8 @@ namespace Vedligehold.Services.Synchronizers
                     if ((timeReg.UniqueID == onlineTimeReg.UniqueID) && (timeReg.ETag == onlineTimeReg.ETag))
                     {
                         if (timeReg.Done && !onlineTimeReg.Done)
-                        {
-                            var ts = new MaintenanceActivityService();
-                            await ts.UpdateTask(timeReg);
+                        {                           
+                            await facade.MaintenanceActivityService.UpdateTask(timeReg);
                         }
                     }
                 }

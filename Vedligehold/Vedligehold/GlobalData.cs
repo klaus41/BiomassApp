@@ -25,9 +25,6 @@ namespace Vedligehold
         private TimeRegistrationModel timeRegisteredOut;
         private string baseAddress;
         private bool done;
-        MaintenanceTaskSynchronizer mts = new MaintenanceTaskSynchronizer();
-        TimeRegistrationSynchronizer trs = new TimeRegistrationSynchronizer();
-        MaintenanceActivitySynchronizer mas = new MaintenanceActivitySynchronizer();
         ConnectionSettings cs = new ConnectionSettings();
 
         private GlobalData() { }

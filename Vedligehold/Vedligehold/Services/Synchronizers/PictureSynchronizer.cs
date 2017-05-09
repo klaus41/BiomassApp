@@ -13,7 +13,7 @@ namespace Vedligehold.Services.Synchronizers
     {
         List<PictureModel> pictureList;
 
-        PDFService pdf = new PDFService();
+        ServiceFacade facade = ServiceFacade.GetInstance;
         MaintenanceDatabase database = App.Database;
 
         public async void PutPicturesToNAV()
@@ -23,7 +23,7 @@ namespace Vedligehold.Services.Synchronizers
                 pictureList = await database.GetPicturesAsync();
                 foreach (PictureModel item in pictureList)
                 {
-                    await pdf.PostPicture(item, item.UniqueID);
+                    await facade.PDFService.PostPicture(item, item.UniqueID);
                     await database.DeletePictureAsync(item);
                 }
             }

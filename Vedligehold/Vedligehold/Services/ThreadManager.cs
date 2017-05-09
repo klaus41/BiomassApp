@@ -8,11 +8,8 @@ namespace Vedligehold.Services
 {
     public class ThreadManager
     {
-        MaintenanceTaskSynchronizer mts = new MaintenanceTaskSynchronizer();
-        TimeRegistrationSynchronizer trs = new TimeRegistrationSynchronizer();
-        MaintenanceActivitySynchronizer mas = new MaintenanceActivitySynchronizer();
-        JobRecLineSynchronizer jrls = new JobRecLineSynchronizer();
-        PictureSynchronizer ps = new PictureSynchronizer();
+        SynchronizerFacade facade = SynchronizerFacade.GetInstance;
+    
         public async void StartSynchronizationThread()
         {
 
@@ -20,22 +17,19 @@ namespace Vedligehold.Services
             bool done = false;
             while (!done)
             {
-               await Task.Run( async() =>
+                await Task.Run(async () =>
                {
-                   await mts.SyncDatabaseWithNAV();
-                   await trs.SyncDatabaseWithNAV();
-                   await mas.SyncDatabaseWithNAV();
-                    jrls.SyncDatabaseWithNAV();                   
-                   ps.PutPicturesToNAV();
+                   await facade.MaintenanceTaskSynchronizer.SyncDatabaseWithNAV();
+                   await facade.TimeRegistrationSynchronizer.SyncDatabaseWithNAV();
+                   await facade.MaintenanceActivitySynchronizer.SyncDatabaseWithNAV();
+                   facade.JobRecLineSynchronizer.SyncDatabaseWithNAV();
+                   facade.PictureSynchronizer.PutPicturesToNAV();
+                   facade.ResourcesSynchronizer.SyncDatabaseWithNAV();
                    Debug.WriteLine(i + "!!!!!!! SYNCED!!!!!");
                    i++;
                });
-               await Task.Delay(30000);
+                await Task.Delay(30000);
             }
-        }
-        private void DoWork()
-        {
-            Debug.WriteLine("AKK!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!LSAKKLASDKLSADS");
         }
     }
 }

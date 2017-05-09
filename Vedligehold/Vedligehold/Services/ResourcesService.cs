@@ -6,30 +6,31 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Vedligehold.Models;
-using Vedligehold.Services;
 
 namespace Vedligehold.Services
 {
-    public class ContactService : ClientGateway
+    public class ResourcesService : ClientGateway
     {
-        public async Task<Contact[]> GetContactsAsync()
+        string endPoint = "api/Resources/";
+
+        public async Task<Resources[]> GetResourcesAsync()
         {
             try
             {
                 HttpClient client = GetHttpClient();
 
-                var response = await client.GetAsync("api/contacts/");
+                var response = await client.GetAsync(endPoint);
 
                 var statsJson = response.Content.ReadAsStringAsync().Result;
 
-                var rootObject = JsonConvert.DeserializeObject<Contact[]>(statsJson);
-
+                var rootObject = JsonConvert.DeserializeObject<Resources[]>(statsJson);
+                
                 return rootObject;
             }
             catch
             {
-                Contact[] cl = null;
-                return cl;
+                Resources[] ml = null;
+                return ml;
             }
         }
 

@@ -40,7 +40,7 @@ namespace Vedligehold.Views
                 JobRecLineDetailModel postingDateModel = new JobRecLineDetailModel()
                 {
                     type = "Posting Date",
-                    value = c.Posting_Date.Day.ToString()
+                    value = c.Posting_Date.ToString("dd/MM/yyyy")
                 };
                 list.Add(postingDateModel);
             }

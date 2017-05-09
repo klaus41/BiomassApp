@@ -17,6 +17,8 @@ namespace Vedligehold.Views
 {
     public class MaintenanceDetail : ContentPage
     {
+        ServiceFacade facade = ServiceFacade.GetInstance;
+
         ListView lv;
         Grid grid;
         Grid gridInfo;
@@ -120,7 +122,6 @@ namespace Vedligehold.Views
                 doneButton.IsEnabled = false;
                 doneButton.Text = "Udført";
                 doneButton.BackgroundColor = Color.FromRgb(205, 201, 201);
-
             }
             else
             {
@@ -183,7 +184,6 @@ namespace Vedligehold.Views
             }
             string picture = Convert.ToBase64String(ba);
 
-            PDFService pdf = new PDFService();
             PictureModel pic = new PictureModel()
             {
                 Picture = picture,
@@ -255,8 +255,7 @@ namespace Vedligehold.Views
 
             try
             {
-                var service = new PDFService();
-                string data = await service.GetPDF(taskGlobal.anlæg);
+                string data = await facade.PDFService.GetPDF(taskGlobal.anlæg);
                 if (!data.Contains("NoFile"))
                 {
                     int i = data.Length - 2;
@@ -355,11 +354,22 @@ namespace Vedligehold.Views
                     new ColumnDefinition { Width = new GridLength(1,GridUnitType.Star) },
                     new ColumnDefinition { Width = new GridLength(1,GridUnitType.Star) }
                 },
-                BackgroundColor = Color.FromRgb(135, 206, 250),
                 //ColumnSpacing = 10,
                 //RowSpacing = 10
             };
-
+            if (taskGlobal.status == "Completed")
+            {
+                gridInfo.BackgroundColor = Color.FromRgb(135, 206, 250);
+            }
+            else
+            {
+                gridInfo.BackgroundColor = Color.FromRgb(205, 201, 201);
+                header.TextColor = Color.Black;
+                asset.TextColor = Color.Black;
+                assetDescription.TextColor = Color.Black;
+                type.TextColor = Color.Black;
+                text.TextColor = Color.Black;
+            }
             gridInfo.Margin = 10;
 
             grid.Children.Add(doneButton, 0, 2);

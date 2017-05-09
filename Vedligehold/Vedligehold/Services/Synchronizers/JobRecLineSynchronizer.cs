@@ -14,18 +14,17 @@ namespace Vedligehold.Services.Synchronizers
         List<JobRecLine> onlineList = new List<JobRecLine>();
         List<JobRecLine> jobList = new List<JobRecLine>();
 
-        JobRecLineService ms = new JobRecLineService();
-
+        ServiceFacade facade = ServiceFacade.GetInstance;
         MaintenanceDatabase db = App.Database;
         public async void SyncDatabaseWithNAV()
         {
             try
             {
+                jobList = await db.GetJobRecLinesAsync();
                 bool done = false;
                 while (!done)
                 {
-                    jobList = await db.GetJobRecLinesAsync();
-                    var s = await ms.GetJobRecLines();
+                    var s = await facade.JobRecLineService.GetJobRecLines();
                     foreach (var item in s)
                     {
                         onlineList.Add(item);
@@ -36,6 +35,21 @@ namespace Vedligehold.Services.Synchronizers
                 {
                     try
                     {
+                        switch (item.Work_Type_Code)
+                        {
+                            case "KM":
+                                item.WorkType = "Kilometer";
+                                break;
+                            case "REJSETID":
+                                item.WorkType = "Rejsetid";
+                                break;
+                            case "STK":
+                                item.WorkType = "Stk";
+                                break;
+                            case "TIMER":
+                                item.WorkType = "Konsulenttimer";
+                                break;
+                        }
                         await db.SaveJobRecLineAsync(item);
                     }
                     catch
@@ -56,7 +70,7 @@ namespace Vedligehold.Services.Synchronizers
                 if (item.Edited)
                 {
 
-                    await ms.UpdateJobRecLine(item);
+                    await facade.JobRecLineService.UpdateJobRecLine(item);
                     item.Edited = false;
                     await db.UpdateJobRecLineAsync(item);
                 }
@@ -78,7 +92,7 @@ namespace Vedligehold.Services.Synchronizers
                 }
                 if (newItem)
                 {
-                    await ms.CreateJobRecLine(item);
+                    await facade.JobRecLineService.CreateJobRecLine(item);
                 }
                 newItem = true;
             }

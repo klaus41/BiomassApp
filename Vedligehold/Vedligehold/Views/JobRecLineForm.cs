@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Vedligehold.Database;
 using Vedligehold.Models;
 using Xamarin.Forms;
 
@@ -26,6 +28,8 @@ namespace Vedligehold.Views
 
         JobRecLine recLine;
         MaintenanceTask taskGlobal;
+        GlobalData gd = GlobalData.GetInstance;
+        MaintenanceDatabase db = App.Database;
         public JobRecLineForm(MaintenanceTask task)
         {
             recLine = new JobRecLine();
@@ -71,23 +75,30 @@ namespace Vedligehold.Views
             Navigation.PopModalAsync();
         }
 
-        private void Done_Clicked(object sender, EventArgs e)
+        private async void Done_Clicked(object sender, EventArgs e)
         {
+            HandleElements();
             if (workType == null || amount.Text == "")
             {
-                DisplayAlert("Fejl!", "Du skal oplyse både en arbejdstype og antal", "OK");
+                await DisplayAlert("Fejl!", "Du skal oplyse både en arbejdstype og antal", "OK");
             }
             else
             {
-                SetRecLineValues();
-                Debug.WriteLine("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + recLine.JobRecLineGUID);
+                Resources resource = null;
+                while (resource == null)
+                {
+                    List<Resources> rl = await db.GetResourcesAsync();
+                    resource = rl.Where(x => x.Name == gd.User.Name).FirstOrDefault();
+                }
+                SetRecLineValues(resource.No);
                 var response = App.Database.SaveJobRecLineAsync(recLine);
 
-                Navigation.PopModalAsync();
+                await Navigation.PopModalAsync();
             }
+            HandleElements();
         }
 
-        private void SetRecLineValues()
+        private void SetRecLineValues(string no)
         {
             recLine.JobRecLineGUID = Guid.NewGuid();
             recLine.Description = descriptionEntry.Text;
@@ -98,9 +109,9 @@ namespace Vedligehold.Views
             //recLine.Journal_Template_Name = "SAGER";
             //recLine.Line_No = 0;
             recLine.MaintenanceTaskNo = taskGlobal.no.ToString();
-            //recLine.No = GlobalData.GetInstance.User.Code;
-            recLine.Posting_Date = DateTime.Today;
-            recLine.Quantity = int.Parse(amount.Text);
+            recLine.No = no;
+            recLine.Posting_Date = datePicker.Date;
+            recLine.Quantity = double.Parse(amount.Text, CultureInfo.InvariantCulture);
             //recLine.Type = "Resource";
         }
 
@@ -132,6 +143,28 @@ namespace Vedligehold.Views
                     break;
             }
             workTypeButton.BackgroundColor = Color.FromRgb(135, 206, 250);
+        }
+
+        private void HandleElements()
+        {
+            if (done.IsEnabled)
+            {
+                datePicker.IsEnabled = false;
+                workTypeButton.IsEnabled = false;
+                descriptionEntry.IsEnabled = false;
+                amount.IsEnabled = false;
+                done.IsEnabled = false;
+                cancel.IsEnabled = false;
+            }
+            else
+            {
+                datePicker.IsEnabled = true;
+                workTypeButton.IsEnabled = true;
+                descriptionEntry.IsEnabled = true;
+                amount.IsEnabled = true;
+                done.IsEnabled = true;
+                cancel.IsEnabled = true;
+            }
         }
     }
 }

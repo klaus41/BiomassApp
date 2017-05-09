@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Vedligehold.Models;
 using Vedligehold.Services;
 
-namespace Vedligehold.Views
+namespace Vedligehold.Services.Synchronizers
 {
     public class MaintenanceTaskSynchronizer
     {
@@ -17,17 +17,16 @@ namespace Vedligehold.Views
         int numberOfSyncs;
         int numberOfMatches;
         int numberOfNewTasks;
-        MaintenanceService ms;
         bool done;
+        ServiceFacade facade = ServiceFacade.GetInstance;
 
         public async Task<bool> HasConnectionToNAV()
         {
             bool connection;
-            SalesPersonService service = new SalesPersonService();
             SalesPerson[] persons = null;
             try
             {
-                persons = await service.GetSalesPersonsAsync();
+                persons = await facade.SalesPersonService.GetSalesPersonsAsync();
             }
             catch
             {
@@ -51,8 +50,7 @@ namespace Vedligehold.Views
             List<MaintenanceTask> taskList = await App.Database.GetTasksAsync();
             if (!taskList.Any())
             {
-                var sv = new MaintenanceService();
-                var es = await sv.GetMaintenanceTasksAsync();
+                var es = await facade.MaintenanceService.GetMaintenanceTasksAsync();
 
                 foreach (var item in es)
                 {
@@ -72,8 +70,7 @@ namespace Vedligehold.Views
             {
                 while (!done)
                 {
-                    ms = new MaintenanceService();
-                    var es = await ms.GetMaintenanceTasksAsync();
+                    var es = await facade.MaintenanceService.GetMaintenanceTasksAsync();
                     onlineList = new List<MaintenanceTask>();
 
                     foreach (var item in es)
@@ -106,8 +103,7 @@ namespace Vedligehold.Views
                     {
                         if (task.AppNotes != onlineTask.AppNotes)
                         {
-                            var mts = new MaintenanceService();
-                            await mts.UpdateTask(task);
+                            await facade.MaintenanceService.UpdateTask(task);
                             numberOfSyncs++;
                         }
                     }
@@ -170,8 +166,7 @@ namespace Vedligehold.Views
                     {
                         if (task.status == "Completed" && onlineTask.status == "Released")
                         {
-                            var mts = new MaintenanceService();
-                            await mts.UpdateTask(task);
+                            await facade.MaintenanceService.UpdateTask(task);
                             numberOfSyncs++;
                         }
                     }
@@ -192,8 +187,7 @@ namespace Vedligehold.Views
                 }
                 if (i == 0)
                 {
-                    var mts = new MaintenanceService();
-                    await mts.CreateTask(task);
+                    await facade.MaintenanceService.CreateTask(task);
                 }
             }
         }

@@ -48,7 +48,6 @@ C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Ved
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold\bin\Debug\XLabs.Core.xml
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold\obj\Debug\Vedligehold.csproj.App.config
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold\obj\Debug\Vedligehold.Views.HomePage.xaml.g.cs
-C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold\obj\Debug\Vedligehold.Views.StatisticsPage.xaml.g.cs
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold\obj\Debug\Vedligehold.Views.MaintenancePage.xaml.g.cs
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold\obj\Debug\Vedligehold.Views.LoginPage.xaml.g.cs
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold\obj\Debug\Vedligehold.Views.SettingsPage.xaml.g.cs

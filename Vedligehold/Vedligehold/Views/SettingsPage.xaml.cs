@@ -23,6 +23,7 @@ namespace Vedligehold.Views
 
         Label version;
 
+        SynchronizerFacade facade = SynchronizerFacade.GetInstance;
         public SettingsPage()
         {
             buttonColor = Color.FromRgb(135, 206, 250);
@@ -44,7 +45,7 @@ namespace Vedligehold.Views
             checkConnectionButton = new Button { Text = "Tjek forbindelse til NAV", BackgroundColor = buttonColor, TextColor = Color.White };
             searchSettingsButton = new Button { Text = "Administrer søgefilter", BackgroundColor = buttonColor, TextColor = Color.White };
 
-            version = new Label() { Text = "Version 27.0", VerticalOptions = LayoutOptions.EndAndExpand };
+            version = new Label() { Text = "Version 33.0", VerticalOptions = LayoutOptions.EndAndExpand };
 
             searchSettingsButton.Clicked += (s, e) =>
             {
@@ -56,8 +57,7 @@ namespace Vedligehold.Views
             checkConnectionButton.Clicked += async (s, e) =>
                         {
                             ShowActivityIndicator();
-                            MaintenanceTaskSynchronizer sync = new MaintenanceTaskSynchronizer();
-                            bool connected = await sync.HasConnectionToNAV();
+                            bool connected = await facade.MaintenanceTaskSynchronizer.HasConnectionToNAV();
                             RemoveActivityIndicator();
                             if (connected)
                             {
@@ -75,8 +75,7 @@ namespace Vedligehold.Views
                 if (action)
                 {
                     ShowActivityIndicator();
-                    MaintenanceTaskSynchronizer sync = new MaintenanceTaskSynchronizer();
-                    sync.DeleteDB();
+                    facade.MaintenanceTaskSynchronizer.DeleteDB();
                     RemoveActivityIndicator();
                     await DisplayAlert("Nulstilling", "Den lokale database er nu nulstillet", "OK");
 
@@ -92,12 +91,9 @@ namespace Vedligehold.Views
 
                     try
                     {
-                        MaintenanceTaskSynchronizer sync = new MaintenanceTaskSynchronizer();
-                        TimeRegistrationSynchronizer timesync = new TimeRegistrationSynchronizer();
-                        MaintenanceActivitySynchronizer actSync = new MaintenanceActivitySynchronizer();
-                        var data = await sync.DeleteAndPopulateDb();
-                        timesync.DeleteAndPopulateDb();
-                        actSync.DeleteAndPopulateDb();
+                        var data = await facade.MaintenanceTaskSynchronizer.DeleteAndPopulateDb();
+                        facade.TimeRegistrationSynchronizer.DeleteAndPopulateDb();
+                        facade.MaintenanceActivitySynchronizer.DeleteAndPopulateDb();
                         RemoveActivityIndicator();
                         await DisplayAlert("Synkronisering", "Synkronisering færdig", "OK");
                     }
@@ -115,14 +111,11 @@ namespace Vedligehold.Views
                 ShowActivityIndicator();
                 try
                 {
-                    MaintenanceTaskSynchronizer sync = new MaintenanceTaskSynchronizer();
-                    TimeRegistrationSynchronizer timesync = new TimeRegistrationSynchronizer();
-                    MaintenanceActivitySynchronizer actSync = new MaintenanceActivitySynchronizer();
-                    JobRecLineSynchronizer jobSync = new JobRecLineSynchronizer();
-                    await sync.SyncDatabaseWithNAV();
-                    await timesync.SyncDatabaseWithNAV();
-                    await actSync.SyncDatabaseWithNAV();
-                     jobSync.SyncDatabaseWithNAV();
+                    await facade.MaintenanceTaskSynchronizer.SyncDatabaseWithNAV();
+                    await facade.TimeRegistrationSynchronizer.SyncDatabaseWithNAV();
+                    await facade.MaintenanceActivitySynchronizer.SyncDatabaseWithNAV();
+                    facade.JobRecLineSynchronizer.SyncDatabaseWithNAV();
+                    facade.ResourcesSynchronizer.SyncDatabaseWithNAV();
 
                     RemoveActivityIndicator();
                     await DisplayAlert("Synkronisering", "Enheden er nu synkroniseret med NAV", "OK");

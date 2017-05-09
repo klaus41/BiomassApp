@@ -9,7 +9,7 @@ namespace Vedligehold.Models
 {
     public class TimeRegistrationModel
     {
-        [PrimaryKey]
+        [PrimaryKey, AutoIncrement]
         public int No { get; set; }
         public string Type { get; set; }
         public DateTime Time { get; set; }
@@ -17,6 +17,8 @@ namespace Vedligehold.Models
         public double Longitude { get; set; }
         public double Latitude { get; set; }
         public string ETag { get; set; }
+        public bool New { get; set; }
+        public bool Sent { get; set; }
 
     }
 }

@@ -21,7 +21,11 @@ namespace Vedligehold.Views.CustomCells
                 FontSize = 12,
                 FontAttributes = FontAttributes.Bold
             };
-            Label no = new Label();
+            Label no = new Label()
+            {
+                HorizontalOptions = LayoutOptions.CenterAndExpand,
+                VerticalOptions = LayoutOptions.CenterAndExpand
+            };
             Label date = new Label()
             {
                HorizontalOptions = LayoutOptions.End

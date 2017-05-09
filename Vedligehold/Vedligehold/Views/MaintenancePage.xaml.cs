@@ -18,20 +18,66 @@ namespace Vedligehold.Views
     public partial class MaintenancePage : ContentPage
     {
         ListView lv;
+        SynchronizerFacade syncFacade = SynchronizerFacade.GetInstance;
+        ServiceFacade facade = ServiceFacade.GetInstance;
         MaintenanceDatabase db = App.Database;
         List<MaintenanceTask> tasks;
         GlobalData gd = GlobalData.GetInstance;
         IEnumerable<MaintenanceTask> itemssourceList;
+
         Button showDoneButton;
         bool showDone = false;
+        string searchString = "";
+        SearchBar sb;
         public MaintenancePage()
         {
-           
             Title = "Opgaver";
             //MakeToolBar();
             NavigationPage.SetHasNavigationBar(this, false);
             MakeListView();
+            sb = new SearchBar()
+            {
+                Placeholder = "Søg...",
+                HeightRequest = 40
+            };
+            sb.TextChanged += Sb_TextChanged;
+
+            StackLayout layout = new StackLayout
+            {
+                VerticalOptions = LayoutOptions.FillAndExpand,
+                Children =
+                    {
+                        showDoneButton,
+                        sb,
+                        lv
+                    }
+
+            };
+            if (Device.OS == TargetPlatform.iOS)
+            {
+                // move layout under the status bar
+                layout.Padding = new Thickness(0, 20, 0, 0);
+            }
+            Content = layout;
         }
+
+        private void Sb_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            lv.BeginRefresh();
+
+            if (string.IsNullOrWhiteSpace(e.NewTextValue))
+            {
+                searchString = "";
+                //lv.ItemsSource = itemssourceList;
+            }
+            else
+            {
+                searchString = e.NewTextValue;
+            }
+            UpdateItemSource();
+            lv.EndRefresh();
+        }
+
         public void ShowOnMap(MaintenanceTask _task)
         {
             if (_task.longitude != 0 && _task.latitude != 0)
@@ -82,8 +128,7 @@ namespace Vedligehold.Views
         {
             try
             {
-                var service = new PDFService();
-                string data = await service.GetPDF(_task.anlæg);
+                string data = await facade.PDFService.GetPDF(_task.anlæg);
                 if (!data.Contains("NoFile"))
                 {
                     int i = data.Length - 2;
@@ -117,23 +162,8 @@ namespace Vedligehold.Views
 
             showDoneButton = new Button() { Text = "Vis udførte opgaver", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
             showDoneButton.Clicked += ShowDoneButton_Clicked;
-     
-            StackLayout layout = new StackLayout
-            {
-                VerticalOptions = LayoutOptions.FillAndExpand,
-                Children =
-                    {
-                        showDoneButton,
-                        lv
-                    }
 
-            };
-            if (Device.OS == TargetPlatform.iOS)
-            {
-                // move layout under the status bar
-                layout.Padding = new Thickness(0, 20, 0, 0);
-            }
-            Content = layout;
+
             lv.Refreshing += Lv_Refreshing;
             lv.ItemTapped += Lv_ItemTapped;
 
@@ -168,10 +198,8 @@ namespace Vedligehold.Views
             bool response = false;
             while (!response)
             {
-                MaintenanceTaskSynchronizer mst = new MaintenanceTaskSynchronizer();
-                MaintenanceActivitySynchronizer mas = new MaintenanceActivitySynchronizer();
-                await mas.SyncDatabaseWithNAV();
-                response = await mst.SyncDatabaseWithNAV();
+                await syncFacade.MaintenanceActivitySynchronizer.SyncDatabaseWithNAV();
+                response = await syncFacade.MaintenanceTaskSynchronizer.SyncDatabaseWithNAV();
             }
             UpdateItemSource();
             if (lv.IsRefreshing)
@@ -182,34 +210,42 @@ namespace Vedligehold.Views
 
         private async void UpdateItemSource()
         {
-            tasks = await db.GetTasksAsync();
-            DateTime nullDate = new DateTime(1900, 1, 1);
-            if (gd.SearchUserName != null && gd.SearchDateTime > nullDate && gd.SearchDateTimeLast > nullDate)
             {
-                itemssourceList = tasks.Where(x => x.planned_Date.Date >= gd.SearchDateTime.Date && x.planned_Date <= gd.SearchDateTimeLast && x.responsible == gd.SearchUserName);
-            }
-            else if (gd.SearchUserName == null && gd.SearchDateTime > nullDate && gd.SearchDateTimeLast > nullDate)
-            {
-                itemssourceList = tasks.Where(x => x.planned_Date.Date >= gd.SearchDateTime.Date && x.planned_Date <= gd.SearchDateTimeLast);
-            }
-            else if (gd.SearchUserName != null && gd.SearchDateTime < new DateTime(1900, 1, 1))
-            {
-                itemssourceList = tasks.Where(x => x.responsible == gd.SearchUserName);
-            }
-            else
-            {
-                itemssourceList = tasks;
-            }
-            if (showDone)
-            {
-                lv.ItemsSource = itemssourceList.Where(x => x.status == "Released" || x.status == "Completed");
-            }
-            else if (!showDone)
-            {
-                lv.ItemsSource = itemssourceList.Where(x => x.status == "Released");
+                searchString = searchString.ToUpper();
+
+                tasks = await db.GetTasksAsync();
+
+                DateTime nullDate = new DateTime(1900, 1, 1);
+                if (gd.SearchUserName != null && gd.SearchDateTime > nullDate && gd.SearchDateTimeLast > nullDate)
+                {
+                    itemssourceList = tasks.Where(x => x.planned_Date.Date >= gd.SearchDateTime.Date && x.planned_Date <= gd.SearchDateTimeLast && (x.responsible == gd.SearchUserName || x.responsible == ""));
+                }
+                else if (gd.SearchUserName == null && gd.SearchDateTime > nullDate && gd.SearchDateTimeLast > nullDate)
+                {
+                    itemssourceList = tasks.Where(x => x.planned_Date.Date >= gd.SearchDateTime.Date && x.planned_Date <= gd.SearchDateTimeLast);
+                }
+                else if (gd.SearchUserName != null && gd.SearchDateTime < new DateTime(1900, 1, 1))
+                {
+                    itemssourceList = tasks.Where(x => (x.responsible == gd.SearchUserName || x.responsible == ""));
+                }
+                else
+                {
+                    itemssourceList = tasks;
+                }
+
+                itemssourceList = itemssourceList.Where(x => x.responsible.ToLower().Contains(searchString.ToLower()) || x.CustomerName.ToLower().Contains(searchString.ToLower()) || x.TaskType.ToLower().Contains(searchString.ToLower()) || x.text.ToLower().Contains(searchString.ToLower()));
+
+                if (showDone)
+                {
+                    lv.ItemsSource = itemssourceList.Where(x => x.status == "Released" || x.status == "Completed");
+                }
+                else
+                {
+                    lv.ItemsSource = itemssourceList.Where(x => x.status == "Released");
+                }
             }
         }
-      
+
         protected override void OnAppearing()
         {
             base.OnAppearing();

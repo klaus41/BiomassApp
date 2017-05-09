@@ -18,6 +18,7 @@ namespace Vedligehold.Views
         Entry username;
         Entry password;
 
+        ServiceFacade facade = ServiceFacade.GetInstance;
         GlobalData gd = GlobalData.GetInstance;
         MaintenanceDatabase db = App.Database;
         public LoginPage()
@@ -78,10 +79,9 @@ namespace Vedligehold.Views
                     button.IsEnabled = false;
                     connectionSettingsButton.IsEnabled = false;
 
-                    var sv = new SalesPersonService();
                     try
                     {
-                        SalesPerson person = await sv.GetSalesPersonAsync(username.Text.ToUpper());
+                        SalesPerson person = await facade.SalesPersonService.GetSalesPersonAsync(username.Text.ToUpper());
 
                         if (password.Text == person.Password)
                         {
@@ -115,8 +115,7 @@ namespace Vedligehold.Views
                         password.Text = null;
                         if (Device.OS != TargetPlatform.iOS)
                         {
-                            ThreadManager tm = new ThreadManager();
-                            tm.StartSynchronizationThread();
+                            facade.ThreadManager.StartSynchronizationThread();
                         }
                     }
                     loading = false;

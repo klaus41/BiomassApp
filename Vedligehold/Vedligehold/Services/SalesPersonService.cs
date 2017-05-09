@@ -9,7 +9,7 @@ using Vedligehold.Models;
 
 namespace Vedligehold.Services
 {
-    class SalesPersonService : ClientGateway
+    public class SalesPersonService : ClientGateway
     {
         public async Task<SalesPerson[]> GetSalesPersonsAsync()
         {

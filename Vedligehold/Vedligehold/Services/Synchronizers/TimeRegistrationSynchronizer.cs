@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Vedligehold.Database;
 using Vedligehold.Models;
 
 namespace Vedligehold.Services.Synchronizers
@@ -13,12 +14,9 @@ namespace Vedligehold.Services.Synchronizers
         bool done;
         List<TimeRegistrationModel> timeList;
         List<TimeRegistrationModel> onlineList;
-        TimeRegistrationService ts;
 
-        int numberOfConflicts;
-        int numberOfSyncs;
-        int numberOfMatches;
-        int numberOfNewTasks;
+        ServiceFacade facade = ServiceFacade.GetInstance;
+        MaintenanceDatabase db = App.Database;
 
         public async void DeleteAndPopulateDb()
         {
@@ -28,8 +26,7 @@ namespace Vedligehold.Services.Synchronizers
             List<TimeRegistrationModel> taskList = await App.Database.GetTimeRegsAsync();
             if (!taskList.Any())
             {
-                var sv = new TimeRegistrationService();
-                var es = await sv.GetTimeRegsAsync();
+                var es = await facade.TimeRegistrationService.GetTimeRegsAsync();
 
                 foreach (var item in es)
                 {
@@ -46,8 +43,7 @@ namespace Vedligehold.Services.Synchronizers
             {
                 while (!done)
                 {
-                    ts = new TimeRegistrationService();
-                    var es = await ts.GetTimeRegsAsync();
+                    var es = await facade.TimeRegistrationService.GetTimeRegsAsync();
                     onlineList = new List<TimeRegistrationModel>();
 
                     foreach (var item in es)
@@ -55,11 +51,12 @@ namespace Vedligehold.Services.Synchronizers
                         onlineList.Add(item);
                     }
 
-                    CheckIfFinishedOrDeleted();
-                    PutDoneTimeRegsToNAV();
-                    CheckForConflicts();
-                    CheckForNewTasks();
-                    PushNewTasks();
+                    CheckIfDeleted();
+                    CreateTimeRegs();
+                    if (timeList.Count == 0)
+                    {
+                        GetTimeRegs();
+                    }
                 }
             }
             catch
@@ -69,94 +66,53 @@ namespace Vedligehold.Services.Synchronizers
             return done;
         }
 
-        private async void PutDoneTimeRegsToNAV()
+        private void GetTimeRegs()
         {
-            DateTime datetime = new DateTime(1950, 1, 1);
-
-            foreach (TimeRegistrationModel onlineTimeReg in onlineList)
+            foreach (var onlineTimeReg in onlineList)
             {
-                foreach (TimeRegistrationModel timeReg in timeList)
-                {
-                    if ((timeReg.No == onlineTimeReg.No) && (timeReg.ETag == onlineTimeReg.ETag))
-                    {
-                        if (timeReg.Time > datetime)
-                        {
-                            var ts = new TimeRegistrationService();
-                            await ts.UpdateTimeReg(timeReg);
-                            numberOfSyncs++;
-                        }
-                    }
-                }
+                onlineTimeReg.Sent = true;
+                onlineTimeReg.New = false;
+                db.SaveTimeRegAsync(onlineTimeReg);
             }
         }
-        private async void CheckIfFinishedOrDeleted()
+
+        private async void CheckIfDeleted()
         {
-            foreach (TimeRegistrationModel timereg in timeList)
+            foreach (var timeReg in timeList)
             {
                 int matches = 0;
-                foreach (TimeRegistrationModel onlineTask in onlineList)
+                foreach (var onlineTimeReg in onlineList)
                 {
-                    if (timereg.No == onlineTask.No)
+                    if (timeReg.No == onlineTimeReg.No)
                     {
                         matches++;
                     }
                 }
-                if (matches == 0)
+                if (matches == 0 && timeReg.Sent && !timeReg.New)
                 {
-                    await App.Database.DeleteTimeRegAsync(timereg);
-                }
-            }
-        }
-        private async void CheckForNewTasks()
-        {
-            foreach (TimeRegistrationModel onlineTask in onlineList)
-            {
-                foreach (TimeRegistrationModel task in timeList)
-                {
-                    if (task.No == onlineTask.No)
-                    {
-                        numberOfMatches++;
-                    }
-                }
-                if (numberOfMatches == 0)
-                {
-                    await App.Database.SaveTimeRegAsync(onlineTask);
-                    numberOfNewTasks++;
-                }
-                numberOfMatches = 0;
-            }
-        }
-        private async void CheckForConflicts()
-        {
-            foreach (TimeRegistrationModel onlineTask in onlineList)
-            {
-                foreach (TimeRegistrationModel task in timeList)
-                {
-                    if ((task.No == onlineTask.No) && (task.ETag != onlineTask.ETag))
-                    {
-                        numberOfConflicts++;
-                        await App.Database.UpdateTimeRegAsync(onlineTask);
-                    }
+                    await db.DeleteTimeRegAsync(timeReg);
                 }
             }
         }
 
-        private async void PushNewTasks()
+        private async void CreateTimeRegs()
         {
-            foreach (TimeRegistrationModel task in timeList)
+            foreach (var timeReg in timeList)
             {
-                int i = 0;
-                foreach (TimeRegistrationModel onlineTask in onlineList)
+                int matches = 0;
+                foreach (var onlineTimeReg in onlineList)
                 {
-                    if (task.No == onlineTask.No)
+                    if (timeReg.No == onlineTimeReg.No)
                     {
-                        i++;
+                        matches++;
                     }
                 }
-                if (i == 0)
+                if (matches == 0 && !timeReg.Sent && timeReg.New)
                 {
-                    var mts = new TimeRegistrationService();
-                    await mts.CreateTimeReg(task);
+                    await facade.TimeRegistrationService.CreateTimeReg(timeReg);
+                    timeReg.Sent = true;
+                    timeReg.New = false;
+                    await db.UpdateTimeRegAsync(timeReg);
                 }
             }
             done = true;
