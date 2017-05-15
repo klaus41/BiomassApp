@@ -17,6 +17,7 @@ namespace Vedligehold.Services
         private SalesPersonService salesPersonService;
         private TimeRegistrationService timeRegistrationService;
         private ThreadManager threadManager;
+        private CustomerService customerService;
 
         public static ServiceFacade GetInstance
         {
@@ -123,6 +124,18 @@ namespace Vedligehold.Services
                     threadManager = new ThreadManager();
                 }
                 return threadManager;
+            }
+        }
+
+        public CustomerService CustomerService
+        {
+            get
+            {
+                if (customerService == null)
+                {
+                    customerService = new CustomerService();
+                }
+                return customerService;
             }
         }
     }

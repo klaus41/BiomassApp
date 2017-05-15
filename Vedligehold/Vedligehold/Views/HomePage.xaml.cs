@@ -218,13 +218,13 @@ namespace Vedligehold.Views
             {
                 tasks.Text = "Du har " + notdone + " frigivne opgaver.";
             }
-            if (gd.TimeRegisteredIn != null)
+            if (gd.TimeRegisteredIn != null && gd.TimeRegisteredIn.Time.Date == DateTime.Today.Date)
             {
-                timeRegisteredIn.Text = "Du er mødt ind: " + gd.TimeRegisteredIn.Time.ToString("HH:mm");
+                timeRegisteredIn.Text = "Du er mødt ind: " + gd.TimeRegisteredIn.Time.AddHours(2).ToString("HH:mm");
             }
-            if (gd.TimeRegisteredOut != null)
+            if (gd.TimeRegisteredOut != null && gd.TimeRegisteredOut.Time.Date == DateTime.Today.Date)
             {
-                timeRegisteredOut.Text = "Du er meldt ud: " + gd.TimeRegisteredOut.Time.ToString("HH:mm");
+                timeRegisteredOut.Text = "Du er meldt ud: " + gd.TimeRegisteredOut.Time.AddHours(2).ToString("HH:mm");
             }
             if (gd.SearchDateTime > new DateTime(1950, 1, 1))
             {

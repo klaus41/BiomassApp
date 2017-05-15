@@ -16,6 +16,7 @@ namespace Vedligehold.Services.Synchronizers
         private PictureSynchronizer pictureSynchronizer;
         private ResourcesSynchronizer resourcesSynchronizer;
         private TimeRegistrationSynchronizer timeRegistrationSynchronizer;
+        private CustomerSynchronizer customerSynchronizer;
         public static SynchronizerFacade GetInstance
         {
             get
@@ -93,6 +94,17 @@ namespace Vedligehold.Services.Synchronizers
                     timeRegistrationSynchronizer = new TimeRegistrationSynchronizer();
                 }
                 return timeRegistrationSynchronizer;
+            }
+        }
+        public CustomerSynchronizer CustomerSynchronizer
+        {
+            get
+            {
+                if (customerSynchronizer == null)
+                {
+                    customerSynchronizer = new CustomerSynchronizer();
+                }
+                return customerSynchronizer;
             }
         }
     }

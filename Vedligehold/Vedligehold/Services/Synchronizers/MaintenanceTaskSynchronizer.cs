@@ -58,7 +58,8 @@ namespace Vedligehold.Services.Synchronizers
                     onlineList.Add(item);
                 }
             }
-            int[] data = new int[2] { oldlist.Count(), onlineList.Count() };
+            int[] data = new int[
+                ] { oldlist.Count(), onlineList.Count() };
             return data;
         }
 
@@ -82,7 +83,7 @@ namespace Vedligehold.Services.Synchronizers
                     PutDoneTasksToNAV();
                     CheckForConflicts();
                     CheckForNewTasks();
-                    //PushNewTasks();
+                    PushNewTasks();
                     PutTextChangedTasks();
                 }
             }
@@ -134,6 +135,8 @@ namespace Vedligehold.Services.Synchronizers
                 }
                 if (numberOfMatches == 0)
                 {
+                    onlineTask.New = false;
+                    onlineTask.Sent = true;
                     await App.Database.SaveTaskAsync(onlineTask);
                     numberOfNewTasks++;
 
@@ -185,7 +188,7 @@ namespace Vedligehold.Services.Synchronizers
                         i++;
                     }
                 }
-                if (i == 0)
+                if (i == 0 && !task.Sent && task.New)
                 {
                     await facade.MaintenanceService.CreateTask(task);
                 }

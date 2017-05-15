@@ -45,7 +45,7 @@ namespace Vedligehold.Views
             checkConnectionButton = new Button { Text = "Tjek forbindelse til NAV", BackgroundColor = buttonColor, TextColor = Color.White };
             searchSettingsButton = new Button { Text = "Administrer søgefilter", BackgroundColor = buttonColor, TextColor = Color.White };
 
-            version = new Label() { Text = "Version 34.0", VerticalOptions = LayoutOptions.EndAndExpand };
+            version = new Label() { Text = "Version 37.0", VerticalOptions = LayoutOptions.EndAndExpand };
 
             searchSettingsButton.Clicked += (s, e) =>
             {
@@ -116,6 +116,7 @@ namespace Vedligehold.Views
                     await facade.MaintenanceActivitySynchronizer.SyncDatabaseWithNAV();
                     facade.JobRecLineSynchronizer.SyncDatabaseWithNAV();
                     facade.ResourcesSynchronizer.SyncDatabaseWithNAV();
+                    facade.CustomerSynchronizer.SyncDatabaseWithNAV();
 
                     RemoveActivityIndicator();
                     await DisplayAlert("Synkronisering", "Enheden er nu synkroniseret med NAV", "OK");

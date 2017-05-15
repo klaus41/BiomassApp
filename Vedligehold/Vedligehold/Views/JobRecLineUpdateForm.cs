@@ -95,7 +95,7 @@ namespace Vedligehold.Views
             double temp;
             Double.TryParse(amount.Text, NumberStyles.Number, CultureInfo.InvariantCulture, out temp);
             recLineGlobal.Description = descriptionEntry.Text;
-            recLineGlobal.Posting_Date = DateTime.Today;
+            recLineGlobal.Posting_Date = datePicker.Date;
             recLineGlobal.Quantity = temp;
             recLineGlobal.Edited = true;
         }

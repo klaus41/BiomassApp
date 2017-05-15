@@ -17,7 +17,7 @@ namespace Vedligehold.Views.Converters
             if (value is DateTime)
             {
                 dt = (DateTime)value;
-                time = dt.ToString("HH:mm");
+                time = dt.AddHours(2).ToString("HH:mm");
             }
             return time;
         }

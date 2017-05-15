@@ -217,16 +217,14 @@ namespace Vedligehold.Views
         {
             jobList = null;
 
-            while (jobList == null)
-            {
-                jobList = await App.Database.GetJobRecLinesAsync();
-            }
+
+            jobList = await App.Database.GetJobRecLinesAsync();
+
             Resources resource = null;
-            while (resource == null)
-            {
-                List<Resources> rl = await db.GetResourcesAsync();
-                resource = rl.Where(x => x.Name == gd.User.Name).FirstOrDefault();
-            }
+
+            List<Resources> rl = await db.GetResourcesAsync();
+            resource = rl.Where(x => x.Name == gd.User.Name).FirstOrDefault();
+
             List<JobRecLine> jsl = jobList.Where(x => x.MaintenanceTaskNo == taskGlobal.no.ToString()).ToList();
             jobItemsSourceList = jsl.Where(x => x.No == resource.No).ToList();
             lv.ItemsSource = jobItemsSourceList;

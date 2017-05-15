@@ -22,7 +22,7 @@ namespace Vedligehold.Database
             database.CreateTableAsync<PictureModel>().Wait();
             database.CreateTableAsync<JobRecLine>().Wait();
             database.CreateTableAsync<Resources>().Wait();
-
+            database.CreateTableAsync<Customer>().Wait();
         }
 
         public Task<List<MaintenanceTask>> GetTasksAsync()
@@ -208,6 +208,34 @@ namespace Vedligehold.Database
         public Task<int> DeleteResourcesAsync()
         {
             return database.ExecuteAsync("delete from " + "Resources");
+        }
+        public Task<List<Customer>> GetCustomersAsync()
+        {
+            return database.Table<Customer>().ToListAsync();
+        }
+
+        public Task<Customer> GetCustomerAsync(string id)
+        {
+            return database.Table<Customer>().Where(i => i.No == id).FirstOrDefaultAsync();
+        }
+
+        public Task<int> SaveCustomerAsync(Customer task)
+        {
+            return database.InsertAsync(task);
+        }
+
+        public Task<int> UpdateCustomerAsync(Customer task)
+        {
+            return database.UpdateAsync(task);
+        }
+        public Task<int> DeleteCustomerAsync(Customer task)
+        {
+            return database.DeleteAsync(task);
+        }
+
+        public Task<int> DeleteCustomersAsync()
+        {
+            return database.ExecuteAsync("delete from " + "Customer");
         }
     }
 }

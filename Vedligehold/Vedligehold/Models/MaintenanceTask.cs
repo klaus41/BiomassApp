@@ -20,7 +20,6 @@ namespace Vedligehold.Models
         public bool weekly { get; set; }
         public bool daily { get; set; }
         public string etag { get; set; }
-        //public bool done { get; set; }
         public string status { get; set; }
         public double longitude { get; set; }
         public double latitude { get; set; }
@@ -30,6 +29,10 @@ namespace Vedligehold.Models
         public string AppNotes { get; set; }
         public string CustomerNo { get; set; }
         public string CustomerName { get; set; }
+        public string JobNo { get; set; }
+        public string JobTaskNo { get; set; }
+        public bool New { get; set; }
+        public bool Sent { get; set; }
 
     }
 

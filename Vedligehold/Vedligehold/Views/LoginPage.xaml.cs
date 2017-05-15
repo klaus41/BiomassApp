@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using Vedligehold.Database;
 using Vedligehold.Models;
 using Vedligehold.Services;
+using Vedligehold.Services.Synchronizers;
 using Xamarin.Forms;
 
 namespace Vedligehold.Views
@@ -19,6 +20,7 @@ namespace Vedligehold.Views
         Entry password;
 
         ServiceFacade facade = ServiceFacade.GetInstance;
+        SynchronizerFacade syncFacade = SynchronizerFacade.GetInstance;
         GlobalData gd = GlobalData.GetInstance;
         MaintenanceDatabase db = App.Database;
         public LoginPage()
@@ -69,6 +71,7 @@ namespace Vedligehold.Views
             {
                 bool succes = false;
                 bool loading = true;
+                bool connection = false;
                 while (loading)
                 {
                     ActivityIndicator ai = new ActivityIndicator()
@@ -81,6 +84,14 @@ namespace Vedligehold.Views
 
                     try
                     {
+                        if (!await syncFacade.MaintenanceTaskSynchronizer.HasConnectionToNAV())
+                        {
+                            connection = false;
+                        }
+                        else
+                        {
+                            connection = true;
+                        }
                         SalesPerson person = await facade.SalesPersonService.GetSalesPersonAsync(username.Text.ToUpper());
 
                         if (password.Text == person.Password)
@@ -89,15 +100,21 @@ namespace Vedligehold.Views
                         }
                         gd.User = person;
                         gd.SearchUserName = person.Code;
+                    
                     }
                     catch
                     {
-
+                        
                     }
-                    if (!succes)
+                    if (!succes && connection)
                     {
                         layout.Children.Remove(ai);
                         await DisplayAlert("Advarsel", "Forkert brugernavn eller password", "OK");
+                    }
+                    else if (!connection)
+                    {
+                        layout.Children.Remove(ai);
+                        await DisplayAlert("Advarsel", "Enheden har ikke forbindelse til NAV", "OK");
                     }
                     else
                     {

@@ -292,33 +292,37 @@ namespace Vedligehold.Views
 
         private async void DoneButton_Clicked(object sender, EventArgs e)
         {
-            int i = 0;
-            while (i == 0)
+            var response = await DisplayAlert("Færdig", "Vil du sætte opgaven til færdig?", "Ja", "Nej");
+            if (response)
             {
-                DisableButtons();
-                if (taskGlobal.status == "Released")
+                int i = 0;
+                while (i == 0)
                 {
-                    taskGlobal.status = "Completed";
-                    try
+                    DisableButtons();
+                    if (taskGlobal.status == "Released")
                     {
-                        var locator = CrossGeolocator.Current;
-                        locator.DesiredAccuracy = 50;
-                        var position = await locator.GetPositionAsync(timeoutMilliseconds: 10000);
+                        taskGlobal.status = "Completed";
+                        try
+                        {
+                            var locator = CrossGeolocator.Current;
+                            locator.DesiredAccuracy = 50;
+                            var position = await locator.GetPositionAsync(timeoutMilliseconds: 10000);
 
-                        taskGlobal.latitude = position.Latitude;
-                        taskGlobal.longitude = position.Longitude;
+                            taskGlobal.latitude = position.Latitude;
+                            taskGlobal.longitude = position.Longitude;
 
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("Unable to get location, may need to increase timeout: " + ex);
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine("Unable to get location, may need to increase timeout: " + ex);
-                    }
+
+                    i = await App.Database.UpdateTaskAsync(taskGlobal);
+                    await Application.Current.MainPage.Navigation.PopModalAsync();
                 }
-
-                i = await App.Database.UpdateTaskAsync(taskGlobal);
-                await Application.Current.MainPage.Navigation.PopModalAsync();
+                EnableButtons();
             }
-            EnableButtons();
         }
 
         private void MakeGrid()

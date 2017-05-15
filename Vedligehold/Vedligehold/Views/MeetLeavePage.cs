@@ -144,15 +144,12 @@ namespace Vedligehold.Views
 
         public async void GetData()
         {
-            timeRegList = null;
 
-            while (timeRegList == null)
-            {
-                timeRegList = await db.GetTimeRegsAsync();
-            }
+            timeRegList = await db.GetTimeRegsAsync();
+
             List<TimeRegistrationModel> itemssourceList = timeRegList.Where(x => x.User == gd.User.Code).OrderByDescending(x => x.Time).ToList();
             TimeRegistrationModel first = itemssourceList.FirstOrDefault();
-            if (first != null)
+            if (first != null && first.Time.Date == DateTime.Today.Date)
             {
                 if (first.Type == "Check in")
                 {
@@ -161,7 +158,7 @@ namespace Vedligehold.Views
                     //checkIn.IsEnabled = false;
                     checkOut.Text = "Meld ud";
                     checkIn.Text = "Allerede mødt";
-                    gd.TimeRegisteredIn = first;
+                    //gd.TimeRegisteredIn = first;
                 }
                 else
                 {
@@ -170,56 +167,27 @@ namespace Vedligehold.Views
                     //checkOut.IsEnabled = false;       
                     checkIn.Text = "Mød ind";
                     checkOut.Text = "Allerede meldt ud";
-                    gd.TimeRegisteredOut = first;
+                    //gd.TimeRegisteredOut = first;
+                }
+                foreach (var item in itemssourceList)
+                {
+                    if (item.Type == "Check in" && (gd.TimeRegisteredIn == null || item.Time > gd.TimeRegisteredIn.Time))
+                    {
+                        //item.Time = item.Time.AddHours(2);
+                        gd.TimeRegisteredIn = item;
+                    }
+                    else if (item.Type == "Check out" && (gd.TimeRegisteredOut == null || item.Time > gd.TimeRegisteredOut.Time))
+                    {
+                        //item.Time = item.Time.AddHours(2);
+                        gd.TimeRegisteredOut = item;
+                    }
                 }
             }
+         
             checkIn.IsEnabled = _in;
             checkOut.IsEnabled = _out;
 
-            lv.ItemsSource = itemssourceList;
-
-            //List<TimeRegistrationModel> tempList = new List<TimeRegistrationModel>();
-            //tempList = timeRegList;
-            //while (tempList == timeRegList)
-            //{
-            //    timeRegList = await db.GetTimeRegsAsync();
-            //}
-            //if (timeRegList.Count == 0)
-            //{
-            //    TimeRegistrationSynchronizer mts = new TimeRegistrationSynchronizer();
-            //    mts.DeleteAndPopulateDb();
-            //}
-            //foreach (var item in timeRegList)
-            //{
-            //    if (item.Time > DateTime.Today && item.User == gd.User.Code)
-            //    {
-            //        if (item.Type == "Check in")
-            //        {
-            //            _in = false;
-            //            _out = true;
-            //            //checkIn.IsEnabled = false;
-            //            checkIn.Text = "Allerede mødt";
-            //            gd.TimeRegisteredIn = item;
-            //        }
-            //        if (item.Type == "Check out")
-            //        {
-            //            _out = false;
-            //            //checkOut.IsEnabled = false;
-            //            checkOut.Text = "Allerede meldt ud";
-            //            gd.TimeRegisteredOut = item;
-            //        }
-            //    }
-            //}
-
-            //if (gd.SearchUserName != null)
-            //{
-            //    lv.ItemsSource = timeRegList.Where(x => x.User == gd.SearchUserName).OrderByDescending(x => x.Time);
-            //}
-            //else
-            //{
-            //    lv.ItemsSource = timeRegList.OrderByDescending(x => x.Time);
-            //}
-
+            lv.ItemsSource = itemssourceList.OrderByDescending(x => x.No);
         }
     }
 }

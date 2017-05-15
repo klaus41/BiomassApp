@@ -26,8 +26,9 @@ namespace Vedligehold
                 gd.TabbedPage.Children.Add(gd.LoginPage);
                 MainPage = gd.TabbedPage;
             }
+         
 
-                checkedConnectionSettings();
+            checkedConnectionSettings();
         }
 
         private async void checkedConnectionSettings()

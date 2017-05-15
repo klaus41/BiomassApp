@@ -18,23 +18,38 @@ namespace Vedligehold.Views
     public partial class MaintenancePage : ContentPage
     {
         ListView lv;
+
         SynchronizerFacade syncFacade = SynchronizerFacade.GetInstance;
         ServiceFacade facade = ServiceFacade.GetInstance;
         MaintenanceDatabase db = App.Database;
-        List<MaintenanceTask> tasks;
         GlobalData gd = GlobalData.GetInstance;
+
+        List<MaintenanceTask> tasks;
         IEnumerable<MaintenanceTask> itemssourceList;
 
         Button showDoneButton;
+        Button createTaskButton;
+
+        Grid buttonGrid;
+
         bool showDone = false;
         string searchString = "";
         SearchBar sb;
         public MaintenancePage()
         {
             Title = "Opgaver";
-            //MakeToolBar();
             NavigationPage.SetHasNavigationBar(this, false);
+
+           
+            showDoneButton = new Button() { Text = "Vis udførte opgaver", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
+            showDoneButton.Clicked += ShowDoneButton_Clicked;
+
+            createTaskButton = new Button() { Text = "Opret opgave", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
+            createTaskButton.Clicked += CreateTaskButton_Clicked;
+
             MakeListView();
+            MakeGrid();
+
             sb = new SearchBar()
             {
                 Placeholder = "Søg...",
@@ -47,7 +62,7 @@ namespace Vedligehold.Views
                 VerticalOptions = LayoutOptions.FillAndExpand,
                 Children =
                     {
-                        showDoneButton,
+                        buttonGrid,
                         sb,
                         lv
                     }
@@ -59,6 +74,30 @@ namespace Vedligehold.Views
                 layout.Padding = new Thickness(0, 20, 0, 0);
             }
             Content = layout;
+        }
+
+        private void MakeGrid()
+        {
+            buttonGrid = new Grid
+            {
+                RowDefinitions =
+                {
+                    new RowDefinition { Height = GridLength.Auto },
+                },
+                ColumnDefinitions =
+                {
+                    new ColumnDefinition { Width = new GridLength(1,GridUnitType.Star) },
+                    new ColumnDefinition { Width = new GridLength(1,GridUnitType.Star) }
+                }
+            };
+
+            buttonGrid.Children.Add(createTaskButton, 0, 0);
+            buttonGrid.Children.Add(showDoneButton, 1, 0);
+        }
+
+        private void CreateTaskButton_Clicked(object sender, EventArgs e)
+        {
+            Navigation.PushModalAsync(new MaintenanceTaskForm());
         }
 
         private void Sb_TextChanged(object sender, TextChangedEventArgs e)
@@ -93,35 +132,39 @@ namespace Vedligehold.Views
         }
         public async void SetDone(MaintenanceTask _task)
         {
-            int i = 0;
-            while (i == 0)
+            var response = await DisplayAlert("Færdig", "Vil du sætte opgaven til færdig?", "Ja", "Nej");
+            if (response)
             {
-                if (_task.status == "Released")
+                int i = 0;
+                while (i == 0)
                 {
-                    _task.status = "Completed";
-                    try
+                    if (_task.status == "Released")
                     {
-                        var locator = CrossGeolocator.Current;
-                        locator.DesiredAccuracy = 50;
-                        var position = await locator.GetPositionAsync(timeoutMilliseconds: 10000);
+                        _task.status = "Completed";
+                        try
+                        {
+                            var locator = CrossGeolocator.Current;
+                            locator.DesiredAccuracy = 50;
+                            var position = await locator.GetPositionAsync(timeoutMilliseconds: 10000);
 
-                        _task.latitude = position.Latitude;
-                        _task.longitude = position.Longitude;
+                            _task.latitude = position.Latitude;
+                            _task.longitude = position.Longitude;
 
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("Unable to get location, may need to increase timeout: " + ex);
+                        }
+                        i = await App.Database.UpdateTaskAsync(_task);
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        Debug.WriteLine("Unable to get location, may need to increase timeout: " + ex);
+                        i = 1;
+                        await DisplayAlert("OBS!", "Opgaven er allerede markeret som udført", "OK");
                     }
-                    i = await App.Database.UpdateTaskAsync(_task);
                 }
-                else
-                {
-                    i = 1;
-                    await DisplayAlert("OBS!", "Opgaven er allerede markeret som udført", "OK");
-                }
+                UpdateItemSource();
             }
-            UpdateItemSource();
         }
 
         public async void ShowPDF(MaintenanceTask _task)
@@ -159,10 +202,6 @@ namespace Vedligehold.Views
                 ItemTemplate = temp,
                 IsPullToRefreshEnabled = true
             };
-
-            showDoneButton = new Button() { Text = "Vis udførte opgaver", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
-            showDoneButton.Clicked += ShowDoneButton_Clicked;
-
 
             lv.Refreshing += Lv_Refreshing;
             lv.ItemTapped += Lv_ItemTapped;
