@@ -17,6 +17,8 @@ namespace Vedligehold.Services.Synchronizers
         private ResourcesSynchronizer resourcesSynchronizer;
         private TimeRegistrationSynchronizer timeRegistrationSynchronizer;
         private CustomerSynchronizer customerSynchronizer;
+        private JobSynchronizer jobSynchronizer;
+        private JobTaskSynchronizer jobTaskSynchronizer;
         public static SynchronizerFacade GetInstance
         {
             get
@@ -105,6 +107,28 @@ namespace Vedligehold.Services.Synchronizers
                     customerSynchronizer = new CustomerSynchronizer();
                 }
                 return customerSynchronizer;
+            }
+        }
+        public JobSynchronizer JobSynchronizer
+        {
+            get
+            {
+                if (jobSynchronizer == null)
+                {
+                    jobSynchronizer = new JobSynchronizer();
+                }
+                return jobSynchronizer;
+            }
+        }
+        public JobTaskSynchronizer JobTaskSynchronizer
+        {
+            get
+            {
+                if (jobTaskSynchronizer == null)
+                {
+                    jobTaskSynchronizer = new JobTaskSynchronizer();
+                }
+                return jobTaskSynchronizer;
             }
         }
     }

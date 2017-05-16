@@ -40,10 +40,12 @@
     <Compile Include="Database\MaintenanceDatabase.cs" />
     <Compile Include="GlobalData.cs" />
     <Compile Include="Models\Customer.cs" />
+    <Compile Include="Models\Job.cs" />
     <Compile Include="Models\JobRecLine.cs" />
     <Compile Include="Models\ConnectionSettings.cs" />
     <Compile Include="Models\Contact.cs" />
     <Compile Include="Models\JobRecLineDetailModel.cs" />
+    <Compile Include="Models\JobTask.cs" />
     <Compile Include="Models\MaintenanceActivity.cs" />
     <Compile Include="Models\MaintenanceTask.cs" />
     <Compile Include="Models\PictureModel.cs" />
@@ -56,6 +58,8 @@
     <Compile Include="Services\ClientGateway.cs" />
     <Compile Include="Services\CustomerService.cs" />
     <Compile Include="Services\JobRecLineService.cs" />
+    <Compile Include="Services\JobService.cs" />
+    <Compile Include="Services\JobTaskService.cs" />
     <Compile Include="Services\MaintenanceActivityService.cs" />
     <Compile Include="Services\MaintenanceService.cs" />
     <Compile Include="Services\PDFService.cs" />
@@ -64,6 +68,8 @@
     <Compile Include="Services\ServiceFacade.cs" />
     <Compile Include="Services\Synchronizers\CustomerSynchronizer.cs" />
     <Compile Include="Services\Synchronizers\JobRecLineSynchronizer.cs" />
+    <Compile Include="Services\Synchronizers\JobSynchronizer.cs" />
+    <Compile Include="Services\Synchronizers\JobTaskSynchronizer.cs" />
     <Compile Include="Services\Synchronizers\MaintenanceActivitySynchronizer.cs" />
     <Compile Include="Services\Synchronizers\PictureSynchronizer.cs" />
     <Compile Include="Services\Synchronizers\ResourcesSynchronizer.cs" />

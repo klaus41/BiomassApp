@@ -44,7 +44,7 @@ namespace Vedligehold.Views
             showDoneButton = new Button() { Text = "Vis udførte opgaver", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
             showDoneButton.Clicked += ShowDoneButton_Clicked;
 
-            createTaskButton = new Button() { Text = "Opret opgave", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
+            createTaskButton = new Button() { Text = "Opret sagsopgave", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
             createTaskButton.Clicked += CreateTaskButton_Clicked;
 
             MakeListView();

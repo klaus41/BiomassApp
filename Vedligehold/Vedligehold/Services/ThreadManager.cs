@@ -26,6 +26,8 @@ namespace Vedligehold.Services
                    facade.PictureSynchronizer.PutPicturesToNAV();
                    facade.ResourcesSynchronizer.SyncDatabaseWithNAV();
                    facade.CustomerSynchronizer.SyncDatabaseWithNAV();
+                   facade.JobSynchronizer.SyncDatabaseWithNAV();
+                   facade.JobTaskSynchronizer.SyncDatabaseWithNAV();
                    Debug.WriteLine(i + "!!!!!!! SYNCED!!!!!");
                    i++;
                });

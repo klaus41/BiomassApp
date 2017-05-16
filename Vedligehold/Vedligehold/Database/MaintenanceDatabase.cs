@@ -23,6 +23,8 @@ namespace Vedligehold.Database
             database.CreateTableAsync<JobRecLine>().Wait();
             database.CreateTableAsync<Resources>().Wait();
             database.CreateTableAsync<Customer>().Wait();
+            database.CreateTableAsync<Job>().Wait();
+            database.CreateTableAsync<JobTask>().Wait();
         }
 
         public Task<List<MaintenanceTask>> GetTasksAsync()
@@ -236,6 +238,62 @@ namespace Vedligehold.Database
         public Task<int> DeleteCustomersAsync()
         {
             return database.ExecuteAsync("delete from " + "Customer");
+        }
+        public Task<List<Job>> GetJobsAsync()
+        {
+            return database.Table<Job>().ToListAsync();
+        }
+
+        public Task<Job> GetJobAsync(string id)
+        {
+            return database.Table<Job>().Where(i => i.No == id).FirstOrDefaultAsync();
+        }
+
+        public Task<int> SaveJobAsync(Job task)
+        {
+            return database.InsertAsync(task);
+        }
+
+        public Task<int> UpdateJobAsync(Job task)
+        {
+            return database.UpdateAsync(task);
+        }
+        public Task<int> DeleteJobAsync(Job task)
+        {
+            return database.DeleteAsync(task);
+        }
+
+        public Task<int> DeleteAllJobs()
+        {
+            return database.ExecuteAsync("delete from " + "Job");
+        }
+        public Task<List<JobTask>> GetJobTasksAsync()
+        {
+            return database.Table<JobTask>().ToListAsync();
+        }
+
+        public Task<JobTask> GetJobTask(string id)
+        {
+            return database.Table<JobTask>().Where(i => i.Job_Task_No == id).FirstOrDefaultAsync();
+        }
+
+        public Task<int> SaveJobTaskAsync(JobTask task)
+        {
+            return database.InsertAsync(task);
+        }
+
+        public Task<int> UpdateJobTaskAsync(JobTask task)
+        {
+            return database.UpdateAsync(task);
+        }
+        public Task<int> DeleteJobTaskAsync(JobTask task)
+        {
+            return database.DeleteAsync(task);
+        }
+
+        public Task<int> DeleteAllJobTasks()
+        {
+            return database.ExecuteAsync("delete from " + "JobTask");
         }
     }
 }

@@ -18,7 +18,8 @@ namespace Vedligehold.Services
         private TimeRegistrationService timeRegistrationService;
         private ThreadManager threadManager;
         private CustomerService customerService;
-
+        private JobService jobService;
+        private JobTaskService jobTaskService;
         public static ServiceFacade GetInstance
         {
             get
@@ -136,6 +137,28 @@ namespace Vedligehold.Services
                     customerService = new CustomerService();
                 }
                 return customerService;
+            }
+        }
+        public JobService JobService
+        {
+            get
+            {
+                if (jobService == null)
+                {
+                    jobService = new JobService();
+                }
+                return jobService;
+            }
+        }
+        public JobTaskService JobTaskService
+        {
+            get
+            {
+                if (jobTaskService == null)
+                {
+                    jobTaskService = new JobTaskService();
+                }
+                return jobTaskService;
             }
         }
     }
