@@ -1,6 +1,5 @@
 Vedligehold, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   Vedligehold.Views.HomePage.xaml
-  Vedligehold.Views.StatisticsPage.xaml
   Vedligehold.Views.MaintenancePage.xaml
   Vedligehold.Views.LoginPage.xaml
   Vedligehold.Views.SettingsPage.xaml

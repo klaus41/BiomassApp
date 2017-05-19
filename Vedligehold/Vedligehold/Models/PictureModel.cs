@@ -10,7 +10,7 @@ namespace Vedligehold.Models
     public class PictureModel
     {
         [PrimaryKey]
-        public string UniqueID { get; set; }
+        public string id { get; set; }
         public string Picture { get; set; }
     }
 }

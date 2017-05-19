@@ -57,7 +57,7 @@
 	<key>UIStatusBarStyle</key>
 	<string>UIStatusBarStyleLightContent</string>
 	<key>CFBundleVersion</key>
-	<string>1.8</string>
+	<string>2.0</string>
 	<key>CFBundleIdentifier</key>
 	<string>dk.eliteit.vedligeholdv2</string>
 	<key>NSCameraUsageDescription</key>

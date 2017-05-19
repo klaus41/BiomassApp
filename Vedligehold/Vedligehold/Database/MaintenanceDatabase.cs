@@ -25,6 +25,8 @@ namespace Vedligehold.Database
             database.CreateTableAsync<Customer>().Wait();
             database.CreateTableAsync<Job>().Wait();
             database.CreateTableAsync<JobTask>().Wait();
+            database.CreateTableAsync<RegLinePicture>().Wait();
+
         }
 
         public Task<List<MaintenanceTask>> GetTasksAsync()
@@ -134,7 +136,7 @@ namespace Vedligehold.Database
 
         public Task<PictureModel> GetPictureAsync(string id)
         {
-            return database.Table<PictureModel>().Where(i => i.UniqueID == id).FirstOrDefaultAsync();
+            return database.Table<PictureModel>().Where(i => i.id == id).FirstOrDefaultAsync();
         }
 
         public Task<int> SavePictureAsync(PictureModel task)
@@ -155,6 +157,7 @@ namespace Vedligehold.Database
         {
             return database.ExecuteAsync("delete from " + "PictureModel");
         }
+       
         public Task<List<JobRecLine>> GetJobRecLinesAsync()
         {
             return database.Table<JobRecLine>().ToListAsync();

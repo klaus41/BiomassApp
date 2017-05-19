@@ -49,6 +49,7 @@
     <Compile Include="Models\MaintenanceActivity.cs" />
     <Compile Include="Models\MaintenanceTask.cs" />
     <Compile Include="Models\PictureModel.cs" />
+    <Compile Include="Models\RegLinePicture.cs" />
     <Compile Include="Models\Resources.cs" />
     <Compile Include="Models\SalesPerson.cs" />
     <Compile Include="Models\TaskDetailModel.cs" />

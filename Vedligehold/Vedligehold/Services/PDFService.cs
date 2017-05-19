@@ -54,5 +54,28 @@ namespace Vedligehold.Services
                 return jl;
             }
         }
+
+        public async Task<PictureModel> PostPictureJobReg(PictureModel pic, string id)
+        {
+            try
+            {
+                pic.id = "{" + pic.id + "}";
+                HttpClient client = GetHttpClient();
+
+                var data = JsonConvert.SerializeObject(pic);
+
+                var content = new StringContent(data, Encoding.UTF8, "application/json");
+
+                var response = await client.PostAsync("Api/JobRegLine/Picture/", content);
+
+                return JsonConvert.DeserializeObject<PictureModel>(response.Content.ReadAsStringAsync().Result);
+            }
+            catch
+            {
+                PictureModel jl = null;
+                return jl;
+            }
+        }
+
     }
 }

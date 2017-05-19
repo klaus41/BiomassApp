@@ -102,7 +102,7 @@ namespace Vedligehold.Services.Synchronizers
                 int matches = 0;
                 foreach (var onlineTimeReg in onlineList)
                 {
-                    if (timeReg.No == onlineTimeReg.No)
+                    if (timeReg.TimeRegGuid == onlineTimeReg.TimeRegGuid)
                     {
                         matches++;
                     }

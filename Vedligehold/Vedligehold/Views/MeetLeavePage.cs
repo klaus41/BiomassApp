@@ -94,7 +94,7 @@ namespace Vedligehold.Views
             layout.Children.Add(ai);
             TimeRegistrationModel timeReg = new TimeRegistrationModel
             {
-                //No = timeRegList.OrderByDescending(x => x.No).FirstOrDefault().No + 1,
+                TimeRegGuid = Guid.NewGuid(),
                 Type = type,
                 Time = DateTime.Now.ToUniversalTime(),
                 User = gd.User.Code,
@@ -187,7 +187,7 @@ namespace Vedligehold.Views
             checkIn.IsEnabled = _in;
             checkOut.IsEnabled = _out;
 
-            lv.ItemsSource = itemssourceList.OrderByDescending(x => x.No);
+            lv.ItemsSource = itemssourceList.OrderByDescending(x => x.Time);
         }
     }
 }

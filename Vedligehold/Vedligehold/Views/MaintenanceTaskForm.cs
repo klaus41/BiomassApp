@@ -20,7 +20,7 @@ namespace Vedligehold.Views
         Button maintenanceTypeButton;
         Button jobNoButton;
         Button taskJobNoButton;
-        Button clearButton;
+        Button backButton;
 
         Entry textEntry;
 
@@ -49,19 +49,21 @@ namespace Vedligehold.Views
             jobNoButton = new Button() { Text = "Sag", BackgroundColor = Color.Red, TextColor = Color.White, IsEnabled = false };
             taskJobNoButton = new Button() { Text = "sagsopgave", BackgroundColor = Color.Red, TextColor = Color.White, IsEnabled = false };
             createButton = new Button() { Text = "Opret Opgave", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White, IsEnabled = false };
+            backButton = new Button() { Text = "Tilbage", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White};
 
             taskTypeButton.Clicked += TaskTypeButton_Clicked;
             customerNoButton.Clicked += CustomerNoButton_Clicked;
             jobNoButton.Clicked += JobNoButton_Clicked;
             taskJobNoButton.Clicked += TaskJobNoButton_Clicked;
             createButton.Clicked += CreateButton_Clicked;
+            backButton.Clicked += BackButton_Clicked;
 
             textEntry = new Entry() { Placeholder = "Opgavebeskrivelse" };
 
             plannedDatePicker = new DatePicker() { Format = "D", Date = DateTime.Today };
             plannedDatePicker.DateSelected += PlannedDatePicker_DateSelected;
 
-            Content = new StackLayout
+            StackLayout layout = new StackLayout
             {
                 Children = {
                     plannedDatePicker,
@@ -70,9 +72,22 @@ namespace Vedligehold.Views
                     jobNoButton,
                     //taskJobNoButton,
                     textEntry,
-                    createButton
+                    createButton,
+                    backButton
                 }
             };
+            if (Device.OS == TargetPlatform.iOS)
+            {
+                // move layout under the status bar
+                layout.Padding = new Thickness(0, 20, 0, 0);
+            }
+            Content = layout;
+
+        }
+
+        private void BackButton_Clicked(object sender, EventArgs e)
+        {
+            Navigation.PopModalAsync();
         }
 
         private async void TaskJobNoButton_Clicked(object sender, EventArgs e)

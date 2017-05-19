@@ -9,7 +9,8 @@ namespace Vedligehold.Models
 {
     public class TimeRegistrationModel
     {
-        [PrimaryKey, AutoIncrement]
+        [PrimaryKey]
+        public Guid TimeRegGuid { get; set; }
         public int No { get; set; }
         public string Type { get; set; }
         public DateTime Time { get; set; }

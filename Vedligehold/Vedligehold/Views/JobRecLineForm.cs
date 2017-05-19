@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Plugin.Media;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,10 +25,12 @@ namespace Vedligehold.Views
         Button unitCodeButton;
         Button done;
         Button cancel;
+        Button cameraButton;
 
         DatePicker datePicker;
 
         JobRecLine recLine;
+        PictureModel pic;
         MaintenanceTask taskGlobal;
         GlobalData gd = GlobalData.GetInstance;
         MaintenanceDatabase db = App.Database;
@@ -42,6 +46,8 @@ namespace Vedligehold.Views
             unitCodeButton = new Button { Text = "Enhedskode", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
             done = new Button { Text = "OK", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
             cancel = new Button { Text = "Cancel", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White, VerticalOptions = LayoutOptions.EndAndExpand };
+            cameraButton = new Button { Text = "Tilføj billede", BackgroundColor = Color.FromRgb(135, 206, 250), TextColor = Color.White };
+
             datePicker = new DatePicker()
             {
                 Format = "D",
@@ -50,6 +56,7 @@ namespace Vedligehold.Views
             workTypeButton.Clicked += WorkTypeButton_Clicked;
             done.Clicked += Done_Clicked;
             cancel.Clicked += Cancel_Clicked;
+            cameraButton.Clicked += CameraButton_Clicked;
             layout = new StackLayout
             {
                 Children =
@@ -59,6 +66,7 @@ namespace Vedligehold.Views
                     descriptionEntry,
                     amount,
                     done,
+                    cameraButton,
                     cancel
                 }
             };
@@ -70,6 +78,40 @@ namespace Vedligehold.Views
             Content = layout;
         }
 
+        private async void CameraButton_Clicked(object sender, EventArgs e)
+        {
+            await CrossMedia.Current.Initialize();
+
+            if (!CrossMedia.Current.IsCameraAvailable || !CrossMedia.Current.IsTakePhotoSupported)
+            {
+                await DisplayAlert("No Camera", "No camera available.", "OK");
+                return;
+            }
+            var file = await CrossMedia.Current.TakePhotoAsync(new Plugin.Media.Abstractions.StoreCameraMediaOptions
+            {
+                Directory = "Sample",
+                Name = "test.png",
+                PhotoSize = Plugin.Media.Abstractions.PhotoSize.Small
+            });
+
+            if (file == null)
+                return;
+
+            Byte[] ba;
+
+            using (var memoryStream = new MemoryStream())
+            {
+                file.GetStream().CopyTo(memoryStream);
+                file.Dispose();
+                ba = memoryStream.ToArray();
+            }
+            string picture = Convert.ToBase64String(ba);
+            pic = new PictureModel()
+            {
+                Picture = picture,
+            };
+            //await pdf.PostPicture(pic, _activity.UniqueID);
+        }
         private void Cancel_Clicked(object sender, EventArgs e)
         {
             Navigation.PopModalAsync();
@@ -113,6 +155,11 @@ namespace Vedligehold.Views
             recLine.Posting_Date = datePicker.Date;
             recLine.Quantity = double.Parse(amount.Text, CultureInfo.InvariantCulture);
             //recLine.Type = "Resource";
+            if (pic != null)
+            {
+                pic.id = recLine.JobRecLineGUID.ToString();
+                App.Database.SavePictureAsync(pic);
+            }
         }
 
         private async void WorkTypeButton_Clicked(object sender, EventArgs e)

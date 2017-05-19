@@ -19,7 +19,6 @@ C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Ved
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.iOS\bin\iPhone\Ad-Hoc\Newtonsoft.Json.dll
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.iOS\bin\iPhone\Ad-Hoc\System.Net.Http.Primitives.dll
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.iOS\bin\iPhone\Ad-Hoc\Vedligehold.pdb
-C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.iOS\bin\iPhone\Ad-Hoc\Vedligehold.dll.mdb
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.iOS\bin\iPhone\Ad-Hoc\Plugin.Geolocator.xml
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.iOS\bin\iPhone\Ad-Hoc\Plugin.Geolocator.Abstractions.xml
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.iOS\bin\iPhone\Ad-Hoc\Plugin.Media.xml
@@ -100,5 +99,6 @@ C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Ved
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.iOS\obj\iPhone\Ad-Hoc\optimized\
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.iOS\obj\iPhone\Ad-Hoc\Vedligehold.iOS.csprojResolveAssemblyReference.cache
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.iOS\obj\iPhone\Ad-Hoc\Vedligehold.iOS.exe
+C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.iOS\bin\iPhone\Ad-Hoc\Vedligehold.dll.mdb
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.iOS\obj\iPhone\Ad-Hoc\Vedligehold.iOS.exe.mdb
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.iOS\bin\iPhone\Ad-Hoc\Vedligehold.iOS.exe.mdb

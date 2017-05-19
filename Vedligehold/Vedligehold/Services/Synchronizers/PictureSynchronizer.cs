@@ -23,7 +23,8 @@ namespace Vedligehold.Services.Synchronizers
                 pictureList = await database.GetPicturesAsync();
                 foreach (PictureModel item in pictureList)
                 {
-                    await facade.PDFService.PostPicture(item, item.UniqueID);
+                    await facade.PDFService.PostPicture(item, item.id);
+                    await facade.PDFService.PostPictureJobReg(item, item.id);
                     await database.DeletePictureAsync(item);
                 }
             }

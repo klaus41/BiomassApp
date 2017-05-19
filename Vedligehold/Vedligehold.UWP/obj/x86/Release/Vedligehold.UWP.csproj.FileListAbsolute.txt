@@ -39,7 +39,6 @@ C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Ved
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.UWP\bin\x86\Release\ilc\_Resources\4.rsrc
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.UWP\bin\x86\Release\ilc\_Resources\5.rsrc
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.UWP\bin\x86\Release\ilc\_Resources\6.rsrc
-C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.UWP\bin\x86\Release\ilc\_Resources\7.rsrc
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.UWP\bin\x86\Release\ilc\_Resources\index.txt
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.UWP\bin\x86\Release\Vedligehold.UWP.build.appxrecipe
 C:\Users\klaus\Documents\Visual Studio 2015\Projects\Vedligehold\Vedligehold\Vedligehold.UWP\bin\x86\Release\Microsoft.CSharp.dll

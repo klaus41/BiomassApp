@@ -11,6 +11,7 @@ namespace Vedligehold.Models
     public class MaintenanceTask
     {
         [PrimaryKey]
+        //public Guid MaintTaskGUID { get; set; }
         public int no { get; set; }
         public string TaskType { get; set; }
         public string MaintenanceType { get; set; }
